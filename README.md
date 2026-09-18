@@ -1,50 +1,54 @@
-# Mente Infinita Global Ecosystem
+# V&C Mente Convergente
 
-Site estatico premium em HTML, CSS e JavaScript para posicionar a Mente Infinita como ecossistema de desenvolvimento humano, inteligencia emocional, saude mental organizacional e Metodo REAL.
+Site institucional e Portal **Meus Acessos** da V&C reunidos no mesmo projeto Vercel. O site apresenta o ecossistema, direciona as jornadas comerciais e consulta o V&C Core para exibir somente os produtos liberados para cada conta.
 
-## Como abrir
+## Arquitetura
 
-Abra o arquivo `index.html` no navegador ou publique a pasta `outputs/mente-infinita` em um servidor estatico.
+- Um único projeto público: `vc-mente-convergente`.
+- Conteúdo institucional estático em HTML, CSS e JavaScript.
+- Catálogo público em `produtos.html`.
+- Portal autenticado em `entrar.html`, também exposto por `/meus-acessos` e `/admin`.
+- Identidade, sessões e recuperação de senha pelo Supabase Auth.
+- Direitos de acesso, organizações, convites e licenças coletivas pelo V&C Core.
+- Nenhuma chave privilegiada é enviada ao navegador; o frontend usa somente a chave publicável.
 
-## Paginas principais
+## Páginas principais
 
-- `index.html`: home global do ecossistema.
-- `metodo-real.html`: metodologia proprietaria Reconhecer, Entender, Agir e Liderar.
-- `pessoas.html`: desenvolvimento pessoal, ansiedade, livros e LIFE OS.
-- `empresas.html`: saude mental organizacional, RH, SST, lideranca e cultura.
-- `real-360-psicossocial.html`: pagina comercial do produto corporativo principal.
-- `case-zero.html`: piloto oficial para validacao.
-- `escolas.html`: educacao emocional, professores, alunos e familias.
-- `familias.html`: comunicacao, vinculos, conflitos e proposito familiar.
-- `universidade-real.html`: trilhas futuras, formacoes e multiplicadores.
-- `livros.html`: vitrine dos livros de Edgar Xavier.
-- `silencio-que-grita.html`: pagina de venda do livro.
-- `ansiedade-controle.html`: pagina de venda da serie.
-- `palestras.html`: palestras e treinamentos.
-- `sobre-edgar.html`: posicionamento do fundador.
-- `contato.html`: formularios e downloads comerciais.
+- `/`: apresentação da V&C e caminhos para o ecossistema.
+- `/produtos`: catálogo público das soluções V&C.
+- `/entrar`: cadastro, login, recuperação de senha e acesso aos produtos.
+- `/meus-acessos`: atalho estável para o Portal.
+- `/admin`: atalho para a área administrativa protegida pelo mesmo login.
+- `/empresas`, `/escolas`, `/palestras` e `/sobre-edgar`: jornadas institucionais.
+- `/contato`: contato oficial por e-mail.
 
-## Assets
+As páginas históricas continuam publicadas para preservar links existentes e conteúdo já indexado.
 
-- `assets/css/styles.css`: identidade visual, layout, responsividade, cards, dashboards e formularios.
-- `assets/js/main.js`: header, footer, menu mobile, WhatsApp, Instagram e feedback dos formularios.
-- `assets/images/`: imagens, logo e favicon.
-- `assets/docs/`: materiais comerciais iniciais para download.
+## Desenvolvimento e verificação
 
-## Personalizacao
+O projeto não possui dependências de runtime. Para validar sintaxe, links, marca, Portal e configuração Vercel:
 
-Edite `assets/js/main.js` para atualizar:
+```bash
+npm run check
+```
 
-- numero do WhatsApp;
-- Instagram;
-- e-mail;
-- mensagens comerciais.
+Para servir a pasta localmente:
 
-Os formularios estao prontos visualmente. Para capturar leads reais, conecte a uma ferramenta como RD Station, HubSpot, Brevo, Formspree, Typeform, Google Forms ou back-end proprio.
+```bash
+python3 -m http.server 4173
+```
 
-## Roadmaps
+## Publicação
 
-- `MENTE_INFINITA_2035_MASTER_VISION.md`: visao global 2035 da Mente Infinita.
-- `ROADMAP_GLOBAL.md`: evolucao da Mente Infinita para ecossistema nacional/global.
-- `ROADMAP_NEXTJS.md`: plano de migracao para plataforma SaaS.
-- `DEPLOY_VERCEL_CHECKLIST.md`: checklist para publicacao.
+A branch `main` está conectada ao projeto Vercel existente. Pull requests e branches geram previews; a produção só deve ser atualizada depois da homologação do preview. As rotas e os cabeçalhos de segurança são definidos em `vercel.json`.
+
+## Estrutura relevante
+
+- `assets/css/styles.css`: site institucional e catálogo.
+- `assets/css/portal.css`: interface segura do Portal.
+- `assets/js/main.js`: navegação, contato e formulários institucionais.
+- `assets/js/portal.js`: Auth, sessão e integração com o V&C Core.
+- `tests/site.test.mjs`: controles automáticos da consolidação.
+- `vercel.json`: URLs limpas, atalhos do Portal e cabeçalhos de segurança.
+
+Documentos históricos de visão e roadmap foram mantidos no repositório como referência e não substituem o estado operacional atual.
