@@ -2,7 +2,7 @@
 
 ## O que e
 
-Piloto oficial da Mente Infinita para validar o REAL 360 Psicossocial em ambiente real antes de escalar comercialmente.
+Piloto oficial da V&C Mente Convergente para validar o REAL 360 Psicossocial em ambiente real antes de escalar comercialmente.
 
 ## Etapas
 

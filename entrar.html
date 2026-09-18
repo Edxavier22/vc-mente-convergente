@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#0b1713">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Meus Acessos | V&C Mente Convergente</title>
+  <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/portal.css">
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="V&C Mente Convergente — início">
+      <span class="brand-mark" aria-hidden="true">V&amp;C</span>
+      <span class="brand-copy">Mente Convergente<small>Ecossistema de produtos</small></span>
+    </a>
+    <span class="environment"><span aria-hidden="true"></span> Área segura</span>
+  </header>
+
+  <main id="conteudo" class="shell">
+    <section id="signin-view" class="signin-layout" aria-labelledby="signin-title">
+      <div class="intro-panel">
+        <p class="eyebrow">Portal V&amp;C</p>
+        <h1 id="signin-title">Seus produtos, em um único ponto de acesso.</h1>
+        <p class="intro-copy">Entre para consultar somente os produtos e benefícios liberados para a sua conta. Cada solução mantém sua identidade e seu ambiente oficial.</p>
+        <ul class="trust-list" aria-label="Compromissos do portal">
+          <li><span aria-hidden="true">01</span> Acesso centralizado, produtos independentes</li>
+          <li><span aria-hidden="true">02</span> Direitos atualizados sem cópias congeladas</li>
+          <li><span aria-hidden="true">03</span> Dados internos permanecem em cada produto</li>
+        </ul>
+      </div>
+
+      <div class="auth-card">
+        <div id="login-panel">
+        <div class="auth-heading">
+          <p class="eyebrow">Área segura</p>
+          <h2>Entrar em Meus Acessos</h2>
+          <p>Entre com sua conta ou crie um acesso usando seu e-mail.</p>
+        </div>
+        <form id="signin-form" novalidate>
+          <label for="email">E-mail</label>
+          <input id="email" name="email" type="email" autocomplete="username" inputmode="email" required placeholder="voce@empresa.com">
+          <label for="password">Senha</label>
+          <input id="password" name="password" type="password" autocomplete="current-password" required minlength="8" placeholder="Sua senha">
+          <button id="signin-button" class="primary-button" type="submit">
+            <span class="button-label">Entrar com segurança</span>
+            <span class="button-progress" aria-hidden="true">Validando…</span>
+          </button>
+          <div class="auth-actions">
+            <button id="signup-button" class="text-button" type="button">Criar minha conta</button>
+            <button id="recovery-button" class="text-button" type="button">Esqueci minha senha</button>
+          </div>
+          <p id="auth-status" class="status-message" role="status" aria-live="polite"></p>
+        </form>
+        <p class="privacy-note">A V&amp;C não armazena sua senha neste site. A sessão fica somente nesta aba e os direitos de acesso são validados pelo Core.</p>
+        </div>
+
+        <div id="reset-panel" hidden>
+          <div class="auth-heading">
+            <p class="eyebrow">Recuperação segura</p>
+            <h2>Defina uma nova senha</h2>
+            <p>Use pelo menos oito caracteres. A nova senha será enviada diretamente ao serviço de identidade.</p>
+          </div>
+          <form id="reset-form" novalidate>
+            <label for="reset-password">Nova senha</label>
+            <input id="reset-password" name="password" type="password" autocomplete="new-password" required minlength="8" placeholder="Sua nova senha">
+            <button id="reset-button" class="primary-button" type="submit">Salvar nova senha</button>
+            <p id="reset-status" class="status-message" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section id="workspace-view" class="workspace" hidden aria-labelledby="workspace-title">
+      <div class="workspace-head">
+        <div>
+          <p class="eyebrow">Portal V&amp;C</p>
+          <h1 id="workspace-title">Meus Acessos</h1>
+          <p id="account-copy" class="workspace-copy">Produtos liberados para sua conta.</p>
+        </div>
+        <button id="signout-button" class="secondary-button" type="button">Sair</button>
+      </div>
+
+      <div id="workspace-status" class="workspace-status" role="status" aria-live="polite">
+        <span class="spinner" aria-hidden="true"></span>
+        <span>Consultando seus direitos de acesso…</span>
+      </div>
+
+      <section id="bootstrap-section" class="bootstrap-section" hidden aria-labelledby="bootstrap-title">
+        <div>
+          <p class="eyebrow">Ativação controlada</p>
+          <h2 id="bootstrap-title">Assumir a administração oficial da V&amp;C</h2>
+          <p id="bootstrap-copy">Existe uma autorização de uso único vinculada ao e-mail verificado desta conta.</p>
+        </div>
+        <button id="bootstrap-admin-button" class="primary-button" type="button">Ativar administração</button>
+        <p id="bootstrap-status" class="status-message neutral" role="status" aria-live="polite"></p>
+      </section>
+
+      <section id="access-section" hidden aria-labelledby="access-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Disponíveis agora</p>
+            <h2 id="access-title">Produtos e benefícios</h2>
+          </div>
+          <span id="access-count" class="count-badge">0 acessos</span>
+        </div>
+        <div id="access-grid" class="access-grid"></div>
+        <div id="empty-state" class="empty-state" hidden>
+          <span class="empty-mark" aria-hidden="true">V&amp;C</span>
+          <h3>Nenhum produto liberado ainda</h3>
+          <p>Sua conta está ativa, mas não há direitos vigentes para este mercado. Quando um benefício ou licença for concedido, ele aparecerá aqui automaticamente.</p>
+        </div>
+      </section>
+
+      <section id="organization-section" class="organization-section" hidden aria-labelledby="organization-title">
+        <div class="section-heading compact">
+          <div>
+            <p class="eyebrow">Vínculos institucionais</p>
+            <h2 id="organization-title">Minhas organizações</h2>
+          </div>
+        </div>
+        <div id="organization-list" class="organization-list"></div>
+      </section>
+
+      <section class="invitation-section" aria-labelledby="invitation-title">
+        <div class="section-heading compact">
+          <div>
+            <p class="eyebrow">Entrada por convite</p>
+            <h2 id="invitation-title">Tenho um convite V&amp;C</h2>
+          </div>
+        </div>
+        <form id="accept-invitation-form" class="inline-form" novalidate>
+          <div class="field-grow">
+            <label for="invitation-token">Código do convite</label>
+            <input id="invitation-token" name="invitation_token" type="text" minlength="64" maxlength="64" pattern="[0-9a-f]{64}" autocomplete="off" spellcheck="false" required placeholder="Cole o código único de 64 caracteres">
+          </div>
+          <button class="secondary-button" type="submit">Aceitar convite</button>
+        </form>
+        <p id="invitation-status" class="status-message neutral" role="status" aria-live="polite"></p>
+      </section>
+
+      <section id="admin-section" class="admin-section" hidden aria-labelledby="admin-title">
+        <div class="admin-banner">
+          <div>
+            <p class="eyebrow">Operação comercial</p>
+            <h2 id="admin-title">Gestão do ecossistema</h2>
+            <p id="admin-scope-copy">Área disponível conforme seu papel de acesso.</p>
+          </div>
+          <button id="refresh-admin-button" class="secondary-button" type="button">Atualizar dados</button>
+        </div>
+
+        <div class="admin-grid">
+          <article id="create-organization-card" class="admin-card" hidden>
+            <h3>Criar organização</h3>
+            <p>Empresas, associações e parceiros entram sem criar cópias dos produtos.</p>
+            <form id="create-organization-form" novalidate>
+              <label for="organization-name">Nome</label>
+              <input id="organization-name" name="name" type="text" minlength="2" maxlength="140" required placeholder="Nome da organização">
+              <label for="organization-type">Tipo</label>
+              <select id="organization-type" name="organization_type" required>
+                <option value="company">Empresa</option>
+                <option value="association">Associação</option>
+                <option value="partner">Parceiro</option>
+                <option value="internal">Interna V&amp;C</option>
+                <option value="other">Outro</option>
+              </select>
+              <button class="primary-button" type="submit">Criar organização</button>
+            </form>
+          </article>
+
+          <article id="create-invitation-card" class="admin-card" hidden>
+            <h3>Convidar pessoa</h3>
+            <p>O e-mail não é armazenado em texto; somente seu hash é preservado.</p>
+            <form id="create-invitation-form" novalidate>
+              <label for="invite-organization">Organização</label>
+              <select id="invite-organization" name="organization_id" required></select>
+              <label for="invite-email">E-mail verificado</label>
+              <input id="invite-email" name="email" type="email" autocomplete="off" required placeholder="pessoa@empresa.com">
+              <div class="two-fields">
+                <div>
+                  <label for="invite-role">Papel</label>
+                  <select id="invite-role" name="member_role" required>
+                    <option value="member">Membro</option>
+                    <option value="manager">Gestor</option>
+                    <option value="admin">Administrador</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="invite-days">Validade</label>
+                  <select id="invite-days" name="expires_in_days" required>
+                    <option value="7">7 dias</option>
+                    <option value="14">14 dias</option>
+                    <option value="30">30 dias</option>
+                  </select>
+                </div>
+              </div>
+              <button class="primary-button" type="submit">Gerar convite seguro</button>
+            </form>
+          </article>
+
+          <article id="create-seat-pool-card" class="admin-card" hidden>
+            <h3>Criar licença coletiva</h3>
+            <p>A capacidade cria seats dentro do produto oficial — nunca cópias separadas.</p>
+            <form id="create-seat-pool-form" novalidate>
+              <label for="pool-organization">Organização</label>
+              <select id="pool-organization" name="organization_id" required></select>
+              <label for="pool-product">Produto</label>
+              <select id="pool-product" name="product_id" required disabled>
+                <option value="">Carregando catálogo V&amp;C…</option>
+              </select>
+              <label for="pool-capacity">Quantidade de acessos</label>
+              <input id="pool-capacity" name="seats_total" type="number" min="1" max="100000" step="1" required value="100">
+              <button class="primary-button" type="submit">Criar pool de acessos</button>
+            </form>
+          </article>
+        </div>
+
+        <div id="admin-result" class="admin-result" hidden aria-live="polite"></div>
+        <div id="admin-overviews" class="admin-overviews"></div>
+      </section>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>V&amp;C Mente Convergente</span>
+    <span>Acesso centralizado aos produtos V&amp;C</span>
+  </footer>
+  <script type="module" src="assets/js/portal.js"></script>
+</body>
+</html>

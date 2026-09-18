@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 430 96" role="img" aria-labelledby="title desc">
+  <title id="title">V&amp;C Mente Convergente</title>
+  <desc id="desc">Símbolo de conexão contínua entre vidas, propósito e evolução</desc>
+  <defs>
+    <linearGradient id="gold" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#f4dc98"/>
+      <stop offset="1" stop-color="#c19a4a"/>
+    </linearGradient>
+  </defs>
+  <path d="M42.8 59.4c-8.4 0-15.2-6.2-15.2-13.8s6.8-13.8 15.2-13.8c5 0 9.5 2.2 12.8 5.7 3.3-3.5 7.8-5.7 12.8-5.7 8.4 0 15.2 6.2 15.2 13.8S76.8 59.4 68.4 59.4c-5 0-9.5-2.2-12.8-5.7-3.3 3.5-7.8 5.7-12.8 5.7Zm0-7.2c3.7 0 7.4-2.4 10.6-6.6-3.2-4.2-6.9-6.6-10.6-6.6-4.2 0-7.5 2.9-7.5 6.6s3.3 6.6 7.5 6.6Zm25.6 0c4.2 0 7.5-2.9 7.5-6.6s-3.3-6.6-7.5-6.6c-3.7 0-7.4 2.4-10.6 6.6 3.2 4.2 6.9 6.6 10.6 6.6Z" fill="url(#gold)"/>
+  <path d="M18 78h70" stroke="url(#gold)" stroke-width="2" stroke-linecap="round" opacity=".65"/>
+  <text x="104" y="40" font-family="Montserrat, Arial, sans-serif" font-size="25" font-weight="700" fill="#fff">V&amp;C Mente Convergente</text>
+  <text x="104" y="65" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" letter-spacing="1.4" fill="#f4dc98">VIDAS CONECTADAS AO PROPÓSITO</text>
+</svg>

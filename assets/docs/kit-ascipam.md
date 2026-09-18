@@ -2,11 +2,11 @@
 
 ## Objetivo
 
-Material inicial para apresentar a Mente Infinita, o Metodo REAL, o REAL 360 Psicossocial e o CASE ZERO a parceiros, associacoes e empresas.
+Material inicial para apresentar a V&C Mente Convergente, o Metodo REAL, o REAL 360 Psicossocial e o CASE ZERO a parceiros, associacoes e empresas.
 
 ## Conteudos sugeridos
 
-- Visao da Mente Infinita.
+- Visao da V&C Mente Convergente.
 - Dor atual das empresas.
 - REAL 360 Psicossocial.
 - CASE ZERO.
