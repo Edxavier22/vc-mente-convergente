@@ -72,8 +72,9 @@ test("portal possui cadastro, login, recuperação e áreas protegidas", () => {
 test("configuração Vercel mantém um único site com rotas internas", () => {
   const config = JSON.parse(read("vercel.json"));
   assert.equal(config.cleanUrls, true);
-  assert.ok(config.rewrites.some((item) => item.source === "/meus-acessos" && item.destination === "/entrar.html"));
-  assert.ok(config.rewrites.some((item) => item.source === "/admin" && item.destination === "/entrar.html"));
+  assert.ok(config.rewrites.some((item) => item.source === "/meus-acessos" && item.destination === "/entrar"));
+  assert.ok(config.rewrites.some((item) => item.source === "/admin" && item.destination === "/entrar"));
+  assert.ok(config.rewrites.every((item) => !item.destination.endsWith(".html")));
   const headers = JSON.stringify(config.headers);
   assert.match(headers, /Content-Security-Policy/);
   assert.match(headers, /frame-ancestors 'none'/);
