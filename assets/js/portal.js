@@ -360,6 +360,8 @@ async function renderAdmin(scope, session) {
   currentAdminScope = scope;
   const organizations = Array.isArray(scope?.organizations) ? scope.organizations : [];
   const platformAdmin = scope?.platform_admin === true;
+  const professorCard = document.querySelector("#professor-card");
+  if (professorCard) professorCard.hidden = !platformAdmin;
   elements.adminSection.hidden = !platformAdmin && organizations.length === 0;
   if (elements.adminSection.hidden) return;
 
