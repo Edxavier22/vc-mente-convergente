@@ -362,6 +362,8 @@ async function renderAdmin(scope, session) {
   const platformAdmin = scope?.platform_admin === true;
   const professorCard = document.querySelector("#professor-card");
   if (professorCard) professorCard.hidden = !platformAdmin;
+  const ownerCourseCard = document.querySelector("#owner-course-card");
+  if (ownerCourseCard) ownerCourseCard.hidden = !platformAdmin || session?.user?.email?.toLowerCase() !== "vcmenteconvergente@gmail.com";
   elements.adminSection.hidden = !platformAdmin && organizations.length === 0;
   if (elements.adminSection.hidden) return;
 
@@ -633,6 +635,26 @@ elements.refreshAdminButton.addEventListener("click", async () => {
   } finally {
     elements.refreshAdminButton.disabled = false;
   }
+});
+
+document.querySelector("#owner-course-button")?.addEventListener("click", async (event) => {
+  const button = event.currentTarget;
+  const status = document.querySelector("#owner-course-status");
+  if (!currentSession || currentAdminScope?.platform_admin !== true || currentSession.user?.email?.toLowerCase() !== "vcmenteconvergente@gmail.com") return;
+  button.disabled = true;
+  status.textContent = "Conferindo o direito de acesso…";
+  try {
+    const accesses = await protectedRequest("/v1/me/access?market=BR&locale=pt-BR", currentSession);
+    if (!accesses?.accesses?.some((access) => access.product_id === "P-021")) {
+      await protectedMutation("/v1/admin/entitlements", {
+        subject_type: "person", subject_id: currentSession.user.id, product_id: "P-021", source_type: "admin",
+        market: "BR", release_channel: "stable", starts_at: new Date().toISOString()
+      }, currentSession, "owner-p021-access");
+    }
+    status.textContent = "Seu acesso ao curso foi autorizado. Abra a formação em Meus Acessos.";
+    await loadWorkspace(currentSession);
+  } catch { status.textContent = "Não foi possível liberar o acesso. Tente novamente mais tarde."; }
+  finally { button.disabled = false; }
 });
 
 elements.signoutButton.addEventListener("click", async () => {
