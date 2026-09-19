@@ -652,8 +652,12 @@ document.querySelector("#owner-course-button")?.addEventListener("click", async 
   button.disabled = true;
   status.textContent = "Conferindo o direito de acesso…";
   try {
-    const accesses = await protectedRequest("/v1/me/access?market=BR&locale=pt-BR", currentSession);
-    if (!accesses?.accesses?.some((access) => access.product_id === "P-021")) {
+    const existing = await fetch(CONFIG.supabaseUrl + "/rest/v1/rpc/vc_course_has_access", {
+      method: "POST", headers: { apikey: CONFIG.publishableKey, authorization: "Bearer " + currentSession.access_token, "content-type": "application/json" },
+      body: "{}", cache: "no-store"
+    });
+    if (!existing.ok) throw new Error("access_check_failed");
+    if (await existing.json() !== true) {
       await protectedMutation("/v1/admin/entitlements", {
         subject_type: "person", subject_id: currentSession.user.id, product_id: "P-021", source_type: "admin",
         market: "BR", release_channel: "stable", starts_at: new Date().toISOString()
