@@ -364,6 +364,14 @@ async function renderAdmin(scope, session) {
   if (professorCard) professorCard.hidden = !platformAdmin;
   const ownerCourseCard = document.querySelector("#owner-course-card");
   if (ownerCourseCard) ownerCourseCard.hidden = !platformAdmin || session?.user?.email?.toLowerCase() !== "vcmenteconvergente@gmail.com";
+  const ownerProduct = document.querySelector("#owner-product");
+  if (ownerProduct && !ownerCourseCard.hidden) {
+    ownerProduct.replaceChildren(...currentProducts.filter((product) => product.status === "active").map((product) => {
+      const option = element("option", "", product.canonical_name || product.product_id);
+      option.value = product.product_id;
+      return option;
+    }));
+  }
   elements.adminSection.hidden = !platformAdmin && organizations.length === 0;
   if (elements.adminSection.hidden) return;
 
@@ -654,6 +662,27 @@ document.querySelector("#owner-course-button")?.addEventListener("click", async 
     status.textContent = "Seu acesso ao curso foi autorizado. Abra a formação em Meus Acessos.";
     await loadWorkspace(currentSession);
   } catch { status.textContent = "Não foi possível liberar o acesso. Tente novamente mais tarde."; }
+  finally { button.disabled = false; }
+});
+
+document.querySelector("#owner-product-button")?.addEventListener("click", async (event) => {
+  const button = event.currentTarget;
+  const status = document.querySelector("#owner-product-status");
+  const productId = document.querySelector("#owner-product").value;
+  if (!currentSession || currentAdminScope?.platform_admin !== true || currentSession.user?.email?.toLowerCase() !== "vcmenteconvergente@gmail.com" || !currentProducts.some((product) => product.product_id === productId && product.status === "active")) return;
+  button.disabled = true;
+  status.textContent = "Conferindo acesso ao produto…";
+  try {
+    const data = await protectedRequest("/v1/me/access?market=BR&locale=pt-BR", currentSession);
+    if (!data?.accesses?.some((access) => access.product_id === productId)) {
+      await protectedMutation("/v1/admin/entitlements", {
+        subject_type: "person", subject_id: currentSession.user.id, product_id: productId, source_type: "admin",
+        market: "BR", release_channel: "stable", starts_at: new Date().toISOString()
+      }, currentSession, "owner-" + productId + "-access");
+    }
+    status.textContent = "Acesso registrado. Consulte o produto em Meus Acessos.";
+    await loadWorkspace(currentSession);
+  } catch { status.textContent = "Não foi possível liberar este produto agora."; }
   finally { button.disabled = false; }
 });
 
