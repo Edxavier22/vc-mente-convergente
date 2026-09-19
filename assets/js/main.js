@@ -8,6 +8,7 @@ const navItems = [
   ["empresas.html", "Para Empresas", "empresas"],
   ["escolas.html", "Para Escolas", "escolas"],
   ["palestras.html", "Palestras", "palestras"],
+  ["universidade-vc.html", "Universidade V&C", "universidade"],
   ["sobre-edgar.html", "Sobre Edgar", "sobre"],
   ["contato.html", "Contato", "contato"]
 ];
@@ -35,7 +36,7 @@ function renderFooter() {
       <div class="footer-grid">
         <div><img src="assets/images/logo-vc-mente-convergente.svg" alt="V&C Mente Convergente" width="270"><p>Vidas conectadas ao propósito por meio de desenvolvimento humano, tecnologia, educação e sistemas práticos.</p></div>
         <div><h3>Ecossistema</h3><a href="produtos.html">Todas as soluções</a><a href="pessoas.html">Pessoas</a><a href="empresas.html">Empresas</a><a href="escolas.html">Escolas</a><a href="familias.html">Famílias</a></div>
-        <div><h3>Plataformas</h3><a href="metodo-real.html">Método REAL</a><a href="real-360-psicossocial.html">REAL 360 Psicossocial</a><a href="universidade-real.html">Universidade REAL</a><a href="entrar.html">Meus acessos</a></div>
+        <div><h3>Plataformas</h3><a href="metodo-real.html">Método REAL</a><a href="real-360-psicossocial.html">REAL 360 Psicossocial</a><a href="universidade-vc.html">Universidade V&amp;C</a><a href="entrar.html">Meus acessos</a></div>
         <div><h3>Contato</h3><a href="palestras.html">Palestras</a><a href="livros.html">Livros</a><a href="blog.html">Conteúdos</a><a data-email>E-mail oficial</a><a href="contato.html">Fale com a V&C</a></div>
       </div>
       <div class="footer-bottom">&copy; 2026 V&amp;C Mente Convergente. Vidas conectadas ao propósito. O REAL 360&deg; Psicossocial apoia gestão e desenvolvimento; não realiza diagnóstico clínico nem substitui avaliação especializada.</div>
