@@ -58,7 +58,7 @@ async function context(bearer, courseId) {
  const user = await identity.json();
  if (!user?.id) return {error: 401};
  const metadata = await database("vc_university_courses",
-  "?select=course_id,product_id,version&course_id=eq." + encodeURIComponent(courseId) + "&limit=1");
+  "?select=course_id,product_id,version,final_pass_percent&course_id=eq." + encodeURIComponent(courseId) + "&limit=1");
  const courseRecord = metadata[0];
  if (!courseRecord?.product_id || !courseRecord.version) return {error: 404};
  const rights = await core("/functions/v1/vc-core-private-api/v1/me/access?market=BR&locale=pt-BR", bearer);
@@ -102,6 +102,12 @@ async function checkpointMinimum(courseId, moduleNo) {
  if (!Number.isInteger(minimum) || minimum < 1 || minimum > 5) throw new Error("checkpoint_config_unavailable");
  return minimum;
 }
+async function finalQuestions(courseId, course) {
+ return database("vc_university_questions",
+  "?select=question_id,prompt,choices,correct_index,review_concept,kind"
+   + "&course_id=eq." + encodeURIComponent(courseId) + "&course_version=eq." + encodeURIComponent(course.version)
+   + "&purpose=eq.final&active=eq.true&order=question_id.asc&limit=20");
+}
 Deno.serve(async request => {
  const origin = request.headers.get("origin") ?? "";
  if (request.method === "OPTIONS") return reply(204, null, origin);
@@ -116,6 +122,32 @@ Deno.serve(async request => {
   const access = await context(bearer, courseId);
   if (access.error) return reply(access.error, {error: access.code ?? "access_denied"}, origin);
   const {course, progress, states} = await courseAndProgress(courseId, access.courseRecord.version, access.enrollment.enrollment_id);
+  const input = request.method === "POST" ? await request.json().catch(() => null) : null;
+  if (url.searchParams.get("view") === "final" || input?.action === "final") {
+   if (!states.length || !states.every(s => s.completed))
+    return reply(423, {error: "modules_required"}, origin);
+   const questions = await finalQuestions(courseId, course);
+   if (questions.length !== 20) return reply(503, {error: "final_unavailable"}, origin);
+   const minimum = access.courseRecord.final_pass_percent;
+   if (!Number.isInteger(minimum) || minimum < 1 || minimum > 100)
+    throw new Error("final_config_unavailable");
+   if (request.method === "GET")
+    return reply(200, {minimum, questions: questions.map(({correct_index: _answer, review_concept: _concept, ...q}) => q)}, origin);
+   if (!Array.isArray(input.answers) || input.answers.length !== 20 ||
+       !input.answers.every(a => Number.isInteger(a) && a >= 0 && a <= 3))
+    return reply(400, {error: "answers_invalid"}, origin);
+   const attempts = await database("vc_university_final_attempts",
+    "?select=attempt_id&" + scoped(access.enrollment.enrollment_id)
+     + "&submitted_at=gte." + new Date(Date.now()-86400000).toISOString());
+   if (attempts.length >= 3) return reply(429, {error: "attempt_limit", review: "Revise os módulos e tente amanhã."}, origin);
+   const score = questions.reduce((n, q, i) => n + (input.answers[i] === q.correct_index ? 1 : 0), 0);
+   const review = [...new Set(questions.filter((q, i) => input.answers[i] !== q.correct_index).map(q => q.review_concept))];
+   await database("vc_university_final_attempts", "", {
+    method: "POST", headers: {Prefer: "return=minimal"},
+    body: JSON.stringify({enrollment_id: access.enrollment.enrollment_id, score, review_concepts: review})
+   });
+   return reply(200, {score, total: 20, passed: score * 5 >= minimum, review}, origin);
+  }
   const moduleNo = Number(url.searchParams.get("module"));
   if (request.method === "GET" && !url.searchParams.has("module")) {
    return reply(200, {id: course.id, productId: access.courseRecord.product_id, title: course.title,
@@ -135,7 +167,6 @@ Deno.serve(async request => {
    }
    return reply(200, {lesson, progress: progress.find(p => p.module_no === moduleNo) ?? null}, origin);
   }
-  const input = await request.json().catch(() => null);
   if (input?.action === "evidence") {
    const evidence = input.evidence;
    if (typeof evidence !== "string" || evidence.trim().length < 20 || evidence.length > 12000)
