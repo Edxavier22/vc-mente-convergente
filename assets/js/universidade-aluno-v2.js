@@ -25,22 +25,24 @@ function update(){
  const done=catalog.modules.filter(m=>m.completed).length;
  document.querySelector("#progress-copy").textContent=`${done} de ${catalog.modules.length} módulos concluídos na sua conta`;
  const bar=document.querySelector("#progress");bar.max=catalog.modules.length;bar.value=done;
- menu.replaceChildren(...catalog.modules.map(m=>{const b=el("button",`${m.completed?"✓":m.unlocked?"●":"🔒"} ${String(m.number).padStart(2,"0")} ${m.title}`);b.type="button";b.disabled=!m.unlocked;b.classList.toggle("current",m.number===current);b.title=m.unlocked?"":`Conclua o Módulo ${m.number-1} para liberar este módulo.`;b.onclick=()=>openModule(m.number);return b}))
+ menu.replaceChildren(...catalog.modules.map(m=>{const b=el("button",`${m.completed?"✓":m.unlocked?"●":"🔒"} ${String(m.number).padStart(2,"0")} ${m.title}`);b.type="button";b.disabled=!m.unlocked;b.classList.toggle("current",m.number===current);if(!m.unlocked)b.setAttribute("aria-label",`${m.title} bloqueado. Conclua o Módulo ${m.number-1} para liberar.`);b.onclick=()=>openModule(m.number);return b}));
+ const locked=catalog.modules.find(m=>!m.unlocked);
+ if(locked)menu.append(el("p",`Conclua o Módulo ${locked.number-1} para liberar o próximo.`,"course-status"))
 }
 async function reload(){catalog=await call();update()}
 function steps(title,items){const section=el("section");section.append(el("h2",title));const list=el("ol");items.forEach(item=>list.append(el("li",item)));section.append(list);return section}
 async function checkpoint(number,holder){
  try{
   const data=await call(`?module=${number}&view=checkpoint`);
-  const form=el("form");form.append(el("h2","Checkpoint V&C"),el("p","Responda às cinco questões. São necessários quatro acertos para avançar."));
+  const form=el("form");form.append(el("h2","Checkpoint V&C"),el("p",`Responda às cinco questões. São necessários ${data.minimum} acertos para avançar.`));
   data.questions.forEach((q,i)=>{const field=el("fieldset");field.append(el("legend",`${i+1}. ${q.prompt}`));q.choices.forEach((choice,j)=>{const label=el("label"),input=el("input");input.type="radio";input.name=`q${i}`;input.value=String(j);label.append(input,document.createTextNode(choice));field.append(label)});form.append(field)});
-  const submit=el("button","Enviar checkpoint"),result=el("p","","course-status");submit.type="submit";form.append(submit,result);
+  const submit=el("button","Enviar checkpoint"),result=el("p","","course-status");submit.type="submit";result.setAttribute("role","status");form.append(submit,result);
   form.onsubmit=async event=>{event.preventDefault();const selected=data.questions.map((_,i)=>form.querySelector(`input[name="q${i}"]:checked`));if(selected.some(x=>!x)){result.textContent="Responda às cinco questões.";return}submit.disabled=true;try{
    const grade=await call(`?module=${number}`,{action:"checkpoint",answers:selected.map(x=>Number(x.value))});
-   result.textContent=grade.passed?`${grade.score}/5 — domínio demonstrado. ${grade.evidence_required?"Entregue a evidência para concluir.":"Módulo concluído."}`:`${grade.score}/5 — revise: ${grade.review.join("; ")}.`;
-   if(grade.passed&&!grade.evidence_required)await reload();
+   result.textContent=grade.passed?`${grade.score}/5 — domínio demonstrado. Módulo concluído.`:`${grade.score}/5 — revise: ${grade.review.join("; ")}.`;
+   if(grade.passed)await reload();
    else if(grade.review.length){const review=el("button","Revisar conceito");review.type="button";review.onclick=()=>panel.querySelector("h2")?.scrollIntoView({behavior:"smooth"});result.append(" ",review)}
-  }catch(error){result.textContent=error.message==="attempt_limit"?"Limite de três tentativas nas últimas 24 horas. Revise e tente amanhã.":"Não foi possível registrar o checkpoint."}finally{submit.disabled=false}};
+  }catch(error){result.textContent=error.message==="attempt_limit"?"Limite de três tentativas nas últimas 24 horas. Revise e tente amanhã.":error.message==="evidence_required"?"Entregue sua evidência antes do checkpoint.":"Não foi possível registrar o checkpoint."}finally{submit.disabled=false}};
   holder.replaceWith(form)
  }catch{holder.textContent="Checkpoint indisponível. Sua evidência continua salva na sua conta; tente novamente mais tarde."}
 }
@@ -54,7 +56,7 @@ async function openModule(number){
   const task=el("section",undefined,"course-task");task.append(el("h2","Evidência da oficina"),el("p",lesson.evidence),el("p",`Critério de revisão: ${lesson.rubric}`));
   if(progress?.review_feedback)task.append(el("p",`Parecer do professor: ${progress.review_feedback}`,"course-status"));
   const label=el("label","Sua evidência"),area=el("textarea");area.value=progress?.evidence||"";area.maxLength=12000;area.placeholder="Descreva sua aplicação sem dados pessoais de colegas ou clientes.";label.append(area);
-  const save=el("button",progress?.submitted_at?"Atualizar evidência":"Entregar evidência"),status=el("p",progress?.submitted_at?"Evidência registrada na sua conta.":"Escreva ao menos 20 caracteres relevantes.","course-status");
+  const save=el("button",progress?.submitted_at?"Atualizar evidência":"Entregar evidência"),status=el("p",progress?.submitted_at?"Evidência registrada na sua conta.":"Escreva ao menos 20 caracteres relevantes.","course-status");status.setAttribute("role","status");
   save.type="button";save.disabled=!!progress?.completed_at;
   const next=el("button","Abrir Checkpoint V&C");next.type="button";next.disabled=!progress?.submitted_at;
   save.onclick=async()=>{save.disabled=true;try{await call(`?module=${number}`,{action:"evidence",evidence:area.value});status.textContent="Evidência registrada na sua conta. Agora realize o Checkpoint V&C.";next.disabled=false}catch(error){status.textContent=error.message==="evidence_invalid"?"Escreva ao menos 20 caracteres relevantes.":"Não foi possível salvar. A resposta permanece neste campo."}finally{save.disabled=false}};
