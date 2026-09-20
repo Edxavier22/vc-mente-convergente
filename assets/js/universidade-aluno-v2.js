@@ -56,7 +56,25 @@ function radarTool(evidence){
   evidence.value=[evidence.value.trim(),draft].filter(Boolean).join("\n\n");feedback.textContent="Rascunho inserido na evidência. Revise e use Entregar evidência para registrar na sua conta.";evidence.focus()};
  exercise.append(assemble,feedback);section.append(exercise);return section
 }
-const COURSE_TOOLS={"lideranca-estrategica-aplicada":{2:radarTool}};
+function focoTool(evidence){
+ const parts=[
+  {letter:"F",name:"Fato",question:"Qual comportamento observável ocorreu, e quando?",example:"Na terça-feira, o relatório chegou às 11h; o horário combinado era 9h."},
+  {letter:"O",name:"Observação do impacto",question:"Que efeito verificável isso produziu no trabalho?",example:"A reunião que usaria o relatório precisou ser remarcada."},
+  {letter:"C",name:"Caminho",question:"Que pergunta ajuda a ouvir a outra pessoa e construir uma solução?",example:"O que dificultou a entrega e que aviso antecipado ajudaria a equipe?"},
+  {letter:"O",name:"Orientação e acordo",question:"Qual compromisso observável, apoio e data de revisão serão combinados?",example:"Se houver risco de atraso, avisar até 16h do dia anterior; rever o acordo em duas semanas."}
+ ];
+ const section=el("section",undefined,"course-tool");section.setAttribute("aria-labelledby","foco-title");
+ const heading=el("h2","Ferramenta V&C · FOCO");heading.id="foco-title";
+ section.append(heading,el("p","Prepare uma conversa específica: descreva o que ocorreu, explique o impacto, escute e combine um próximo passo verificável. O roteiro não substitui canais formais quando houver risco ou irregularidade."));
+ const grid=el("div",undefined,"radar-grid");parts.forEach((part,index)=>{const card=el("article",undefined,"radar-card");const title=el("h3",`${part.letter} · ${part.name}`);title.id=`foco-part-${index}`;card.append(title,el("p",part.question));grid.append(card)});section.append(grid);
+ const example=el("details",undefined,"radar-example");example.append(el("summary","Ver exemplo preenchido: conversa sobre um prazo"));const list=el("dl");parts.forEach(part=>list.append(el("dt",part.name),el("dd",part.example)));example.append(list);section.append(example);
+ const exercise=el("div",undefined,"radar-exercise");exercise.append(el("h3","Prepare sua conversa FOCO"),el("p","Use uma situação profissional sem identificar outras pessoas. Registre fatos antes de interpretar intenções."));
+ const inputs=parts.map((part,index)=>{const label=el("label",`${part.name} · ${part.question}`),field=el("textarea");field.rows=2;field.maxLength=1400;field.setAttribute("aria-describedby",`foco-part-${index}`);field.placeholder="Escreva o que você diria ou perguntaria.";label.append(field);exercise.append(label);return field});
+ const assemble=el("button","Levar FOCO para a evidência"),feedback=el("p","","course-status");assemble.type="button";feedback.setAttribute("role","status");assemble.onclick=()=>{if(inputs.some(field=>!field.value.trim())){feedback.textContent="Preencha as quatro partes do FOCO antes de montar a evidência.";return}
+  const draft=parts.map((part,index)=>`${part.name}: ${inputs[index].value.trim()}`).join("\n");evidence.value=[evidence.value.trim(),draft].filter(Boolean).join("\n\n");feedback.textContent="Rascunho inserido na evidência. Revise e use Entregar evidência para registrar na sua conta.";evidence.focus()};
+ exercise.append(assemble,feedback);section.append(exercise);return section
+}
+const COURSE_TOOLS={"lideranca-estrategica-aplicada":{2:radarTool,7:focoTool}};
 async function checkpoint(number,holder){
  try{
   const data=await call(`?module=${number}&view=checkpoint`);
