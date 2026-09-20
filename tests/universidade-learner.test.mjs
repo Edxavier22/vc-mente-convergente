@@ -24,6 +24,7 @@ globalThis.fetch = async (input, options = {}) => {
  });
  if (url.pathname.endsWith("/vc_university_enrollments"))
   return Response.json(enrolled ? [{enrollment_id: "e-1", course_id: "lideranca-estrategica-aplicada", status: "active", cohort_id: "c-1"}] : []);
+ if (url.pathname.endsWith("/vc_university_modules")) return Response.json([{checkpoint_pass_count: 4}]);
  if (url.pathname.endsWith("/vc_university_module_progress")) {
   if (options.method === "POST") {databaseWrites++; return Response.json([{enrollment_id: "e-1"}]);}
   return Response.json(progress);
@@ -73,6 +74,7 @@ test("checkpoint não expõe o gabarito e não aceita evidência vazia", async (
  const response = await handler(request("?module=1&view=checkpoint"));
  const data = await response.json();
  assert.equal(data.questions.length, 5);
+ assert.equal(data.minimum, 4);
  assert.equal(JSON.stringify(data).includes("correct_index"), false);
  assert.equal(JSON.stringify(data).includes("review_concept"), false);
  databaseWrites = 0;
@@ -87,18 +89,18 @@ test("conclusão oficial de M1 libera M2", async () => {
  assert.equal(response.status, 200);
  assert.equal((await response.json()).lesson.number, 2);
 });
-test("checkpoint registra tentativa e só conclui depois da evidência", async () => {
+test("checkpoint exige evidência antes de consumir tentativa e concluir", async () => {
  progress = []; databaseWrites = 0; attemptWrites = 0;
  const payload = {action: "checkpoint", answers: [2,2,2,2,2]};
  const withoutEvidence = await handler(request("?module=1", "POST", payload));
- assert.equal(withoutEvidence.status, 200);
- assert.equal((await withoutEvidence.json()).evidence_required, true);
- assert.equal(attemptWrites, 1);
+ assert.equal(withoutEvidence.status, 409);
+ assert.equal((await withoutEvidence.json()).error, "evidence_required");
+ assert.equal(attemptWrites, 0);
  assert.equal(databaseWrites, 0);
  progress = [{module_no: 1, evidence: "Diagnóstico escrito com fonte e período", submitted_at: "2026-09-19T00:00:00Z"}];
  const withEvidence = await handler(request("?module=1", "POST", payload));
  assert.equal(withEvidence.status, 200);
  assert.equal((await withEvidence.json()).passed, true);
- assert.equal(attemptWrites, 2);
+ assert.equal(attemptWrites, 1);
  assert.equal(databaseWrites, 1);
 });
