@@ -5,7 +5,11 @@ const KEY = Deno.env.get("SUPABASE_ANON_KEY") ?? "sb_publishable_rF60SyuGpNstim9
 const SERVICE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 const COURSE_ID = "lideranca-estrategica-aplicada";
 const PRODUCT_ID = "P-021";
-const ORIGINS = new Set(["https://vc-mente-convergente.vercel.app", "http://localhost:4173", "http://127.0.0.1:4173"]);
+const ORIGINS = new Set([
+ "https://vc-mente-convergente.vercel.app",
+ "https://vc-mente-convergente-git-feature-universidade-4ebcec-life-os22.vercel.app",
+ "http://localhost:4173", "http://127.0.0.1:4173"
+]);
 const FIELDS = "enrollment_id,course_id,status,cohort_id";
 
 function reply(status, body, origin) {
