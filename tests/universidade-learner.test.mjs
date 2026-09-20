@@ -15,9 +15,12 @@ let attemptWrites = 0;
 let allowed = true;
 let enrolled = true;
 let sourceAvailable = true;
+let identity = {id: "u-1"};
+let isAdmin = false;
 globalThis.fetch = async (input, options = {}) => {
  const url = new URL(input);
- if (url.pathname === "/auth/v1/user") return Response.json({id: "u-1"});
+ if (url.pathname === "/auth/v1/user") return Response.json(identity);
+ if (url.pathname.endsWith("/v1/admin/scope")) return Response.json({data: {platform_admin: isAdmin}});
  if (url.pathname.includes("/vc-core-private-api/")) return Response.json({data: {accesses: allowed ? [{product_id: "P-021"}] : []}});
  if (url.pathname.endsWith("/vc_university_courses")) return Response.json([{version: "1.0"}]);
  if (url.pathname.endsWith("/vc_university_course_content")) return Response.json(sourceAvailable ? [{content: {
@@ -67,6 +70,23 @@ test("direito revogado e matrícula ausente não entregam conteúdo", async () =
  allowed = true; enrolled = false;
  assert.equal((await handler(request("?module=1"))).status, 409);
  enrolled = true;
+});
+test("exceção proprietária exige ID, e-mail confirmado, administração e matrícula", async () => {
+ allowed = false;
+ isAdmin = true;
+ identity = {id: "70aa4d75-bbb9-4839-aad8-670b7654664d", email: "vcmenteconvergente@gmail.com", email_confirmed_at: "2026-09-19T00:00:00Z"};
+ assert.equal((await handler(request("?module=1"))).status, 200);
+ enrolled = false;
+ assert.equal((await handler(request("?module=1"))).status, 409);
+ enrolled = true;
+ isAdmin = false;
+ assert.equal((await handler(request("?module=1"))).status, 403);
+ isAdmin = true;
+ identity = {...identity, email: "outro@example.com"};
+ assert.equal((await handler(request("?module=1"))).status, 403);
+ identity = {id: "u-1"};
+ allowed = true;
+ isAdmin = false;
 });
 test("M2 exige a conclusão persistida de M1 e não recebe conteúdo", async () => {
  progress = [];
