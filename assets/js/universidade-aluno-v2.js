@@ -25,6 +25,7 @@ function update(){
  const done=catalog.modules.filter(m=>m.completed).length;
  document.querySelector("#progress-copy").textContent=`${done} de ${catalog.modules.length} módulos concluídos na sua conta`;
  const bar=document.querySelector("#progress");bar.max=catalog.modules.length;bar.value=done;
+ const exam=document.querySelector("#show-assessment");exam.hidden=!catalog.modules.length||done!==catalog.modules.length;
  menu.replaceChildren(...catalog.modules.map(m=>{const b=el("button",`${m.completed?"✓":m.unlocked?"●":"🔒"} ${String(m.number).padStart(2,"0")} ${m.title}`);b.type="button";b.disabled=!m.unlocked;b.classList.toggle("current",m.number===current);if(!m.unlocked)b.setAttribute("aria-label",`${m.title} bloqueado. Conclua o Módulo ${m.number-1} para liberar.`);b.onclick=()=>openModule(m.number);return b}));
  const locked=catalog.modules.find(m=>!m.unlocked);
  if(locked)menu.append(el("p",`Conclua o Módulo ${locked.number-1} para liberar o próximo.`,"course-status"))
@@ -46,6 +47,20 @@ async function checkpoint(number,holder){
   holder.replaceWith(form)
  }catch{holder.textContent="Checkpoint indisponível. Sua evidência continua salva na sua conta; tente novamente mais tarde."}
 }
+async function assessment(){
+ message("Avaliação final","Conferindo a conclusão dos módulos e preparando suas questões…");
+ try{
+  const data=await call("?view=final");
+  const form=el("form");form.append(el("p","Avaliação final · 20 questões · quatro alternativas por questão","course-eyebrow"),el("h1","Avaliação final V&C"),el("p",`Aprovação a partir de ${data.minimum}%. Em caso de erro, você receberá temas para revisar, sem exposição do gabarito.`));
+  data.questions.forEach((q,i)=>{const field=el("fieldset");field.append(el("legend",`${i+1}. ${q.prompt}`));q.choices.forEach((choice,j)=>{const label=el("label"),input=el("input");input.type="radio";input.name=`final${i}`;input.value=String(j);label.append(input,document.createTextNode(choice));field.append(label)});form.append(field)});
+  const submit=el("button","Enviar avaliação"),result=el("p","","course-status");submit.type="submit";result.setAttribute("role","status");form.append(submit,result);
+  form.onsubmit=async event=>{event.preventDefault();const selected=data.questions.map((_,i)=>form.querySelector(`input[name="final${i}"]:checked`));if(selected.some(x=>!x)){result.textContent="Responda às 20 questões antes de enviar.";return}submit.disabled=true;try{
+   const grade=await call("",{action:"final",answers:selected.map(x=>Number(x.value))});
+   result.textContent=grade.passed?`${grade.score}/20 — avaliação aprovada. A certificação depende dos demais critérios da formação.`:`${grade.score}/20 — revise: ${grade.review.join("; ")}. Você pode tentar novamente após a revisão.`;
+  }catch(error){result.textContent=error.message==="attempt_limit"?"Limite de três tentativas nas últimas 24 horas. Revise os módulos e tente amanhã.":error.message==="modules_required"?"Conclua todos os módulos antes da avaliação.":"Não foi possível registrar a avaliação. Tente novamente mais tarde."}finally{submit.disabled=false}};
+  panel.replaceChildren(form);panel.focus()
+ }catch(error){message("Avaliação indisponível",error.message==="modules_required"?"Conclua os módulos antes de fazer a avaliação.":"As questões ainda não estão disponíveis. Seu progresso permanece salvo na sua conta.")}
+}
 async function openModule(number){
  current=number;update();message("Abrindo o módulo","Consultando sua matrícula e seu progresso…");
  try{
@@ -65,7 +80,7 @@ async function openModule(number){
  }catch(error){message("Módulo indisponível",error.message==="previous_module_required"?`Conclua o Módulo ${number-1} para liberar o próximo.`:"Não foi possível abrir este módulo. Tente novamente.")}
 }
 async function start(){
- try{await reload();document.querySelector("#show-assessment").hidden=true;document.querySelector("#export-work").hidden=true;const active=catalog.modules.find(m=>m.unlocked&&!m.completed)||catalog.modules.find(m=>m.unlocked);if(active)await openModule(active.number);else message("Formação indisponível","Nenhum módulo liberado nesta matrícula.")}
+ try{document.querySelector("#show-assessment").onclick=assessment;document.querySelector("#export-work").hidden=true;await reload();const active=catalog.modules.find(m=>m.unlocked&&!m.completed)||catalog.modules.find(m=>m.unlocked);if(active)await openModule(active.number);else message("Formação indisponível","Nenhum módulo liberado nesta matrícula.")}
  catch(error){const states={sign_in_required:["Entre na sua conta","Use o mesmo acesso de Meus Acessos.",true],access_denied:["Matrícula não encontrada","Esta conta ainda não tem acesso a esta formação.",true],enrollment_sync_required:["Matrícula em conferência","Seu direito foi localizado, mas a turma ainda não foi vinculada. Contate o suporte V&C.",false]};message(...(states[error.message]||["Acesso indisponível","Não foi possível consultar sua matrícula. Tente novamente mais tarde.",false]))}
 }
 start();
