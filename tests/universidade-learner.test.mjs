@@ -12,6 +12,8 @@ const lesson = number => ({number, title: `Módulo ${number}`, study: [`Estudo $
 let progress = [];
 let databaseWrites = 0;
 let attemptWrites = 0;
+let finalWrites = 0;
+let finalAttempts = [];
 let allowed = true;
 let rightsProducts = ["P-021"];
 let enrolled = true;
@@ -26,9 +28,9 @@ globalThis.fetch = async (input, options = {}) => {
  if (url.pathname.includes("/vc-core-private-api/")) return Response.json({data: {accesses: allowed ? rightsProducts.map(product_id => ({product_id})) : []}});
  const secondCourse = url.searchParams.get("course_id") === "eq.inteligencia-emocional";
  if (url.pathname.endsWith("/vc_university_courses")) return Response.json(
-  secondCourse ? [{course_id: "inteligencia-emocional", product_id: "P-022", version: "1.0"}]
+  secondCourse ? [{course_id: "inteligencia-emocional", product_id: "P-022", version: "1.0", final_pass_percent: 70}]
    : url.searchParams.get("course_id") === "eq.lideranca-estrategica-aplicada"
-    ? [{course_id: "lideranca-estrategica-aplicada", product_id: "P-021", version: "1.0"}] : []);
+    ? [{course_id: "lideranca-estrategica-aplicada", product_id: "P-021", version: "1.0", final_pass_percent: 70}] : []);
  if (url.pathname.endsWith("/vc_university_course_content")) {contentReads++; return Response.json(sourceAvailable ? [{content: {
   id: secondCourse ? "inteligencia-emocional" : "lideranca-estrategica-aplicada", version: "1.0", title: "Liderança",
   modules: [lesson(1), lesson(2)]
@@ -41,9 +43,13 @@ globalThis.fetch = async (input, options = {}) => {
   return Response.json(progress);
  }
  if (url.pathname.endsWith("/vc_university_questions")) return Response.json(
-  Array.from({length: 5}, (_, i) => ({question_id: `q-${i}`, prompt: "Qual decisão?", choices: ["A","B","C","D"],
+  Array.from({length: url.searchParams.get("purpose") === "eq.final" ? 20 : 5}, (_, i) => ({question_id: `q-${i}`, prompt: "Qual decisão?", choices: ["A","B","C","D"],
    correct_index: 2, review_concept: "Revisar diagnóstico", kind: "concept"}))
  );
+ if (url.pathname.endsWith("/vc_university_final_attempts")) {
+  if (options.method === "POST") {finalWrites++; return new Response(null, {status: 201});}
+  return Response.json(finalAttempts);
+ }
  if (url.pathname.endsWith("/vc_university_checkpoint_attempts")) {
   if (options.method === "POST") {attemptWrites++; return new Response(null, {status: 201});}
   return Response.json([]);
@@ -163,4 +169,34 @@ test("checkpoint exige evidência antes de consumir tentativa e concluir", async
  assert.equal((await withEvidence.json()).passed, true);
  assert.equal(attemptWrites, 1);
  assert.equal(databaseWrites, 1);
+});
+test("avaliação final permanece bloqueada até todos os módulos", async () => {
+ progress = [{module_no: 1, completed_at: "2026-09-19T00:00:00Z"}]; finalWrites = 0;
+ assert.equal((await handler(request("?view=final"))).status, 423);
+ assert.equal((await handler(request("", "POST", {action: "final", answers: Array(20).fill(2)}))).status, 423);
+ assert.equal(finalWrites, 0);
+});
+test("avaliação corrige no servidor, oculta gabarito e registra tentativas", async () => {
+ progress = [1,2].map(module_no => ({module_no, completed_at: "2026-09-19T00:00:00Z"}));
+ finalAttempts = []; finalWrites = 0;
+ const view = await handler(request("?view=final"));
+ assert.equal(view.status, 200);
+ const data = await view.json();
+ assert.equal(data.questions.length, 20);
+ assert.equal(data.minimum, 70);
+ assert.equal(JSON.stringify(data).includes("correct_index"), false);
+ assert.equal(JSON.stringify(data).includes("review_concept"), false);
+ assert.equal((await handler(request("", "POST", {action: "final", answers: Array(19).fill(2)}))).status, 400);
+ assert.equal(finalWrites, 0);
+ const low = await (await handler(request("", "POST", {action: "final", answers: Array(20).fill(1)}))).json();
+ assert.equal(low.passed, false);
+ assert.deepEqual(low.review, ["Revisar diagnóstico"]);
+ const high = await (await handler(request("", "POST", {action: "final", answers: [...Array(14).fill(2),...Array(6).fill(1)]}))).json();
+ assert.equal(high.score, 14);
+ assert.equal(high.passed, true);
+ assert.equal(finalWrites, 2);
+ finalAttempts = [1,2,3].map(attempt_id => ({attempt_id}));
+ assert.equal((await handler(request("", "POST", {action: "final", answers: Array(20).fill(2)}))).status, 429);
+ assert.equal(finalWrites, 2);
+ finalAttempts = [];
 });
