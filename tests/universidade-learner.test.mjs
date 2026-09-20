@@ -13,22 +13,28 @@ let progress = [];
 let databaseWrites = 0;
 let attemptWrites = 0;
 let allowed = true;
+let rightsProducts = ["P-021"];
 let enrolled = true;
 let sourceAvailable = true;
+let contentReads = 0;
 let identity = {id: "u-1"};
 let isAdmin = false;
 globalThis.fetch = async (input, options = {}) => {
  const url = new URL(input);
  if (url.pathname === "/auth/v1/user") return Response.json(identity);
  if (url.pathname.endsWith("/v1/admin/scope")) return Response.json({data: {platform_admin: isAdmin}});
- if (url.pathname.includes("/vc-core-private-api/")) return Response.json({data: {accesses: allowed ? [{product_id: "P-021"}] : []}});
- if (url.pathname.endsWith("/vc_university_courses")) return Response.json([{version: "1.0"}]);
- if (url.pathname.endsWith("/vc_university_course_content")) return Response.json(sourceAvailable ? [{content: {
-  id: "lideranca-estrategica-aplicada", productId: "P-021", version: "1.0", title: "Liderança",
+ if (url.pathname.includes("/vc-core-private-api/")) return Response.json({data: {accesses: allowed ? rightsProducts.map(product_id => ({product_id})) : []}});
+ const secondCourse = url.searchParams.get("course_id") === "eq.inteligencia-emocional";
+ if (url.pathname.endsWith("/vc_university_courses")) return Response.json(
+  secondCourse ? [{course_id: "inteligencia-emocional", product_id: "P-022", version: "1.0"}]
+   : url.searchParams.get("course_id") === "eq.lideranca-estrategica-aplicada"
+    ? [{course_id: "lideranca-estrategica-aplicada", product_id: "P-021", version: "1.0"}] : []);
+ if (url.pathname.endsWith("/vc_university_course_content")) {contentReads++; return Response.json(sourceAvailable ? [{content: {
+  id: secondCourse ? "inteligencia-emocional" : "lideranca-estrategica-aplicada", version: "1.0", title: "Liderança",
   modules: [lesson(1), lesson(2)]
- }}] : []);
+ }}] : []);}
  if (url.pathname.endsWith("/vc_university_enrollments"))
-  return Response.json(enrolled ? [{enrollment_id: "e-1", course_id: "lideranca-estrategica-aplicada", status: "active", cohort_id: "c-1"}] : []);
+  return Response.json(enrolled ? [{enrollment_id: "e-1", course_id: secondCourse ? "inteligencia-emocional" : "lideranca-estrategica-aplicada", status: "active", cohort_id: "c-1"}] : []);
  if (url.pathname.endsWith("/vc_university_modules")) return Response.json([{checkpoint_pass_count: 4}]);
  if (url.pathname.endsWith("/vc_university_module_progress")) {
   if (options.method === "POST") {databaseWrites++; return Response.json([{enrollment_id: "e-1"}]);}
@@ -70,6 +76,26 @@ test("direito revogado e matrícula ausente não entregam conteúdo", async () =
  allowed = true; enrolled = false;
  assert.equal((await handler(request("?module=1"))).status, 409);
  enrolled = true;
+});
+test("curso adicional exige produto e matrícula correspondentes", async () => {
+ contentReads = 0;
+ assert.equal((await handler(request("?course=inteligencia-emocional&module=1"))).status, 403);
+ assert.equal(contentReads, 0);
+ rightsProducts = ["P-022"];
+ enrolled = false;
+ assert.equal((await handler(request("?course=inteligencia-emocional&module=1"))).status, 409);
+ assert.equal(contentReads, 0);
+ enrolled = true;
+ const response = await handler(request("?course=inteligencia-emocional&module=1"));
+ assert.equal(response.status, 200);
+ assert.equal((await response.json()).lesson.number, 1);
+ rightsProducts = ["P-021"];
+});
+test("identificador inválido e curso desconhecido não consultam o conteúdo", async () => {
+ contentReads = 0;
+ assert.equal((await handler(request("?course=../lideranca"))).status, 400);
+ assert.equal((await handler(request("?course=nao-existe"))).status, 404);
+ assert.equal(contentReads, 0);
 });
 test("exceção proprietária exige ID, e-mail confirmado, administração e matrícula", async () => {
  allowed = false;
