@@ -5,6 +5,8 @@ const KEY = Deno.env.get("SUPABASE_ANON_KEY") ?? "sb_publishable_rF60SyuGpNstim9
 const SERVICE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 const COURSE_ID = "lideranca-estrategica-aplicada";
 const PRODUCT_ID = "P-021";
+const OWNER_ID = "70aa4d75-bbb9-4839-aad8-670b7654664d";
+const OWNER_EMAIL = "vcmenteconvergente@gmail.com";
 const ORIGINS = new Set([
  "https://vc-mente-convergente.vercel.app",
  "https://vc-mente-convergente-git-feature-universidade-4ebcec-life-os22.vercel.app",
@@ -59,7 +61,12 @@ async function context(bearer) {
  if (!rights.ok) return {error: rights.status === 401 ? 401 : 503};
  const accesses = (await rights.json())?.data?.accesses;
  if (!Array.isArray(accesses)) return {error: 503};
- if (!accesses.some(a => a.product_id === PRODUCT_ID)) return {error: 403};
+ if (!accesses.some(a => a.product_id === PRODUCT_ID)) {
+  if (user.id !== OWNER_ID || user.email?.toLowerCase() !== OWNER_EMAIL || !user.email_confirmed_at)
+   return {error: 403};
+  const scope = await core("/functions/v1/vc-core-private-api/v1/admin/scope", bearer);
+  if (!scope.ok || (await scope.json())?.data?.platform_admin !== true) return {error: 403};
+ }
  const enrollments = await database("vc_university_enrollments",
   "?select=" + FIELDS + "&course_id=eq." + COURSE_ID + "&user_id=eq." + user.id + "&status=eq.active&limit=1");
  if (!enrollments.length) return {error: 409, code: "enrollment_sync_required"};
