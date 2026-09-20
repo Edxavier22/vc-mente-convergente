@@ -1,4 +1,4 @@
-// Private academic API. Lesson content remains in the existing private course function.
+// Private academic API. Versioned lesson content is read server-side from a restricted table.
 // The static site must not contain answer keys or service credentials.
 const ROOT = Deno.env.get("SUPABASE_URL") ?? "https://ctzgsxxbyvruzmfqibnl.supabase.co";
 const KEY = Deno.env.get("SUPABASE_ANON_KEY") ?? "sb_publishable_rF60SyuGpNstim9MqFvqmQ_sSm78z1b";
@@ -61,11 +61,16 @@ async function context(bearer) {
  if (!enrollments.length) return {error: 409, code: "enrollment_sync_required"};
  return {user, enrollment: enrollments[0]};
 }
-async function courseAndProgress(bearer, enrollmentId) {
- const source = await core("/functions/v1/vc-universidade-course", bearer);
- if (!source.ok) throw new Error("course_unavailable");
- const course = await source.json();
- if (course.id !== COURSE_ID || !Array.isArray(course.modules)) throw new Error("course_mismatch");
+async function courseAndProgress(enrollmentId) {
+ const metadata = await database("vc_university_courses",
+  "?select=version&course_id=eq." + COURSE_ID + "&limit=1");
+ const version = metadata[0]?.version;
+ if (!version) throw new Error("course_version_unavailable");
+ const source = await database("vc_university_course_content",
+  "?select=content&course_id=eq." + COURSE_ID + "&course_version=eq." + encodeURIComponent(version) + "&limit=1");
+ const course = source[0]?.content;
+ if (course?.id !== COURSE_ID || course.version !== version || !Array.isArray(course.modules))
+  throw new Error("course_content_unavailable");
  const progress = await database("vc_university_module_progress",
   "?select=module_no,evidence,submitted_at,checkpoint_passed_at,completed_at,review_status,review_feedback&"
    + scoped(enrollmentId) + "&order=module_no.asc");
@@ -94,7 +99,7 @@ Deno.serve(async request => {
  try {
   const access = await context(bearer);
   if (access.error) return reply(access.error, {error: access.code ?? "access_denied"}, origin);
-  const {course, progress, states} = await courseAndProgress(bearer, access.enrollment.enrollment_id);
+  const {course, progress, states} = await courseAndProgress(access.enrollment.enrollment_id);
   const url = new URL(request.url);
   const moduleNo = Number(url.searchParams.get("module"));
   if (request.method === "GET" && !url.searchParams.has("module")) {
