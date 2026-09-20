@@ -78,6 +78,13 @@ async function checkpointQuestions(course, moduleNo) {
    + "&purpose=eq.checkpoint&module_no=eq." + moduleNo + "&active=eq.true"
    + "&order=kind.asc,question_id.asc&limit=5");
 }
+async function checkpointMinimum(moduleNo) {
+ const modules = await database("vc_university_modules",
+  "?select=checkpoint_pass_count&course_id=eq." + COURSE_ID + "&module_no=eq." + moduleNo + "&limit=1");
+ const minimum = modules[0]?.checkpoint_pass_count;
+ if (!Number.isInteger(minimum) || minimum < 1 || minimum > 5) throw new Error("checkpoint_config_unavailable");
+ return minimum;
+}
 Deno.serve(async request => {
  const origin = request.headers.get("origin") ?? "";
  if (request.method === "OPTIONS") return reply(204, null, origin);
@@ -103,7 +110,8 @@ Deno.serve(async request => {
    if (url.searchParams.get("view") === "checkpoint") {
     const questions = await checkpointQuestions(course, moduleNo);
     if (questions.length !== 5) return reply(503, {error: "checkpoint_unavailable"}, origin);
-    return reply(200, {questions: questions.map(({correct_index: _answer, review_concept: _concept, ...q}) => q)}, origin);
+    const minimum = await checkpointMinimum(moduleNo);
+    return reply(200, {minimum, questions: questions.map(({correct_index: _answer, review_concept: _concept, ...q}) => q)}, origin);
    }
    return reply(200, {lesson, progress: progress.find(p => p.module_no === moduleNo) ?? null}, origin);
   }
@@ -121,8 +129,12 @@ Deno.serve(async request => {
    return reply(200, {submitted: !!result?.length}, origin);
   }
   if (input?.action === "checkpoint") {
+   const submitted = progress.find(p => p.module_no === moduleNo);
+   if (!submitted?.evidence?.trim() || !submitted.submitted_at)
+    return reply(409, {error: "evidence_required"}, origin);
    const questions = await checkpointQuestions(course, moduleNo);
    if (questions.length !== 5) return reply(503, {error: "checkpoint_unavailable"}, origin);
+   const minimum = await checkpointMinimum(moduleNo);
    if (!Array.isArray(input.answers) || input.answers.length !== 5 ||
      !input.answers.every(a => Number.isInteger(a) && a >= 0 && a <= 3))
     return reply(400, {error: "answers_invalid"}, origin);
@@ -137,11 +149,7 @@ Deno.serve(async request => {
     body: JSON.stringify({enrollment_id: access.enrollment.enrollment_id, course_id: COURSE_ID,
      module_no: moduleNo, score, review_concepts: review})
    });
-   const minimum = 4;
    if (score >= minimum) {
-    const submitted = progress.find(p => p.module_no === moduleNo);
-    if (!submitted?.evidence?.trim() || !submitted.submitted_at)
-     return reply(200, {score, total: 5, passed: true, review, evidence_required: true}, origin);
     // The trigger additionally verifies prior modules, a stored passing attempt and evidence.
     await database("vc_university_module_progress?on_conflict=enrollment_id,module_no", "", {
      method: "POST", headers: {Prefer: "resolution=merge-duplicates,return=minimal"},
