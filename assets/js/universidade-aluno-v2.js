@@ -32,6 +32,31 @@ function update(){
 }
 async function reload(){catalog=await call();update()}
 function steps(title,items){const section=el("section");section.append(el("h2",title));const list=el("ol");items.forEach(item=>list.append(el("li",item)));section.append(list);return section}
+function radarTool(evidence){
+ const parts=[
+  {letter:"R",name:"Rotina",question:"O que precisa acontecer e com qual frequência?",example:"Conferir as solicitações no início de cada turno."},
+  {letter:"A",name:"Atribuição",question:"Quem responde pelo resultado?",example:"A pessoa responsável pelo turno registra o encaminhamento."},
+  {letter:"D",name:"Documentação",question:"Onde ficam critérios, decisões e evidências?",example:"No registro de solicitações compartilhado com a equipe."},
+  {letter:"A",name:"Autonomia",question:"O que pode ser decidido sem autorização superior?",example:"Resolver solicitações previstas; encaminhar exceções à coordenação."},
+  {letter:"R",name:"Revisão",question:"Quando verificar o resultado e por quais critérios?",example:"Toda sexta-feira: prazo de resposta e pendências sem responsável."}
+ ];
+ const section=el("section",undefined,"course-tool");section.setAttribute("aria-labelledby","radar-title");
+ const heading=el("h2","Ferramenta V&C · RADAR");heading.id="radar-title";
+ section.append(heading,el("p","Transforme uma rotina real em um acordo de trabalho que a equipe consiga consultar, executar e revisar."));
+ const grid=el("div",undefined,"radar-grid");
+ parts.forEach((part,index)=>{const card=el("article",undefined,"radar-card");const title=el("h3",`${part.letter} · ${part.name}`);title.id=`radar-part-${index}`;card.append(title,el("p",part.question));grid.append(card)});
+ section.append(grid);
+ const example=el("details",undefined,"radar-example");example.append(el("summary","Ver exemplo preenchido: encaminhamento de solicitações"));
+ const exampleList=el("dl");parts.forEach(part=>{exampleList.append(el("dt",part.name),el("dd",part.example))});example.append(exampleList);section.append(example);
+ const exercise=el("div",undefined,"radar-exercise");exercise.append(el("h3","Monte seu RADAR"),el("p","Escolha uma rotina do seu contexto. Preencha cada decisão e leve o rascunho para a evidência da oficina."));
+ const inputs=parts.map((part,index)=>{const label=el("label",`${part.name} · ${part.question}`),field=el("textarea");field.rows=2;field.maxLength=1400;field.setAttribute("aria-describedby",`radar-part-${index}`);field.placeholder="Descreva sua decisão de forma verificável.";label.append(field);exercise.append(label);return field});
+ const assemble=el("button","Levar RADAR para a evidência"),feedback=el("p","","course-status");assemble.type="button";feedback.setAttribute("role","status");
+ assemble.onclick=()=>{if(inputs.some(field=>!field.value.trim())){feedback.textContent="Preencha as cinco partes do RADAR antes de montar a evidência.";return}
+  const draft=parts.map((part,index)=>`${part.name}: ${inputs[index].value.trim()}`).join("\n");
+  evidence.value=[evidence.value.trim(),draft].filter(Boolean).join("\n\n");feedback.textContent="Rascunho inserido na evidência. Revise e use Entregar evidência para registrar na sua conta.";evidence.focus()};
+ exercise.append(assemble,feedback);section.append(exercise);return section
+}
+const COURSE_TOOLS={"lideranca-estrategica-aplicada":{2:radarTool}};
 async function checkpoint(number,holder){
  try{
   const data=await call(`?module=${number}&view=checkpoint`);
@@ -76,7 +101,7 @@ async function openModule(number){
   const next=el("button","Abrir Checkpoint V&C");next.type="button";next.disabled=!progress?.submitted_at;
   save.onclick=async()=>{save.disabled=true;try{await call(`?module=${number}`,{action:"evidence",evidence:area.value});status.textContent="Evidência registrada na sua conta. Agora realize o Checkpoint V&C.";next.disabled=false}catch(error){status.textContent=error.message==="evidence_invalid"?"Escreva ao menos 20 caracteres relevantes.":"Não foi possível salvar. A resposta permanece neste campo."}finally{save.disabled=false}};
   next.onclick=()=>{next.disabled=true;const holder=el("p","Carregando checkpoint…","course-status");task.append(holder);checkpoint(number,holder)};
-  task.append(label,save,status,next);panel.append(task);panel.focus()
+  task.append(label,save,status,next);const tool=COURSE_TOOLS[catalog.id]?.[number];if(tool)panel.append(tool(area));panel.append(task);panel.focus()
  }catch(error){message("Módulo indisponível",error.message==="previous_module_required"?`Conclua o Módulo ${number-1} para liberar o próximo.`:"Não foi possível abrir este módulo. Tente novamente.")}
 }
 async function start(){
