@@ -14,14 +14,16 @@ let databaseWrites = 0;
 let attemptWrites = 0;
 let allowed = true;
 let enrolled = true;
+let sourceAvailable = true;
 globalThis.fetch = async (input, options = {}) => {
  const url = new URL(input);
  if (url.pathname === "/auth/v1/user") return Response.json({id: "u-1"});
  if (url.pathname.includes("/vc-core-private-api/")) return Response.json({data: {accesses: allowed ? [{product_id: "P-021"}] : []}});
- if (url.pathname.includes("/vc-universidade-course")) return Response.json({
+ if (url.pathname.endsWith("/vc_university_courses")) return Response.json([{version: "1.0"}]);
+ if (url.pathname.endsWith("/vc_university_course_content")) return Response.json(sourceAvailable ? [{content: {
   id: "lideranca-estrategica-aplicada", productId: "P-021", version: "1.0", title: "Liderança",
   modules: [lesson(1), lesson(2)]
- });
+ }}] : []);
  if (url.pathname.endsWith("/vc_university_enrollments"))
   return Response.json(enrolled ? [{enrollment_id: "e-1", course_id: "lideranca-estrategica-aplicada", status: "active", cohort_id: "c-1"}] : []);
  if (url.pathname.endsWith("/vc_university_modules")) return Response.json([{checkpoint_pass_count: 4}]);
@@ -46,6 +48,11 @@ const request = (path, method = "GET", body, auth = true) => new Request("https:
 test("sem credencial não consulta matrícula", async () => {
  const response = await handler(request("", "GET", null, false));
  assert.equal(response.status, 401);
+});
+test("fonte privada ausente não revela o conteúdo", async () => {
+ sourceAvailable = false;
+ assert.equal((await handler(request("?module=1"))).status, 503);
+ sourceAvailable = true;
 });
 test("direito revogado e matrícula ausente não entregam conteúdo", async () => {
  allowed = false;
