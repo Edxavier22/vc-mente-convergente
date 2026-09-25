@@ -7,7 +7,7 @@ const menu=document.querySelector("#module-list");
 let catalog;
 let current=1;
 function el(tag,text,klass){const x=document.createElement(tag);if(text!==undefined)x.textContent=text;if(klass)x.className=klass;return x}
-function message(title,detail,link=false){panel.replaceChildren(el("h1",title),el("p",detail));if(link){const a=el("a","Ir para Meus Acessos");a.href="entrar.html";panel.append(a)}}
+function message(title,detail,link=false){panel.setAttribute("aria-busy","false");panel.replaceChildren(el("h1",title),el("p",detail));if(link){const a=el("a","Ir para Meus Acessos");a.href="entrar.html";panel.append(a)}}
 async function token(){
  let s;try{s=JSON.parse(sessionStorage.getItem(SESSION)||"null")}catch{return null}
  if(!s?.access_token||!s?.refresh_token)return null;
@@ -23,15 +23,21 @@ async function call(path="",body){
 }
 function update(){
  const done=catalog.modules.filter(m=>m.completed).length;
+ const submitted=catalog.modules.filter(m=>m.submitted).length;
+ const percent=catalog.modules.length?Math.round(done/catalog.modules.length*100):0;
  document.querySelector("#progress-copy").textContent=`${done} de ${catalog.modules.length} módulos concluídos na sua conta`;
  const bar=document.querySelector("#progress");bar.max=catalog.modules.length;bar.value=done;
+ document.querySelector("#progress-percent").textContent=`${percent}%`;
+ document.querySelector("#stat-modules").textContent=String(done);
+ document.querySelector("#stat-evidence").textContent=String(submitted);
+ document.querySelector("#stat-tools").textContent=String([2,7].filter(number=>catalog.modules.find(m=>m.number===number)?.completed).length);
  const exam=document.querySelector("#show-assessment");exam.hidden=!catalog.modules.length||done!==catalog.modules.length;
- menu.replaceChildren(...catalog.modules.map(m=>{const b=el("button",`${m.completed?"✓":m.unlocked?"●":"🔒"} ${String(m.number).padStart(2,"0")} ${m.title}`);b.type="button";b.disabled=!m.unlocked;b.classList.toggle("current",m.number===current);if(!m.unlocked)b.setAttribute("aria-label",`${m.title} bloqueado. Conclua o Módulo ${m.number-1} para liberar.`);b.onclick=()=>openModule(m.number);return b}));
+ menu.replaceChildren(...catalog.modules.map(m=>{const b=el("button",m.title);b.type="button";b.disabled=!m.unlocked;b.dataset.status=m.completed?"✓":String(m.number).padStart(2,"0");b.classList.toggle("current",m.number===current);b.classList.toggle("completed",m.completed);if(m.number===current)b.setAttribute("aria-current","step");if(!m.unlocked)b.setAttribute("aria-label",`${m.title} bloqueado. Conclua o Módulo ${m.number-1} para liberar.`);else b.setAttribute("aria-label",`Módulo ${m.number}: ${m.title}${m.completed?", concluído":""}`);b.onclick=()=>openModule(m.number);return b}));
  const locked=catalog.modules.find(m=>!m.unlocked);
  if(locked)menu.append(el("p",`Conclua o Módulo ${locked.number-1} para liberar o próximo.`,"course-status"))
 }
 async function reload(){catalog=await call();update()}
-function steps(title,items){const section=el("section");section.append(el("h2",title));const list=el("ol");items.forEach(item=>list.append(el("li",item)));section.append(list);return section}
+function steps(title,items,kind="guided-list"){const section=el("section");section.className="lesson-section";section.append(el("h2",title));const list=el("ol");list.className=kind;items.forEach(item=>list.append(el("li",item)));section.append(list);return section}
 function radarTool(evidence){
  const parts=[
   {letter:"R",name:"Rotina",question:"O que precisa acontecer e com qual frequência?",example:"Conferir as solicitações no início de cada turno."},
@@ -101,25 +107,29 @@ async function assessment(){
    const grade=await call("",{action:"final",answers:selected.map(x=>Number(x.value))});
    result.textContent=grade.passed?`${grade.score}/20 — avaliação aprovada. A certificação depende dos demais critérios da formação.`:`${grade.score}/20 — revise: ${grade.review.join("; ")}. Você pode tentar novamente após a revisão.`;
   }catch(error){result.textContent=error.message==="attempt_limit"?"Limite de três tentativas nas últimas 24 horas. Revise os módulos e tente amanhã.":error.message==="modules_required"?"Conclua todos os módulos antes da avaliação.":"Não foi possível registrar a avaliação. Tente novamente mais tarde."}finally{submit.disabled=false}};
-  panel.replaceChildren(form);panel.focus()
+  panel.setAttribute("aria-busy","false");panel.replaceChildren(form);panel.focus()
  }catch(error){message("Avaliação indisponível",error.message==="modules_required"?"Conclua os módulos antes de fazer a avaliação.":"As questões ainda não estão disponíveis. Seu progresso permanece salvo na sua conta.")}
 }
 async function openModule(number){
- current=number;update();message("Abrindo o módulo","Consultando sua matrícula e seu progresso…");
+ current=number;update();panel.setAttribute("aria-busy","true");message("Abrindo o módulo","Consultando sua matrícula e seu progresso…");
  try{
   const {lesson,progress}=await call(`?module=${number}`);
-  panel.replaceChildren(el("p",`Módulo ${number} de ${catalog.modules.length} · carga horária pedagógica estimada`,"course-eyebrow"),el("h1",lesson.title),el("p",lesson.outcome),el("h2","Estudo e caso"));
-  lesson.study.forEach(text=>panel.append(el("p",text)));
-  panel.append(steps("Estudo guiado",lesson.guidedStudy.map(x=>x.instruction)),steps("Oficina aplicada",lesson.workshop));
+  const intro=el("header",undefined,"lesson-intro");
+  intro.append(el("p",`Módulo ${String(number).padStart(2,"0")} de ${String(catalog.modules.length).padStart(2,"0")}`,"lesson-index"),el("h1",lesson.title),el("p",lesson.outcome,"lesson-outcome"));
+  const meta=el("div",undefined,"lesson-meta-row");meta.append(el("span","Carga horária pedagógica estimada"),el("span","Evidência obrigatória"),el("span","Checkpoint V&C"));intro.append(meta);
+  panel.replaceChildren(intro);
+  if(progress?.completed_at){const complete=el("div",undefined,"completion-banner");complete.append(el("span","✓","completion-mark"));const copy=el("div");copy.append(el("strong","Módulo concluído"),el("span","Evidência e checkpoint registrados no seu percurso."));complete.append(copy);panel.append(complete)}
+  const study=el("section",undefined,"lesson-section");study.append(el("h2","Conteúdo aprofundado"));lesson.study.forEach((text,index)=>{const block=el("article",undefined,"content-block");const label=el("p","Conceito e aplicação","content-block-label");label.dataset.index=String(index+1).padStart(2,"0");block.append(label,el("p",text));study.append(block)});panel.append(study);
+  panel.append(steps("Estudo guiado",lesson.guidedStudy.map(x=>x.instruction)),steps("Oficina aplicada",lesson.workshop,"workshop-list"));
   const task=el("section",undefined,"course-task");task.append(el("h2","Evidência da oficina"),el("p",lesson.evidence),el("p",`Critério de revisão: ${lesson.rubric}`));
   if(progress?.review_feedback)task.append(el("p",`Parecer do professor: ${progress.review_feedback}`,"course-status"));
   const label=el("label","Sua evidência"),area=el("textarea");area.value=progress?.evidence||"";area.maxLength=12000;area.placeholder="Descreva sua aplicação sem dados pessoais de colegas ou clientes.";label.append(area);
   const save=el("button",progress?.submitted_at?"Atualizar evidência":"Entregar evidência"),status=el("p",progress?.submitted_at?"Evidência registrada na sua conta.":"Escreva ao menos 20 caracteres relevantes.","course-status");status.setAttribute("role","status");
   save.type="button";save.disabled=!!progress?.completed_at;
   const next=el("button","Abrir Checkpoint V&C");next.type="button";next.disabled=!progress?.submitted_at;
-  save.onclick=async()=>{save.disabled=true;try{await call(`?module=${number}`,{action:"evidence",evidence:area.value});status.textContent="Evidência registrada na sua conta. Agora realize o Checkpoint V&C.";next.disabled=false}catch(error){status.textContent=error.message==="evidence_invalid"?"Escreva ao menos 20 caracteres relevantes.":"Não foi possível salvar. A resposta permanece neste campo."}finally{save.disabled=false}};
+  save.onclick=async()=>{save.disabled=true;try{await call(`?module=${number}`,{action:"evidence",evidence:area.value});status.textContent="Evidência registrada na sua conta. Agora realize o Checkpoint V&C.";next.disabled=false;const state=catalog.modules.find(m=>m.number===number);if(state)state.submitted=true;update()}catch(error){status.textContent=error.message==="evidence_invalid"?"Escreva ao menos 20 caracteres relevantes.":"Não foi possível salvar. A resposta permanece neste campo."}finally{save.disabled=!!progress?.completed_at}};
   next.onclick=()=>{next.disabled=true;const holder=el("p","Carregando checkpoint…","course-status");task.append(holder);checkpoint(number,holder)};
-  task.append(label,save,status,next);const tool=COURSE_TOOLS[catalog.id]?.[number];if(tool)panel.append(tool(area));panel.append(task);panel.focus()
+  task.append(label,save,status,next);const tool=COURSE_TOOLS[catalog.id]?.[number];if(tool)panel.append(tool(area));panel.append(task);panel.setAttribute("aria-busy","false");panel.focus()
  }catch(error){message("Módulo indisponível",error.message==="previous_module_required"?`Conclua o Módulo ${number-1} para liberar o próximo.`:"Não foi possível abrir este módulo. Tente novamente.")}
 }
 async function start(){
