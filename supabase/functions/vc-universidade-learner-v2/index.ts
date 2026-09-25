@@ -45,6 +45,20 @@ async function database(table, query = "", options = {}) {
  return body ? JSON.parse(body) : null;
 }
 function scoped(enrollmentId) { return "enrollment_id=eq." + encodeURIComponent(enrollmentId); }
+async function recordEvent(enrollmentId, actorId, eventType, moduleNo, details = {}) {
+ await database("vc_university_events", "", {
+  method: "POST", headers: {Prefer: "return=minimal"},
+  body: JSON.stringify({enrollment_id: enrollmentId, actor_id: actorId, event_type: eventType,
+   module_no: moduleNo ?? null, details})
+ });
+}
+async function recordEventOnce(enrollmentId, actorId, eventType, moduleNo, details = {}) {
+ const moduleFilter = moduleNo == null ? "&module_no=is.null" : "&module_no=eq." + moduleNo;
+ const existing = await database("vc_university_events",
+  "?select=event_id&" + scoped(enrollmentId) + "&event_type=eq." + encodeURIComponent(eventType)
+   + moduleFilter + "&limit=1");
+ if (!existing.length) await recordEvent(enrollmentId, actorId, eventType, moduleNo, details);
+}
 function moduleState(modules, rows) {
  const completed = new Set(rows.filter(r => r.completed_at).map(r => r.module_no));
  return modules.map((m, index) => ({
@@ -146,10 +160,17 @@ Deno.serve(async request => {
     method: "POST", headers: {Prefer: "return=minimal"},
     body: JSON.stringify({enrollment_id: access.enrollment.enrollment_id, score, review_concepts: review})
    });
+   await recordEvent(access.enrollment.enrollment_id, access.user.id, "final_assessment_attempted", null,
+    {course_id: courseId, course_version: course.version, score, total: 20,
+     minimum_percent: minimum, passed: score * 5 >= minimum});
    return reply(200, {score, total: 20, passed: score * 5 >= minimum, review}, origin);
   }
   const moduleNo = Number(url.searchParams.get("module"));
   if (request.method === "GET" && !url.searchParams.has("module")) {
+   const auditDetails = {course_id: courseId, course_version: course.version};
+   await recordEventOnce(access.enrollment.enrollment_id, access.user.id, "course_started", null, auditDetails);
+   if (states[0]?.unlocked)
+    await recordEventOnce(access.enrollment.enrollment_id, access.user.id, "module_unlocked", states[0].number, auditDetails);
    return reply(200, {id: course.id, productId: access.courseRecord.product_id, title: course.title,
     version: course.version, hours: course.hours, modules: states}, origin);
   }
@@ -165,6 +186,8 @@ Deno.serve(async request => {
     const minimum = await checkpointMinimum(courseId, moduleNo);
     return reply(200, {minimum, questions: questions.map(({correct_index: _answer, review_concept: _concept, ...q}) => q)}, origin);
    }
+   await recordEvent(access.enrollment.enrollment_id, access.user.id, "module_opened", moduleNo,
+    {course_id: courseId, course_version: course.version});
    return reply(200, {lesson, progress: progress.find(p => p.module_no === moduleNo) ?? null}, origin);
   }
   if (input?.action === "evidence") {
@@ -177,6 +200,8 @@ Deno.serve(async request => {
     body: JSON.stringify({enrollment_id: access.enrollment.enrollment_id, course_id: courseId,
      module_no: moduleNo, evidence: evidence.trim(), submitted_at: new Date().toISOString()})
    });
+   await recordEvent(access.enrollment.enrollment_id, access.user.id, "evidence_submitted", moduleNo,
+    {course_id: courseId, course_version: course.version, evidence_chars: evidence.trim().length});
    return reply(200, {submitted: !!result?.length}, origin);
   }
   if (input?.action === "checkpoint") {
@@ -200,6 +225,8 @@ Deno.serve(async request => {
     body: JSON.stringify({enrollment_id: access.enrollment.enrollment_id, course_id: courseId,
      module_no: moduleNo, score, review_concepts: review})
    });
+   await recordEvent(access.enrollment.enrollment_id, access.user.id, "checkpoint_attempted", moduleNo,
+    {course_id: courseId, course_version: course.version, score, total: 5, minimum, passed: score >= minimum});
    if (score >= minimum) {
     // The trigger additionally verifies prior modules, a stored passing attempt and evidence.
     await database("vc_university_module_progress?on_conflict=enrollment_id,module_no", "", {
@@ -208,6 +235,12 @@ Deno.serve(async request => {
       module_no: moduleNo, evidence: submitted.evidence, submitted_at: submitted.submitted_at,
       checkpoint_passed_at: new Date().toISOString(), completed_at: new Date().toISOString()})
     });
+    await recordEventOnce(access.enrollment.enrollment_id, access.user.id, "module_completed", moduleNo,
+     {course_id: courseId, course_version: course.version});
+    const nextModule = course.modules.find(m => m.number === moduleNo + 1);
+    if (nextModule)
+     await recordEventOnce(access.enrollment.enrollment_id, access.user.id, "module_unlocked", nextModule.number,
+      {course_id: courseId, course_version: course.version, unlocked_by_module: moduleNo});
    }
    return reply(200, {score, total: 5, passed: score >= minimum, review}, origin);
   }

@@ -13,6 +13,7 @@ let progress = [];
 let databaseWrites = 0;
 let attemptWrites = 0;
 let finalWrites = 0;
+let eventWrites = [];
 let finalAttempts = [];
 let allowed = true;
 let rightsProducts = ["P-021"];
@@ -52,6 +53,13 @@ globalThis.fetch = async (input, options = {}) => {
  }
  if (url.pathname.endsWith("/vc_university_checkpoint_attempts")) {
   if (options.method === "POST") {attemptWrites++; return new Response(null, {status: 201});}
+  return Response.json([]);
+ }
+ if (url.pathname.endsWith("/vc_university_events")) {
+  if (options.method === "POST") {
+   eventWrites.push(JSON.parse(options.body));
+   return new Response(null, {status: 201});
+  }
   return Response.json([]);
  }
  throw new Error("unexpected request: " + url.pathname);
@@ -127,13 +135,15 @@ test("M2 exige a conclusão persistida de M1 e não recebe conteúdo", async () 
  assert.deepEqual(await response.json(), {error: "previous_module_required"});
 });
 test("índice indica bloqueio e módulo liberado devolve somente sua aula", async () => {
- progress = [];
+ progress = []; eventWrites = [];
  const index = await (await handler(request(""))).json();
  assert.deepEqual(index.modules.map(m => m.unlocked), [true, false]);
+ assert.deepEqual(eventWrites.map(event => event.event_type), ["course_started", "module_unlocked"]);
  const first = await (await handler(request("?module=1"))).json();
  assert.equal(first.lesson.number, 1);
  assert.equal(first.lesson.study[0], "Estudo 1");
  assert.equal(JSON.stringify(first).includes("Estudo 2"), false);
+ assert.equal(eventWrites.at(-1).event_type, "module_opened");
 });
 test("checkpoint não expõe o gabarito e não aceita evidência vazia", async () => {
  progress = [];
@@ -148,6 +158,17 @@ test("checkpoint não expõe o gabarito e não aceita evidência vazia", async (
  assert.equal(invalid.status, 400);
  assert.equal(databaseWrites, 0);
 });
+test("evidência válida registra auditoria sem armazenar seu conteúdo no evento", async () => {
+ progress = []; databaseWrites = 0; eventWrites = [];
+ const evidence = "Diagnóstico com fato, frequência, fonte e hipótese separados.";
+ const response = await handler(request("?module=1", "POST", {action: "evidence", evidence}));
+ assert.equal(response.status, 200);
+ assert.equal(databaseWrites, 1);
+ assert.equal(eventWrites.length, 1);
+ assert.equal(eventWrites[0].event_type, "evidence_submitted");
+ assert.equal(eventWrites[0].details.evidence_chars, evidence.length);
+ assert.equal(JSON.stringify(eventWrites[0]).includes(evidence), false);
+});
 test("conclusão oficial de M1 libera M2", async () => {
  progress = [{module_no: 1, evidence: "Evidência de diagnóstico registrada", submitted_at: "2026-09-19T00:00:00Z",
   checkpoint_passed_at: "2026-09-19T00:01:00Z", completed_at: "2026-09-19T00:02:00Z"}];
@@ -156,7 +177,7 @@ test("conclusão oficial de M1 libera M2", async () => {
  assert.equal((await response.json()).lesson.number, 2);
 });
 test("checkpoint exige evidência antes de consumir tentativa e concluir", async () => {
- progress = []; databaseWrites = 0; attemptWrites = 0;
+ progress = []; databaseWrites = 0; attemptWrites = 0; eventWrites = [];
  const payload = {action: "checkpoint", answers: [2,2,2,2,2]};
  const withoutEvidence = await handler(request("?module=1", "POST", payload));
  assert.equal(withoutEvidence.status, 409);
@@ -169,6 +190,10 @@ test("checkpoint exige evidência antes de consumir tentativa e concluir", async
  assert.equal((await withEvidence.json()).passed, true);
  assert.equal(attemptWrites, 1);
  assert.equal(databaseWrites, 1);
+ assert.deepEqual(eventWrites.map(event => event.event_type),
+  ["checkpoint_attempted", "module_completed", "module_unlocked"]);
+ assert.equal(JSON.stringify(eventWrites).includes("answers"), false);
+ assert.equal(JSON.stringify(eventWrites).includes("evidence"), false);
 });
 test("avaliação final permanece bloqueada até todos os módulos", async () => {
  progress = [{module_no: 1, completed_at: "2026-09-19T00:00:00Z"}]; finalWrites = 0;
@@ -178,7 +203,7 @@ test("avaliação final permanece bloqueada até todos os módulos", async () =>
 });
 test("avaliação corrige no servidor, oculta gabarito e registra tentativas", async () => {
  progress = [1,2].map(module_no => ({module_no, completed_at: "2026-09-19T00:00:00Z"}));
- finalAttempts = []; finalWrites = 0;
+ finalAttempts = []; finalWrites = 0; eventWrites = [];
  const view = await handler(request("?view=final"));
  assert.equal(view.status, 200);
  const data = await view.json();
@@ -195,6 +220,9 @@ test("avaliação corrige no servidor, oculta gabarito e registra tentativas", a
  assert.equal(high.score, 14);
  assert.equal(high.passed, true);
  assert.equal(finalWrites, 2);
+ assert.deepEqual(eventWrites.map(event => event.event_type),
+  ["final_assessment_attempted", "final_assessment_attempted"]);
+ assert.equal(JSON.stringify(eventWrites).includes("answers"), false);
  finalAttempts = [1,2,3].map(attempt_id => ({attempt_id}));
  assert.equal((await handler(request("", "POST", {action: "final", answers: Array(20).fill(2)}))).status, 429);
  assert.equal(finalWrites, 2);
