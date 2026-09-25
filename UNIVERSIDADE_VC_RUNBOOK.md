@@ -1,21 +1,31 @@
-# Universidade V&C — estado e sequência de ativação
+# Universidade V&C — ativação controlada
 
-## O que o código entrega
-- Página pública `/universidade-vc`, mantendo o site institucional único.
-- Área `/aluno-lideranca` com dez módulos, 20 horas **planejadas** em blocos orientados de 45+75 minutos, evidências e avaliação.
-- O conteúdo das aulas vive apenas na função privada `vc-universidade-course` no Supabase; a função consulta a identidade e os direitos no V&C Core a cada acesso. O repositório público contém apenas a interface. Sem direito ativo P-021, retorna 403. Não confundir proteção contra acesso anônimo com impedimento de cópia por um aluno legítimo.
-- As evidências e conclusões de módulos são gravadas em `vc_course_evidence` com RLS para o próprio aluno e um rascunho local de contingência. A avaliação formativa ainda é corrigida no navegador, sem registro oficial de tentativas. Não anunciar certificado automático até implementar e homologar essa etapa.
+Estado verificado em 20/09/2026. Este documento distingue código na branch, ambiente remoto e validação. O PR da branch `feature/universidade-multicursos` permanece sem merge.
 
-## Gate antes de vender
-1. Homologar o conteúdo com ao menos uma pessoa piloto; verificar duração real, linguagem, correção das respostas e resultado das oficinas. A estimativa de 20h vem do desenho de atividades, não de um relógio verificável no navegador.
-2. Validar em conta real a gravação de evidências; implementar tentativas de avaliação e critério de conclusão auditável. Configurar certificado de conclusão apenas após esse registro funcionar.
-3. Confirmar titular e aplicação Mercado Pago; configurar secrets do adapter já existente no V&C Core; testar pagamentos e webhook em sandbox.
-4. Publicar o site institucional em preview da branch, verificar 200 para página pública, 401 anônimo, 403 usuário sem matrícula e 200 para conta autorizada. Só depois promover a produção.
-5. Criar release ativo e oferta ativa somente após deploy e compra teste. A migration insere produto e oferta em desenvolvimento/rascunho, sem cobrança.
-6. Fazer compra real de baixo valor autorizada e conferir conciliação, liberação, cancelamento e revogação. Após isso, ativar botão de compra e campanha.
+## Implementado na branch
 
-## Decisão comercial
-Mercado Pago Checkout Pro é a opção inicial: já foi escolhida na arquitetura V&C e existe adapter no Core. Acrescentar uma área de membros de Kiwify ou Hotmart traria segunda identidade e fonte de acesso. Preço proposto para teste do curso completo: R$ 147 à vista, sem preço anterior riscado nem limite fictício de vagas. Confirmar margem após taxas vigentes e primeiras conversões.
+- O mesmo site institucional contém o catálogo público e a sala do aluno; não foi criado outro site.
+- O modelo persistente inclui cursos, módulos, turmas, organizações, matrículas, professores, questões, tentativas de checkpoint e avaliação, progresso, eventos e certificados. As tabelas acadêmicas têm RLS e acesso de escrita pelo navegador revogado.
+- A API privada `vc-universidade-learner-v2` verifica identidade, direito no V&C Core e matrícula ativa antes de ler conteúdo. Aceita `course=<slug>` e vincula o direito ao `product_id` do curso; o padrão sem parâmetro continua Liderança. A exceção de acesso do proprietário aplica-se somente a Liderança/P-021 e exige identidade, e-mail confirmado, escopo administrativo no Core e matrícula ativa.
+- Módulos seguintes dependem da conclusão persistida do anterior; evidência e cinco respostas do checkpoint são corrigidas no servidor. O banco tem um gatilho adicional que exige evidência, tentativa aprovada e sequência para registrar conclusão.
+- A sala v2 usa a nova API, com estados de acesso, entrega de evidência e checkpoint. O conteúdo completo e os gabaritos não ficam em arquivos públicos.
+- A branch contém o fluxo de avaliação final com 20 questões, bloqueio até concluir os módulos, correção no servidor e registro de tentativas. Ainda não há questões finais ativas no banco; a API responde `final_unavailable` até o banco ser preparado e homologado.
 
-## Segurança
-Não publicar o material em diretório estático; não confiar em esconder botão como proteção. Token e direito são verificados no servidor. Rascunhos locais contêm texto escrito pelo aluno; evitar dados pessoais de terceiros. O endpoint retorna `Cache-Control: private, no-store`. Não expor segredos do Mercado Pago ou chaves privilegiadas no cliente, Git ou arquivos de entrega.
+## Situação remota e bloqueios
+
+- A função publicada ainda é a versão **4**: a correção do acesso proprietário e a seleção multicursos da branch não estão implantadas. A revisão automática rejeitou a implantação por **limite de uso até 24/09/2026 às 19h36**; informou que não avaliou a segurança da ação. Não tentar publicar por outro caminho para contornar a revisão.
+- O curso está em `review`; o produto P-021 em `development`; a oferta de R$147 em `draft`, com `commerce_enabled=false`. O valor não foi alterado.
+- Os 20 testes locais passam, mas **M1 → evidência → checkpoint → M2 não foi homologado no navegador com conta autenticada**. Testes simulados não substituem essa verificação.
+- O fluxo legado `vc-universidade-course` ainda existe, inclusive avaliação antiga corrigida no navegador. Planejar desligamento ou redirecionamento seguro após a migração das dependências; não usar o fluxo legado como prova de conclusão oficial.
+- Banco da avaliação final, registro e revisão do projeto, regras de conclusão, emissão e validação pública do certificado, painel premium do professor e administração, fluxo empresarial, pagamentos e integração Orça Fácil/ConfirmaPro continuam pendentes ou sem homologação.
+
+## Sequência de retomada
+
+1. Quando a revisão automática permitir, implantar somente a função revisada e confirmar a versão publicada. Não alterar pagamento, domínio ou curso publicado nesse passo.
+2. Homologar em conta autorizada, com captura de respostas/status e registros persistidos: M1 aberto, evidência válida, checkpoint sem gabarito exposto, M2 bloqueado antes e liberado depois. Testar anônimo e usuário sem direito/matrícula.
+3. Completar e testar percurso M1–M10, banco e avaliação final, projeto, fila docente, emissão e consulta pública de certificado com dados mínimos. Verificar RLS com perfis separados e dispositivos móveis.
+4. Homologar as modalidades comercial e empresarial, pagamento sandbox, webhook, conciliação, cancelamento e suporte. Cobrança real, mudança destrutiva e publicação comercial irreversível exigem autorização do proprietário.
+
+## Comunicação enquanto o gate está fechado
+
+A página pública pode ser usada para apresentar a proposta em preparação. Não anunciar inscrições abertas, compra disponível, certificação automática ou data garantida enquanto as etapas acima não estiverem homologadas.

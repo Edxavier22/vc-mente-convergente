@@ -79,3 +79,24 @@ test("configuração Vercel mantém um único site com rotas internas", () => {
   assert.match(headers, /Content-Security-Policy/);
   assert.match(headers, /frame-ancestors 'none'/);
 });
+
+test("Universidade possui catálogo multicursos e sala premium acessível", () => {
+  const catalog = read("universidade-vc.html");
+  const classroom = read("aluno-lideranca.html");
+  const learner = read("assets/js/universidade-aluno-v2.js");
+  const styles = read("assets/css/universidade.css");
+
+  assert.match(catalog, /id="catalogo"/);
+  assert.match(catalog, /Liderança Estratégica Aplicada/);
+  assert.match(catalog, /Inteligência Emocional/);
+  assert.match(catalog, /Comportamento Humano/);
+  assert.match(catalog, /Formação para pessoas e organizações/);
+  assert.match(catalog, /curso livre de capacitação e desenvolvimento profissional/i);
+  assert.match(classroom, /class="skip-link"/);
+  assert.match(classroom, /aria-live="polite"/);
+  assert.match(classroom, /id="progress-percent"/);
+  assert.match(learner, /aria-current/);
+  assert.match(learner, /aria-busy/);
+  assert.match(styles, /@media\(max-width:780px\)/);
+  assert.match(styles, /prefers-reduced-motion/);
+});
