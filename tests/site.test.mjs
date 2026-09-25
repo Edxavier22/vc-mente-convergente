@@ -100,3 +100,23 @@ test("Universidade possui catálogo multicursos e sala premium acessível", () =
   assert.match(styles, /@media\(max-width:780px\)/);
   assert.match(styles, /prefers-reduced-motion/);
 });
+
+test("sala renderiza o contrato pedagógico premium sem expor gabaritos", () => {
+  const learner = read("assets/js/universidade-aluno-v2.js");
+  const styles = read("assets/css/universidade.css");
+  const manifest = read("assets/docs/universidade-lideranca-conteudo-v1.1.md");
+
+  for (const label of [
+    "ABERTURA", "OBJETIVOS", "CONCEITOS-CHAVE", "PRINCÍPIO V&C", "EXEMPLO",
+    "ESTUDO DE CASO", "ATENÇÃO", "NA PRÁTICA", "PARA REFLETIR", "SÍNTESE",
+    "CHECKPOINT V&C", "REFERÊNCIAS"
+  ]) assert.match(learner, new RegExp(label));
+  assert.match(learner, /textContent/);
+  assert.doesNotMatch(learner, /innerHTML/);
+  assert.match(styles, /\.pedagogy-block/);
+  assert.match(styles, /\.concept-grid/);
+  assert.match(manifest, /Conteúdo e estudos guiados \| 7h/);
+  assert.match(manifest, /Avaliação final e revisão \| 1h/);
+  assert.match(manifest, /prova contém 20 questões/);
+  assert.doesNotMatch(manifest, /45 minutos de leitura|75 minutos de oficina/);
+});

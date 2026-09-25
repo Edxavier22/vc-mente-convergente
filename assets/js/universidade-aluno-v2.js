@@ -38,6 +38,27 @@ function update(){
 }
 async function reload(){catalog=await call();update()}
 function steps(title,items,kind="guided-list"){const section=el("section");section.className="lesson-section";section.append(el("h2",title));const list=el("ol");list.className=kind;items.forEach(item=>list.append(el("li",item)));section.append(list);return section}
+function listSection(label,title,items,tone="key"){
+ if(!Array.isArray(items)||!items.length)return null;
+ const section=el("section",undefined,`pedagogy-block pedagogy-${tone}`);section.append(el("p",label,"pedagogy-label"),el("h2",title));
+ const list=el("ul",undefined,"pedagogy-list");items.forEach(item=>list.append(el("li",item)));section.append(list);return section
+}
+function narrativeBlock(label,title,body,tone="practice"){
+ if(!body)return null;const section=el("section",undefined,`pedagogy-block pedagogy-${tone}`);section.append(el("p",label,"pedagogy-label"),el("h2",title),el("p",body));return section
+}
+function conceptSection(concepts){
+ if(!Array.isArray(concepts)||!concepts.length)return null;const section=el("section",undefined,"lesson-section");section.append(el("p","CONCEITOS-CHAVE","pedagogy-label"),el("h2","Fundamentos para decidir melhor"));
+ const grid=el("div",undefined,"concept-grid");concepts.forEach((concept,index)=>{const card=el("article",undefined,"concept-card");card.append(el("span",String(index+1).padStart(2,"0"),"concept-number"),el("h3",concept.title),el("p",concept.body));grid.append(card)});section.append(grid);return section
+}
+function caseSection(caseStudy){
+ if(!caseStudy?.scenario)return null;const section=el("section",undefined,"pedagogy-block pedagogy-case");section.append(el("p","ESTUDO DE CASO","pedagogy-label"),el("h2",caseStudy.title||"Caso para análise"),el("p",caseStudy.scenario));
+ if(Array.isArray(caseStudy.analysisQuestions)&&caseStudy.analysisQuestions.length){const heading=el("h3","Decisões para analisar");const list=el("ol",undefined,"case-questions");caseStudy.analysisQuestions.forEach(question=>list.append(el("li",question)));section.append(heading,list)}return section
+}
+function referenceSection(references){
+ if(!Array.isArray(references)||!references.length)return null;const section=el("section",undefined,"reference-block");section.append(el("p","REFERÊNCIAS","pedagogy-label"),el("h2","Fontes para aprofundamento"));
+ const list=el("ol");references.forEach(reference=>{const item=el("li");item.append(el("strong",reference.title));const detail=[reference.authors,reference.source,reference.year].filter(Boolean).join(" · ");if(detail)item.append(el("span",detail));if(reference.doi)item.append(el("span",`DOI: ${reference.doi}`));if(reference.url){const link=el("a","Consultar fonte");link.href=reference.url;link.target="_blank";link.rel="noopener noreferrer";item.append(link)}list.append(item)});section.append(list);return section
+}
+function appendIf(parent,...nodes){nodes.filter(Boolean).forEach(node=>parent.append(node))}
 function radarTool(evidence){
  const parts=[
   {letter:"R",name:"Rotina",question:"O que precisa acontecer e com qual frequência?",example:"Conferir as solicitações no início de cada turno."},
@@ -119,8 +140,25 @@ async function openModule(number){
   const meta=el("div",undefined,"lesson-meta-row");meta.append(el("span","Carga horária pedagógica estimada"),el("span","Evidência obrigatória"),el("span","Checkpoint V&C"));intro.append(meta);
   panel.replaceChildren(intro);
   if(progress?.completed_at){const complete=el("div",undefined,"completion-banner");complete.append(el("span","✓","completion-mark"));const copy=el("div");copy.append(el("strong","Módulo concluído"),el("span","Evidência e checkpoint registrados no seu percurso."));complete.append(copy);panel.append(complete)}
-  const study=el("section",undefined,"lesson-section");study.append(el("h2","Conteúdo aprofundado"));lesson.study.forEach((text,index)=>{const block=el("article",undefined,"content-block");const label=el("p","Conceito e aplicação","content-block-label");label.dataset.index=String(index+1).padStart(2,"0");block.append(label,el("p",text));study.append(block)});panel.append(study);
-  panel.append(steps("Estudo guiado",lesson.guidedStudy.map(x=>x.instruction)),steps("Oficina aplicada",lesson.workshop,"workshop-list"));
+  appendIf(panel,
+   narrativeBlock("ABERTURA","Por que este módulo importa",lesson.opening,"opening"),
+   listSection("OBJETIVOS","Ao final, você será capaz de",lesson.objectives,"key")
+  );
+  const study=el("section",undefined,"lesson-section");study.append(el("h2","Conteúdo aprofundado"));(lesson.study||[]).forEach((text,index)=>{const block=el("article",undefined,"content-block");const label=el("p","Conceito e aplicação","content-block-label");label.dataset.index=String(index+1).padStart(2,"0");block.append(label,el("p",text));study.append(block)});panel.append(study);
+  appendIf(panel,
+   conceptSection(lesson.concepts),
+   narrativeBlock("PRINCÍPIO V&C",lesson.principle?.title||"Princípio de aplicação",lesson.principle?.body,"principle"),
+   narrativeBlock("EXEMPLO",lesson.example?.title||"Exemplo aplicado",lesson.example?.body,"example"),
+   caseSection(lesson.caseStudy),
+   listSection("ATENÇÃO","Erros comuns que comprometem a liderança",lesson.commonErrors,"attention"),
+   listSection("NA PRÁTICA","Aplicação no cotidiano",lesson.application,"practice"),
+   steps("Estudo guiado",(lesson.guidedStudy||[]).map(item=>typeof item==="string"?item:item.instruction)),
+   listSection("PARA REFLETIR","Perguntas que exigem raciocínio",lesson.reflection,"reflection"),
+   steps("Oficina aplicada",lesson.workshop||[],"workshop-list"),
+   listSection("SÍNTESE","O essencial para levar com você",lesson.synthesis,"synthesis"),
+   listSection("CHECKPOINT V&C","Antes de avançar, confirme que domina",lesson.checkpointReview,"checkpoint"),
+   referenceSection(lesson.references)
+  );
   const task=el("section",undefined,"course-task");task.append(el("h2","Evidência da oficina"),el("p",lesson.evidence),el("p",`Critério de revisão: ${lesson.rubric}`));
   if(progress?.review_feedback)task.append(el("p",`Parecer do professor: ${progress.review_feedback}`,"course-status"));
   const label=el("label","Sua evidência"),area=el("textarea");area.value=progress?.evidence||"";area.maxLength=12000;area.placeholder="Descreva sua aplicação sem dados pessoais de colegas ou clientes.";label.append(area);
