@@ -19,6 +19,7 @@ let allowed = true;
 let rightsProducts = ["P-021"];
 let enrolled = true;
 let sourceAvailable = true;
+let enrollmentVersion = "1.0";
 let contentReads = 0;
 let identity = {id: "u-1"};
 let isAdmin = false;
@@ -37,7 +38,7 @@ globalThis.fetch = async (input, options = {}) => {
   modules: [lesson(1), lesson(2)]
  }}] : []);}
  if (url.pathname.endsWith("/vc_university_enrollments"))
-  return Response.json(enrolled ? [{enrollment_id: "e-1", course_id: secondCourse ? "inteligencia-emocional" : "lideranca-estrategica-aplicada", status: "active", cohort_id: "c-1"}] : []);
+  return Response.json(enrolled ? [{enrollment_id: "e-1", course_id: secondCourse ? "inteligencia-emocional" : "lideranca-estrategica-aplicada", course_version: enrollmentVersion, status: "active", cohort_id: "c-1"}] : []);
  if (url.pathname.endsWith("/vc_university_modules")) return Response.json([{checkpoint_pass_count: 4}]);
  if (url.pathname.endsWith("/vc_university_module_progress")) {
   if (options.method === "POST") {databaseWrites++; return Response.json([{enrollment_id: "e-1"}]);}
@@ -133,6 +134,14 @@ test("M2 exige a conclusão persistida de M1 e não recebe conteúdo", async () 
  const response = await handler(request("?module=2"));
  assert.equal(response.status, 423);
  assert.deepEqual(await response.json(), {error: "previous_module_required"});
+});
+test("matrícula fixa a versão acadêmica usada para buscar conteúdo e questões", async () => {
+ enrollmentVersion = "1.0";
+ const response = await handler(request("?module=1"));
+ assert.equal(response.status, 200);
+ enrollmentVersion = "";
+ assert.equal((await handler(request("?module=1"))).status, 503);
+ enrollmentVersion = "1.0";
 });
 test("índice indica bloqueio e módulo liberado devolve somente sua aula", async () => {
  progress = []; eventWrites = [];

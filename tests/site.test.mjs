@@ -120,3 +120,46 @@ test("sala renderiza o contrato pedagógico premium sem expor gabaritos", () => 
   assert.match(manifest, /prova contém 20 questões/);
   assert.doesNotMatch(manifest, /45 minutos de leitura|75 minutos de oficina/);
 });
+
+test("jornada oficial usa API v2 e painel não reduz a prova a dez questões", () => {
+  const classroom = read("aluno-lideranca.html");
+  const portal = read("assets/js/portal.js");
+  const teacher = read("assets/js/universidade-professor.js");
+  assert.match(classroom, /universidade-aluno-v2\.js/);
+  assert.doesNotMatch(classroom, /universidade-aluno\.js/);
+  assert.doesNotMatch(teacher, /score\+"\/10/);
+  assert.match(teacher, /question_count\|\|20/);
+  assert.doesNotMatch(portal, /rpc\/vc_course_has_access/);
+});
+
+test("RADAR e FOCO são ferramentas interativas, acessíveis e vinculadas à evidência", () => {
+  const learner = read("assets/js/universidade-aluno-v2.js");
+  const styles = read("assets/css/universidade.css");
+  assert.match(learner, /Ferramenta V&C · RADAR/);
+  assert.match(learner, /Ferramenta V&C · FOCO/);
+  assert.match(learner, /Levar RADAR para a evidência/);
+  assert.match(learner, /Levar FOCO para a evidência/);
+  assert.match(learner, /aria-labelledby","radar-title/);
+  assert.match(learner, /aria-labelledby","foco-title/);
+  assert.match(styles, /\.radar-grid/);
+  assert.match(styles, /\.radar-card/);
+});
+
+test("painel do professor lê o modelo acadêmico multicursos", () => {
+  const api = read("supabase/functions/vc-universidade-professor/index.ts");
+  assert.match(api, /vc_university_module_progress/);
+  assert.match(api, /vc_university_final_attempts/);
+  assert.match(api, /question_count/);
+  assert.match(api, /evidence_reviewed/);
+  assert.doesNotMatch(api, /vc_course_assessment_attempts/);
+  assert.doesNotMatch(api, /vc_course_evidence/);
+});
+
+test("migração v1.1 exige cinco questões com distribuição pedagógica por módulo", () => {
+  const migration = read("supabase/migrations/20260925171000_universidade_checkpoints_v11.sql");
+  assert.match(migration, /course_version = '1\.1'/);
+  assert.match(migration, /count\(q\.question_id\) <> 5/);
+  assert.match(migration, /q\.kind = 'concept'\) <> 2/);
+  assert.match(migration, /q\.kind = 'application'\) <> 2/);
+  assert.match(migration, /q\.kind = 'decision'\) <> 1/);
+});

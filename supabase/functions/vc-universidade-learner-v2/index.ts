@@ -12,7 +12,7 @@ const ORIGINS = new Set([
  "https://vc-mente-convergente-git-feature-universidade-4ebcec-life-os22.vercel.app",
  "http://localhost:4173", "http://127.0.0.1:4173"
 ]);
-const FIELDS = "enrollment_id,course_id,status,cohort_id";
+const FIELDS = "enrollment_id,course_id,course_version,status,cohort_id";
 
 function reply(status, body, origin) {
  return new Response(status === 204 ? null : JSON.stringify(body), {
@@ -135,7 +135,10 @@ Deno.serve(async request => {
    return reply(400, {error: "invalid_course"}, origin);
   const access = await context(bearer, courseId);
   if (access.error) return reply(access.error, {error: access.code ?? "access_denied"}, origin);
-  const {course, progress, states} = await courseAndProgress(courseId, access.courseRecord.version, access.enrollment.enrollment_id);
+  const enrollmentVersion = access.enrollment.course_version;
+  if (typeof enrollmentVersion !== "string" || !enrollmentVersion)
+   throw new Error("enrollment_version_unavailable");
+  const {course, progress, states} = await courseAndProgress(courseId, enrollmentVersion, access.enrollment.enrollment_id);
   const input = request.method === "POST" ? await request.json().catch(() => null) : null;
   if (url.searchParams.get("view") === "final" || input?.action === "final") {
    if (!states.length || !states.every(s => s.completed))
