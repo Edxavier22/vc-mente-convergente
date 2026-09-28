@@ -190,6 +190,16 @@ test("administração da Universidade é privada, real e separada do professor",
   assert.equal(vercel.rewrites.some((item) => item.source === "/admin/universidade"), true);
 });
 
+test("APIs acadêmicas aceitam previews versionados sem liberar origens externas", () => {
+  const learner = read("supabase/functions/vc-universidade-learner-v2/index.ts");
+  const professor = read("supabase/functions/vc-universidade-professor/index.ts");
+  for (const api of [learner, professor]) {
+    assert.match(api, /git-feature-universidade-\[a-z0-9-\]\+-life-os22/);
+    assert.match(api, /trustedOrigin\(origin\) \? origin : PROD/);
+    assert.doesNotMatch(api, /git-feature-universidade-(?:4ebcec|ac557f)-life-os22/);
+  }
+});
+
 test("sala possui leitura orientada, índice e rascunho recuperável", () => {
   const learner = read("assets/js/universidade-aluno-v2.js");
   const styles = read("assets/css/universidade.css");
