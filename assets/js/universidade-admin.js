@@ -1,0 +1,28 @@
+const ROOT="https://ctzgsxxbyvruzmfqibnl.supabase.co";
+const KEY="sb_publishable_rF60SyuGpNstim9MqFvqmQ_sSm78z1b";
+const SESSION_KEY="vc_portal_session_v1";
+const status=document.querySelector("#admin-status");
+const content=document.querySelector("#admin-content");
+const text=(tag,value,className)=>{const node=document.createElement(tag);node.textContent=value;if(className)node.className=className;return node};
+function session(){try{return JSON.parse(sessionStorage.getItem(SESSION_KEY)||"null")}catch{return null}}
+function badge(value){return text("span",value,"vc-admin-badge "+String(value).toLowerCase().replace(/[^a-z]+/g,"-"))}
+function cell(row,value){const td=text("td",value??"—");row.append(td);return td}
+function percent(value,total){return total?Math.round(value/total*100):0}
+async function request(){const current=session();if(!current?.access_token)throw new Error("sign_in_required");const response=await fetch(ROOT+"/functions/v1/vc-universidade-admin",{headers:{apikey:KEY,authorization:"Bearer "+current.access_token,accept:"application/json"},cache:"no-store"});if(response.status===401)throw new Error("sign_in_required");if(response.status===403)throw new Error("owner_required");if(!response.ok)throw new Error("service_unavailable");return response.json()}
+function render(data){
+ document.querySelector("#admin-kpis").replaceChildren(...[
+  ["Alunos matriculados",data.summary.enrollments],["Em andamento",data.summary.in_progress],
+  ["Aguardando parecer",data.summary.awaiting_review],["Concluídos",data.summary.completed],
+  ["Média das avaliações",data.summary.average_final===null?"—":data.summary.average_final+"%"],
+  ["Turmas ativas",data.summary.active_cohorts]
+ ].map(([label,value])=>{const card=text("article","");card.append(text("strong",String(value)),text("span",label));return card}));
+ document.querySelector("#course-count").textContent=data.courses.length+" formações cadastradas";
+ document.querySelector("#course-grid").replaceChildren(...data.courses.map(course=>{const card=text("article","");const head=text("div","");head.append(badge(course.status_label),text("span","versão "+course.version));card.append(head,text("h3",course.title),text("p",course.description||"Descrição editorial pendente."));const meta=text("dl","");[["Modalidade",course.modality],["Carga",course.hours_label],["Módulos",course.module_count],["Matrículas",course.enrollment_count]].forEach(([a,b])=>{meta.append(text("dt",a),text("dd",String(b)))});card.append(meta);return card}));
+ const cohorts=document.querySelector("#cohort-rows");cohorts.replaceChildren(...data.cohorts.map(item=>{const row=document.createElement("tr");cell(row,item.label);cell(row,item.course_title);cell(row,item.organization_name||"Individual / V&C");cell(row,item.capacity?item.enrollment_count+" / "+item.capacity:String(item.enrollment_count));cell(row,"").append(badge(item.status_label));return row}));
+ const enrollments=document.querySelector("#enrollment-rows");enrollments.replaceChildren(...data.enrollments.map(item=>{const row=document.createElement("tr");cell(row,item.student);const course=cell(row,item.course_title);course.append(text("small",item.cohort_label));const progress=cell(row,item.completed_modules+" / "+item.module_count);const bar=text("span","","vc-admin-progress");bar.style.setProperty("--progress",percent(item.completed_modules,item.module_count)+"%");progress.append(bar);cell(row,item.final_score===null?"Não realizada":item.final_score+"%");cell(row,"").append(badge(item.status_label));return row}));
+ const teacherGrid=document.querySelector("#teacher-grid");teacherGrid.replaceChildren(...(data.teachers.length?data.teachers.map(item=>{const card=text("article","");card.append(badge("Professor"),text("h3",item.teacher),text("p",item.cohorts.join(" · ")));return card}):[(()=>{const card=text("article","");card.append(text("h3","Nenhum professor vinculado"),text("p","As turmas continuam sob gestão do administrador proprietário."));return card})()]));
+ document.querySelector("#readiness-grid").replaceChildren(...data.readiness.map(item=>{const card=text("article","");card.append(badge(item.status),text("h3",item.label),text("p",item.message));return card}));
+ content.hidden=false;status.hidden=true;
+}
+async function load(){status.hidden=false;content.hidden=true;status.className="vc-admin-status";status.replaceChildren(text("span",""),document.createTextNode("Consultando dados oficiais…"));try{render(await request())}catch(error){status.className="vc-admin-status is-error";status.replaceChildren(text("strong",error.message==="sign_in_required"?"Sessão necessária":error.message==="owner_required"?"Acesso administrativo negado":"Painel indisponível"),text("span",error.message==="sign_in_required"?"Entre em Meus Acessos com a conta proprietária.":error.message==="owner_required"?"A administração geral é reservada ao proprietário V&C.":"Tente novamente em instantes."));if(error.message==="sign_in_required"){const link=text("a","Ir para Meus Acessos");link.href="entrar.html";status.append(link)}}}
+document.querySelector("#admin-refresh").addEventListener("click",load);load();

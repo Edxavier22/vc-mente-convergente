@@ -362,6 +362,8 @@ async function renderAdmin(scope, session) {
   const platformAdmin = scope?.platform_admin === true;
   const professorCard = document.querySelector("#professor-card");
   if (professorCard) professorCard.hidden = !platformAdmin;
+  const universityAdminCard = document.querySelector("#university-admin-card");
+  if (universityAdminCard) universityAdminCard.hidden = !platformAdmin || session?.user?.email?.toLowerCase() !== "vcmenteconvergente@gmail.com";
   const ownerCourseCard = document.querySelector("#owner-course-card");
   if (ownerCourseCard) ownerCourseCard.hidden = !platformAdmin || session?.user?.email?.toLowerCase() !== "vcmenteconvergente@gmail.com";
   const ownerProduct = document.querySelector("#owner-product");

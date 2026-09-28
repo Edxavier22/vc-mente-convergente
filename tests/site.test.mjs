@@ -172,6 +172,24 @@ test("contato não publica arquivos internos como downloads comerciais", () => {
   assert.match(contact, /Atendimento orientado/);
 });
 
+test("administração da Universidade é privada, real e separada do professor", () => {
+  const page = read("administracao-universidade.html");
+  const script = read("assets/js/universidade-admin.js");
+  const api = read("supabase/functions/vc-universidade-admin/index.ts");
+  const portal = read("assets/js/portal.js");
+  const vercel = JSON.parse(read("vercel.json"));
+  assert.match(page, /noindex,nofollow/);
+  assert.match(page, /Painel Geral V&amp;C/);
+  assert.match(page, /Privacidade por padrão/);
+  assert.match(script, /vc-universidade-admin/);
+  assert.match(api, /OWNER_EMAIL = "vcmenteconvergente@gmail\.com"/);
+  assert.match(api, /access\?\.platform_admin !== true/);
+  assert.match(api, /select=enrollment_id,module_no,submitted_at,completed_at,review_status,reviewed_at/);
+  assert.doesNotMatch(api, /select=[^\n"]*evidence/);
+  assert.match(portal, /university-admin-card/);
+  assert.equal(vercel.rewrites.some((item) => item.source === "/admin/universidade"), true);
+});
+
 test("sala possui leitura orientada, índice e rascunho recuperável", () => {
   const learner = read("assets/js/universidade-aluno-v2.js");
   const styles = read("assets/css/universidade.css");

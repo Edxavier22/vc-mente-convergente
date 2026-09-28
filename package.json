@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "check": "node --check assets/js/main.js && node --check assets/js/portal.js && node --check assets/js/universidade-aluno-v2.js && node --check assets/js/universidade-professor.js && node --test tests/*.test.mjs",
+    "check": "node --check assets/js/main.js && node --check assets/js/portal.js && node --check assets/js/universidade-aluno-v2.js && node --check assets/js/universidade-professor.js && node --check assets/js/universidade-admin.js && node --test tests/*.test.mjs",
     "test": "node --test tests/*.test.mjs"
   },
   "engines": {
