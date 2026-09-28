@@ -4,7 +4,8 @@
   "trailingSlash": false,
   "rewrites": [
     { "source": "/meus-acessos", "destination": "/entrar" },
-    { "source": "/admin", "destination": "/entrar" }
+    { "source": "/admin", "destination": "/entrar" },
+    { "source": "/admin/universidade", "destination": "/administracao-universidade" }
   ],
   "headers": [
     {

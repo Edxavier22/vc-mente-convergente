@@ -25,25 +25,28 @@
         <div class="progress-heading"><span>Seu progresso</span><strong id="progress-percent">0%</strong></div>
         <progress id="progress" max="10" value="0">0%</progress>
         <p id="progress-copy" class="progress-copy" aria-live="polite">Verificando sua matrícula…</p>
+        <button type="button" id="toggle-course-navigation" class="course-navigation-toggle" aria-expanded="false" aria-controls="course-navigation">Ver trilha e indicadores</button>
       </div>
-      <div class="learning-stats" aria-label="Resumo do percurso">
-        <div><strong id="stat-modules">0</strong><span>Módulos</span></div>
-        <div><strong id="stat-evidence">0</strong><span>Evidências</span></div>
-        <div><strong id="stat-tools">0</strong><span>Ferramentas</span></div>
-      </div>
-      <nav class="course-menu" aria-label="Módulos da formação">
-        <div class="course-menu-title"><span>Trilha de aprendizagem</span><small>Avanço sequencial</small></div>
-        <div id="module-list"></div>
-      </nav>
-      <div class="course-final-actions">
-        <button type="button" id="show-assessment" hidden>Avaliação final</button>
-        <button type="button" id="export-work" hidden>Exportar minhas atividades</button>
+      <div id="course-navigation" class="course-navigation">
+        <div class="learning-stats" aria-label="Resumo do percurso">
+          <div><strong id="stat-modules">0</strong><span>Módulos</span></div>
+          <div><strong id="stat-evidence">0</strong><span>Evidências</span></div>
+          <div><strong id="stat-tools">0</strong><span>Ferramentas</span></div>
+        </div>
+        <nav class="course-menu" aria-label="Módulos da formação">
+          <div class="course-menu-title"><span>Trilha de aprendizagem</span><small>Avanço sequencial</small></div>
+          <div id="module-list"></div>
+        </nav>
+        <div class="course-final-actions">
+          <button type="button" id="show-assessment" hidden>Avaliação final</button>
+          <button type="button" id="export-work" hidden>Exportar minhas atividades</button>
+        </div>
       </div>
     </aside>
     <section class="course-workspace">
       <div class="workspace-topbar">
         <p><span class="workspace-dot" aria-hidden="true"></span>Progresso salvo na sua conta</p>
-        <span>Universidade V&amp;C</span>
+        <span id="workspace-step">Preparando seu próximo passo</span>
       </div>
       <article id="aula" class="course-panel" tabindex="-1" aria-live="polite" aria-busy="true">
         <div class="lesson-loading"><span aria-hidden="true"></span><h1>Verificando seu acesso</h1><p>Estamos consultando sua matrícula na V&C. Aguarde um instante.</p></div>

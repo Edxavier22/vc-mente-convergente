@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="description" content="Painel administrativo privado da Universidade V&C Mente Convergente.">
+  <title>Administração | Universidade V&amp;C</title>
+  <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/universidade.css">
+</head>
+<body class="vc-admin-body">
+  <a class="skip-link" href="#admin-main">Ir para o conteúdo</a>
+  <header class="vc-admin-topbar">
+    <a href="entrar.html" class="vc-admin-brand"><span>V&amp;C</span><strong>Universidade</strong></a>
+    <div><span class="vc-admin-security">Ambiente privado</span><a href="entrar.html">Meus acessos</a></div>
+  </header>
+  <div class="vc-admin-shell">
+    <aside class="vc-admin-sidebar" aria-label="Administração geral">
+      <p class="vc-admin-owner">ADMINISTRAÇÃO GERAL</p>
+      <h1>Painel Geral V&amp;C</h1>
+      <nav>
+        <a class="is-current" href="#universidade">Universidade</a>
+        <a href="#cursos">Cursos</a>
+        <a href="#turmas">Turmas</a>
+        <a href="#matriculas">Matrículas</a>
+        <a href="#professores">Professores</a>
+        <a href="#operacao">Pagamentos</a>
+        <a href="#operacao">Certificados</a>
+        <a href="entrar.html#admin-section">Administração comercial</a>
+      </nav>
+      <p class="vc-admin-privacy"><strong>Privacidade por padrão</strong>Este painel não exibe respostas, reflexões ou o texto das evidências.</p>
+    </aside>
+    <main id="admin-main" class="vc-admin-main" tabindex="-1">
+      <section class="vc-admin-hero" id="universidade">
+        <div><p class="vc-admin-kicker">UNIVERSIDADE V&amp;C MENTE CONVERGENTE</p><h2>Governança acadêmica em uma visão única.</h2><p>Cursos, turmas e percurso educacional com dados persistentes e escopo administrativo validado no servidor.</p></div>
+        <button id="admin-refresh" type="button">Atualizar painel</button>
+      </section>
+      <div id="admin-status" class="vc-admin-status" role="status" aria-live="polite"><span></span>Consultando dados oficiais…</div>
+      <section id="admin-content" hidden>
+        <div id="admin-kpis" class="vc-admin-kpis" aria-label="Indicadores gerais"></div>
+        <section class="vc-admin-section" id="cursos"><div class="vc-admin-heading"><div><p>UNIVERSIDADE</p><h2>Cursos e formações</h2></div><span id="course-count"></span></div><div id="course-grid" class="vc-admin-course-grid"></div></section>
+        <section class="vc-admin-section" id="turmas"><div class="vc-admin-heading"><div><p>OPERAÇÃO ACADÊMICA</p><h2>Turmas</h2></div></div><div class="vc-admin-table-wrap"><table><thead><tr><th>Turma</th><th>Curso</th><th>Organização</th><th>Ocupação</th><th>Status</th></tr></thead><tbody id="cohort-rows"></tbody></table></div></section>
+        <section class="vc-admin-section" id="matriculas"><div class="vc-admin-heading"><div><p>ALUNOS E CLIENTES</p><h2>Matrículas e percurso</h2></div><span>Sem conteúdo sensível</span></div><div class="vc-admin-table-wrap"><table><thead><tr><th>Aluno</th><th>Curso / turma</th><th>Progresso</th><th>Avaliação</th><th>Situação</th></tr></thead><tbody id="enrollment-rows"></tbody></table></div></section>
+        <section class="vc-admin-section" id="professores"><div class="vc-admin-heading"><div><p>EQUIPE ACADÊMICA</p><h2>Professores responsáveis</h2></div></div><div id="teacher-grid" class="vc-admin-course-grid"></div></section>
+        <section class="vc-admin-section" id="operacao"><div class="vc-admin-heading"><div><p>PRÓXIMAS CAMADAS</p><h2>Pagamentos e certificados</h2></div></div><div id="readiness-grid" class="vc-admin-readiness"></div></section>
+      </section>
+    </main>
+  </div>
+  <script type="module" src="assets/js/universidade-admin.js"></script>
+</body>
+</html>

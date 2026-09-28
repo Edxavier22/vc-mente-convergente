@@ -7,19 +7,21 @@ const DEFAULT_COURSE_ID = "lideranca-estrategica-aplicada";
 const OWNER_PRODUCT_ID = "P-021";
 const OWNER_ID = "70aa4d75-bbb9-4839-aad8-670b7654664d";
 const OWNER_EMAIL = "vcmenteconvergente@gmail.com";
-const ORIGINS = new Set([
- "https://vc-mente-convergente.vercel.app",
- "https://vc-mente-convergente-git-feature-universidade-4ebcec-life-os22.vercel.app",
- "http://localhost:4173", "http://127.0.0.1:4173"
-]);
+const PROD = "https://vc-mente-convergente.vercel.app";
 const FIELDS = "enrollment_id,course_id,course_version,status,cohort_id";
+
+function trustedOrigin(origin) {
+ return origin === PROD ||
+  /^https:\/\/vc-mente-convergente-git-feature-universidade-[a-z0-9-]+-life-os22\.vercel\.app$/.test(origin) ||
+  ["http://localhost:4173", "http://127.0.0.1:4173"].includes(origin);
+}
 
 function reply(status, body, origin) {
  return new Response(status === 204 ? null : JSON.stringify(body), {
   status, headers: {
    "content-type": "application/json; charset=utf-8", "cache-control": "private, no-store",
    "x-content-type-options": "nosniff", "vary": "Origin, Authorization",
-   "access-control-allow-origin": ORIGINS.has(origin) ? origin : "https://vc-mente-convergente.vercel.app",
+   "access-control-allow-origin": trustedOrigin(origin) ? origin : PROD,
    "access-control-allow-headers": "authorization, apikey, content-type",
    "access-control-allow-methods": "GET, POST, OPTIONS"
   }
