@@ -201,6 +201,18 @@ test("sala possui leitura orientada, índice e rascunho recuperável", () => {
   assert.match(styles, /\.lesson-outline/);
 });
 
+test("sala móvel prioriza conteúdo e mantém continuidade entre módulos", () => {
+  const page = read("aluno-lideranca.html");
+  const learner = read("assets/js/universidade-aluno-v2.js");
+  const styles = read("assets/css/universidade.css");
+  assert.match(page, /id="toggle-course-navigation"/);
+  assert.match(page, /id="workspace-step"/);
+  assert.match(learner, /Continuar formação/);
+  assert.match(learner, /navigation\.classList\.toggle\("is-open"/);
+  assert.match(styles, /\.course-navigation\{display:none\}/);
+  assert.match(styles, /\.course-navigation\.is-open\{display:block/);
+});
+
 test("ativação v1.1 valida conteúdo e preserva o trigger de versão", () => {
   const migration = read("supabase/migrations/20260928190000_universidade_ativar_conteudo_v11_homolog.sql");
   assert.match(migration, /module_count is distinct from 10/);
