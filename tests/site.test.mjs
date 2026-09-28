@@ -79,3 +79,139 @@ test("configuração Vercel mantém um único site com rotas internas", () => {
   assert.match(headers, /Content-Security-Policy/);
   assert.match(headers, /frame-ancestors 'none'/);
 });
+
+test("Universidade possui catálogo multicursos e sala premium acessível", () => {
+  const catalog = read("universidade-vc.html");
+  const classroom = read("aluno-lideranca.html");
+  const learner = read("assets/js/universidade-aluno-v2.js");
+  const styles = read("assets/css/universidade.css");
+
+  assert.match(catalog, /id="catalogo"/);
+  assert.match(catalog, /Liderança Estratégica Aplicada/);
+  assert.match(catalog, /Inteligência Emocional/);
+  assert.match(catalog, /Comportamento Humano/);
+  assert.match(catalog, /Formação para pessoas e organizações/);
+  assert.match(catalog, /curso livre de capacitação e desenvolvimento profissional/i);
+  assert.match(classroom, /class="skip-link"/);
+  assert.match(classroom, /aria-live="polite"/);
+  assert.match(classroom, /id="progress-percent"/);
+  assert.match(learner, /aria-current/);
+  assert.match(learner, /aria-busy/);
+  assert.match(styles, /@media\(max-width:780px\)/);
+  assert.match(styles, /prefers-reduced-motion/);
+});
+
+test("sala renderiza o contrato pedagógico premium sem expor gabaritos", () => {
+  const learner = read("assets/js/universidade-aluno-v2.js");
+  const styles = read("assets/css/universidade.css");
+  const manifest = read("assets/docs/universidade-lideranca-conteudo-v1.1.md");
+
+  for (const label of [
+    "ABERTURA", "OBJETIVOS", "CONCEITOS-CHAVE", "PRINCÍPIO V&C", "EXEMPLO",
+    "ESTUDO DE CASO", "ATENÇÃO", "NA PRÁTICA", "PARA REFLETIR", "SÍNTESE",
+    "CHECKPOINT V&C", "REFERÊNCIAS"
+  ]) assert.match(learner, new RegExp(label));
+  assert.match(learner, /textContent/);
+  assert.doesNotMatch(learner, /innerHTML/);
+  assert.match(styles, /\.pedagogy-block/);
+  assert.match(styles, /\.concept-grid/);
+  assert.match(manifest, /Conteúdo e estudos guiados \| 7h/);
+  assert.match(manifest, /Avaliação final e revisão \| 1h/);
+  assert.match(manifest, /prova contém 20 questões/);
+  assert.doesNotMatch(manifest, /45 minutos de leitura|75 minutos de oficina/);
+});
+
+test("jornada oficial usa API v2 e painel não reduz a prova a dez questões", () => {
+  const classroom = read("aluno-lideranca.html");
+  const portal = read("assets/js/portal.js");
+  const teacher = read("assets/js/universidade-professor.js");
+  assert.match(classroom, /universidade-aluno-v2\.js/);
+  assert.doesNotMatch(classroom, /universidade-aluno\.js/);
+  assert.doesNotMatch(teacher, /score\+"\/10/);
+  assert.match(teacher, /question_count\|\|20/);
+  assert.doesNotMatch(portal, /rpc\/vc_course_has_access/);
+});
+
+test("RADAR e FOCO são ferramentas interativas, acessíveis e vinculadas à evidência", () => {
+  const learner = read("assets/js/universidade-aluno-v2.js");
+  const styles = read("assets/css/universidade.css");
+  assert.match(learner, /Ferramenta V&C · RADAR/);
+  assert.match(learner, /Ferramenta V&C · FOCO/);
+  assert.match(learner, /Levar RADAR para a evidência/);
+  assert.match(learner, /Levar FOCO para a evidência/);
+  assert.match(learner, /aria-labelledby","radar-title/);
+  assert.match(learner, /aria-labelledby","foco-title/);
+  assert.match(styles, /\.radar-grid/);
+  assert.match(styles, /\.radar-card/);
+});
+
+test("painel do professor lê o modelo acadêmico multicursos", () => {
+  const page = read("professor-lideranca.html");
+  const app = read("assets/js/universidade-professor.js");
+  const api = read("supabase/functions/vc-universidade-professor/index.ts");
+  assert.match(page, /href="#fila-revisao"/);
+  assert.match(page, /Acompanhamento pedagógico/);
+  assert.match(app, /Pulso da turma/);
+  assert.match(app, /FILA DE REVISÃO/i);
+  assert.match(app, /Acompanhamento individual/);
+  assert.match(app, /Registrar parecer/);
+  assert.match(api, /vc_university_module_progress/);
+  assert.match(api, /vc_university_final_attempts/);
+  assert.match(api, /vc_university_teachers/);
+  assert.match(api, /cohortIds/);
+  assert.match(api, /question_count/);
+  assert.match(api, /evidence_reviewed/);
+  assert.doesNotMatch(api, /vc_course_assessment_attempts/);
+  assert.doesNotMatch(api, /vc_course_evidence/);
+});
+
+test("contato não publica arquivos internos como downloads comerciais", () => {
+  const contact = read("contato.html");
+  assert.doesNotMatch(contact, /href="[^"]+\.md"/i);
+  assert.doesNotMatch(contact, /formato editável\/Markdown/i);
+  assert.match(contact, /Atendimento orientado/);
+});
+
+test("sala possui leitura orientada, índice e rascunho recuperável", () => {
+  const learner = read("assets/js/universidade-aluno-v2.js");
+  const styles = read("assets/css/universidade.css");
+  assert.match(learner, /NESTE MÓDULO/);
+  assert.match(learner, /lesson-roadmap/);
+  assert.match(learner, /localStorage\.getItem\(draftKey\)/);
+  assert.match(learner, /Critério de qualidade/);
+  assert.match(styles, /\.lesson-reading-grid/);
+  assert.match(styles, /\.lesson-outline/);
+});
+
+test("ativação v1.1 valida conteúdo e preserva o trigger de versão", () => {
+  const migration = read("supabase/migrations/20260928190000_universidade_ativar_conteudo_v11_homolog.sql");
+  assert.match(migration, /module_count is distinct from 10/);
+  assert.match(migration, /checkpoint_count is distinct from 50/);
+  assert.match(migration, /final_count < 30/);
+  assert.match(migration, /status='review'/);
+  assert.match(migration, /create trigger vc_university_pin_enrollment_version_guard/);
+});
+
+test("migração v1.1 exige cinco questões com distribuição pedagógica por módulo", () => {
+  const migration = read("supabase/migrations/20260925171000_universidade_checkpoints_v11.sql");
+  assert.match(migration, /course_version = '1\.1'/);
+  assert.match(migration, /count\(q\.question_id\) <> 5/);
+  assert.match(migration, /q\.kind = 'concept'\) <> 2/);
+  assert.match(migration, /q\.kind = 'application'\) <> 2/);
+  assert.match(migration, /q\.kind = 'decision'\) <> 1/);
+});
+
+test("avaliação final v1.1 usa banco ampliado e sessão atômica privada", () => {
+  const migration = read("supabase/migrations/20260928134000_universidade_avaliacao_final_v11.sql");
+  const api = read("supabase/functions/vc-universidade-learner-v2/index.ts");
+  const learner = read("assets/js/universidade-aluno-v2.js");
+  assert.match(migration, /active_items < 30/);
+  assert.match(migration, /cardinality\(question_ids\) = 20/);
+  assert.match(migration, /security invoker/i);
+  assert.match(migration, /grant execute on function public\.vc_university_submit_final_attempt[^;]+to service_role/s);
+  assert.match(api, /finalQuestionPool/);
+  assert.match(api, /crypto\.getRandomValues/);
+  assert.match(api, /const kinds = \["concept", "application", "case", "decision"\]/);
+  assert.match(api, /rpc\/vc_university_submit_final_attempt/);
+  assert.match(learner, /session_id:data\.sessionId/);
+});
