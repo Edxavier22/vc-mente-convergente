@@ -59,6 +59,12 @@ function referenceSection(references){
  const list=el("ol");references.forEach(reference=>{const item=el("li");item.append(el("strong",reference.title));const detail=[reference.authors,reference.source,reference.year].filter(Boolean).join(" · ");if(detail)item.append(el("span",detail));if(reference.doi)item.append(el("span",`DOI: ${reference.doi}`));if(reference.url){const link=el("a","Consultar fonte");link.href=reference.url;link.target="_blank";link.rel="noopener noreferrer";item.append(link)}list.append(item)});section.append(list);return section
 }
 function appendIf(parent,...nodes){nodes.filter(Boolean).forEach(node=>parent.append(node))}
+function lessonOutline(reading){
+ const headings=[...reading.querySelectorAll("h2")];if(!headings.length)return null;
+ const aside=el("aside",undefined,"lesson-outline");aside.append(el("p","NESTE MÓDULO","pedagogy-label"));const nav=el("nav");nav.setAttribute("aria-label","Índice do módulo");
+ headings.forEach((heading,index)=>{heading.id=`secao-${current}-${index+1}`;const link=el("a",heading.textContent);link.href="#"+heading.id;nav.append(link)});aside.append(nav);
+ const note=el("div",undefined,"outline-note");note.append(el("strong","Seu percurso fica salvo"),el("span","Evidências e checkpoints são registrados na sua conta."));aside.append(note);return aside
+}
 function radarTool(evidence){
  const parts=[
   {letter:"R",name:"Rotina",question:"O que precisa acontecer e com qual frequência?",example:"Conferir as solicitações no início de cada turno."},
@@ -135,17 +141,18 @@ async function openModule(number){
  current=number;update();panel.setAttribute("aria-busy","true");message("Abrindo o módulo","Consultando sua matrícula e seu progresso…");
  try{
   const {lesson,progress}=await call(`?module=${number}`);
+  const reading=el("div",undefined,"lesson-reading");
   const intro=el("header",undefined,"lesson-intro");
   intro.append(el("p",`Módulo ${String(number).padStart(2,"0")} de ${String(catalog.modules.length).padStart(2,"0")}`,"lesson-index"),el("h1",lesson.title),el("p",lesson.outcome,"lesson-outcome"));
-  const meta=el("div",undefined,"lesson-meta-row");meta.append(el("span","Carga horária pedagógica estimada"),el("span","Evidência obrigatória"),el("span","Checkpoint V&C"));intro.append(meta);
-  panel.replaceChildren(intro);
-  if(progress?.completed_at){const complete=el("div",undefined,"completion-banner");complete.append(el("span","✓","completion-mark"));const copy=el("div");copy.append(el("strong","Módulo concluído"),el("span","Evidência e checkpoint registrados no seu percurso."));complete.append(copy);panel.append(complete)}
-  appendIf(panel,
+  const meta=el("div",undefined,"lesson-meta-row");meta.append(el("span",`Versão ${catalog.version}`),el("span","Evidência obrigatória"),el("span","Checkpoint V&C"));intro.append(meta);
+  const roadmap=el("div",undefined,"lesson-roadmap");[["01","Estudar"],["02","Analisar"],["03","Aplicar"],["04","Comprovar"]].forEach(([step,label])=>{const item=el("div");item.append(el("span",step),el("strong",label));roadmap.append(item)});intro.append(roadmap);reading.append(intro);
+  if(progress?.completed_at){const complete=el("div",undefined,"completion-banner");complete.append(el("span","✓","completion-mark"));const copy=el("div");copy.append(el("strong","Módulo concluído"),el("span","Evidência e checkpoint registrados no seu percurso."));complete.append(copy);reading.append(complete)}
+  appendIf(reading,
    narrativeBlock("ABERTURA","Por que este módulo importa",lesson.opening,"opening"),
    listSection("OBJETIVOS","Ao final, você será capaz de",lesson.objectives,"key")
   );
-  const study=el("section",undefined,"lesson-section");study.append(el("h2","Conteúdo aprofundado"));(lesson.study||[]).forEach((text,index)=>{const block=el("article",undefined,"content-block");const label=el("p","Conceito e aplicação","content-block-label");label.dataset.index=String(index+1).padStart(2,"0");block.append(label,el("p",text));study.append(block)});panel.append(study);
-  appendIf(panel,
+  const study=el("section",undefined,"lesson-section");study.append(el("p","ESTUDO ORIENTADO","pedagogy-label"),el("h2","Conteúdo aprofundado"));(lesson.study||[]).forEach((text,index)=>{const block=el("article",undefined,"content-block");const label=el("p",`Leitura ${index+1} de ${(lesson.study||[]).length}`,"content-block-label");label.dataset.index=String(index+1).padStart(2,"0");block.append(label,el("p",text));study.append(block)});reading.append(study);
+  appendIf(reading,
    conceptSection(lesson.concepts),
    narrativeBlock("PRINCÍPIO V&C",lesson.principle?.title||"Princípio de aplicação",lesson.principle?.body,"principle"),
    narrativeBlock("EXEMPLO",lesson.example?.title||"Exemplo aplicado",lesson.example?.body,"example"),
@@ -159,15 +166,17 @@ async function openModule(number){
    listSection("CHECKPOINT V&C","Antes de avançar, confirme que domina",lesson.checkpointReview,"checkpoint"),
    referenceSection(lesson.references)
   );
-  const task=el("section",undefined,"course-task");task.append(el("h2","Evidência da oficina"),el("p",lesson.evidence),el("p",`Critério de revisão: ${lesson.rubric}`));
+  const task=el("section",undefined,"course-task");task.append(el("p","PORTFÓLIO PROFISSIONAL","pedagogy-label"),el("h2","Evidência da oficina"),el("p",lesson.evidence));const rubric=el("div",undefined,"evidence-rubric");rubric.append(el("strong","Critério de qualidade"),el("p",lesson.rubric));task.append(rubric);
   if(progress?.review_feedback)task.append(el("p",`Parecer do professor: ${progress.review_feedback}`,"course-status"));
-  const label=el("label","Sua evidência"),area=el("textarea");area.value=progress?.evidence||"";area.maxLength=12000;area.placeholder="Descreva sua aplicação sem dados pessoais de colegas ou clientes.";label.append(area);
+  const draftKey=`vc_university_draft_${catalog.id}_${catalog.version}_${number}`;const label=el("label","Sua evidência"),area=el("textarea");area.value=progress?.evidence||localStorage.getItem(draftKey)||"";area.maxLength=12000;area.placeholder="Descreva a situação, sua análise, a decisão tomada e a evidência observável. Não inclua dados pessoais de terceiros.";label.append(area);const counter=el("span",`${area.value.length}/12000 caracteres · rascunho local`,`evidence-counter`);let draftTimer;area.addEventListener("input",()=>{counter.textContent=`${area.value.length}/12000 caracteres · rascunho local`;clearTimeout(draftTimer);draftTimer=setTimeout(()=>localStorage.setItem(draftKey,area.value),300)});label.append(counter);
   const save=el("button",progress?.submitted_at?"Atualizar evidência":"Entregar evidência"),status=el("p",progress?.submitted_at?"Evidência registrada na sua conta.":"Escreva ao menos 20 caracteres relevantes.","course-status");status.setAttribute("role","status");
   save.type="button";save.disabled=!!progress?.completed_at;
   const next=el("button","Abrir Checkpoint V&C");next.type="button";next.disabled=!progress?.submitted_at;
-  save.onclick=async()=>{save.disabled=true;try{await call(`?module=${number}`,{action:"evidence",evidence:area.value});status.textContent="Evidência registrada na sua conta. Agora realize o Checkpoint V&C.";next.disabled=false;const state=catalog.modules.find(m=>m.number===number);if(state)state.submitted=true;update()}catch(error){status.textContent=error.message==="evidence_invalid"?"Escreva ao menos 20 caracteres relevantes.":"Não foi possível salvar. A resposta permanece neste campo."}finally{save.disabled=!!progress?.completed_at}};
+  save.onclick=async()=>{save.disabled=true;status.textContent="Registrando evidência na sua conta…";try{await call(`?module=${number}`,{action:"evidence",evidence:area.value});localStorage.removeItem(draftKey);counter.textContent=`${area.value.length}/12000 caracteres · salvo na conta`;status.textContent="Evidência registrada na sua conta. Agora realize o Checkpoint V&C.";next.disabled=false;const state=catalog.modules.find(m=>m.number===number);if(state)state.submitted=true;update()}catch(error){status.textContent=error.message==="evidence_invalid"?"Escreva ao menos 20 caracteres relevantes.":"Não foi possível salvar. O rascunho permanece neste dispositivo."}finally{save.disabled=!!progress?.completed_at}};
   next.onclick=()=>{next.disabled=true;const holder=el("p","Carregando checkpoint…","course-status");task.append(holder);checkpoint(number,holder)};
-  task.append(label,save,status,next);const tool=COURSE_TOOLS[catalog.id]?.[number];if(tool)panel.append(tool(area));panel.append(task);panel.setAttribute("aria-busy","false");panel.focus()
+  task.append(label,save,status,next);const tool=COURSE_TOOLS[catalog.id]?.[number];if(tool)reading.append(tool(area));reading.append(task);
+  const end=el("footer",undefined,"lesson-end");const endCopy=el("div");endCopy.append(el("p","PRÓXIMO PASSO","pedagogy-label"),el("strong",progress?.completed_at?`Continue no Módulo ${Math.min(number+1,catalog.modules.length)}.`:"Entregue a evidência e alcance o critério do checkpoint."));const backTop=el("button","Voltar ao início do módulo","teacher-secondary");backTop.type="button";backTop.onclick=()=>panel.scrollIntoView({behavior:"smooth",block:"start"});end.append(endCopy,backTop);reading.append(end);
+  const layout=el("div",undefined,"lesson-reading-grid");layout.append(reading);const outline=lessonOutline(reading);if(outline)layout.append(outline);panel.replaceChildren(layout);panel.setAttribute("aria-busy","false");panel.focus()
  }catch(error){message("Módulo indisponível",error.message==="previous_module_required"?`Conclua o Módulo ${number-1} para liberar o próximo.`:"Não foi possível abrir este módulo. Tente novamente.")}
 }
 async function start(){

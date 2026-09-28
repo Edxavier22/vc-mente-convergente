@@ -1,4 +1,46 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Professor | Universidade V&amp;C</title><link rel="stylesheet" href="assets/css/universidade.css"></head>
-<body><header class="course-header"><a href="entrar.html">← Administração V&amp;C</a><strong>Universidade V&amp;C · Professor</strong></header>
-<main class="course-layout"><aside class="course-sidebar"><h1>Turma</h1><p>Curso Liderança Estratégica Aplicada</p><div id="professor-summary" aria-live="polite">Verificando acesso…</div><button id="refresh-professor" type="button">Atualizar entregas</button></aside><section id="professor-panel" class="course-panel" tabindex="-1" aria-live="polite"><h2>Área do professor</h2><p>Somente a conta proprietária autenticada pode consultar evidências e registrar pareceres.</p></section></main>
-<script type="module" src="assets/js/universidade-professor.js"></script></body></html>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#061524">
+  <title>Professor | Universidade V&amp;C</title>
+  <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/universidade.css">
+</head>
+<body class="teacher-body">
+  <a class="skip-link" href="#professor-panel">Ir para o painel</a>
+  <header class="course-header teacher-header">
+    <a href="universidade-vc.html" class="course-brand" aria-label="Universidade V&C — página inicial"><strong>V&amp;C</strong><span>Universidade</span></a>
+    <div class="course-header-context"><span>Ambiente educacional</span><strong>Painel do professor</strong></div>
+    <a href="entrar.html" class="course-back">Meus acessos</a>
+  </header>
+  <main class="teacher-shell">
+    <aside class="teacher-nav" aria-label="Navegação do professor">
+      <div class="teacher-identity">
+        <span class="teacher-avatar" aria-hidden="true">VC</span>
+        <div><p>Professor V&amp;C</p><strong>Liderança Estratégica Aplicada</strong></div>
+      </div>
+      <nav>
+        <a class="active" href="#visao-geral" aria-current="page"><span>01</span> Visão geral</a>
+        <a href="#fila-revisao"><span>02</span> Fila de revisão</a>
+        <a href="#alunos"><span>03</span> Alunos</a>
+        <a href="#avaliacoes"><span>04</span> Avaliações</a>
+      </nav>
+      <div class="teacher-scope"><span>Acesso protegido</span><p>Somente turmas atribuídas ao professor. Pareceres ficam registrados na trilha acadêmica.</p></div>
+    </aside>
+    <section class="teacher-main">
+      <div class="teacher-topbar">
+        <div><p class="teacher-kicker">Universidade V&amp;C</p><h1>Acompanhamento pedagógico</h1></div>
+        <button id="refresh-professor" class="teacher-refresh" type="button">Atualizar dados</button>
+      </div>
+      <p id="professor-summary" class="teacher-summary" aria-live="polite">Verificando acesso e turmas atribuídas…</p>
+      <section id="professor-panel" tabindex="-1" aria-live="polite" aria-busy="true">
+        <div class="teacher-loading"><span aria-hidden="true"></span><h2>Preparando o painel</h2><p>Consolidando matrículas, progresso, evidências e avaliações.</p></div>
+      </section>
+    </section>
+  </main>
+  <script type="module" src="assets/js/universidade-professor.js"></script>
+</body>
+</html>

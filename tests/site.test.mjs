@@ -146,13 +146,50 @@ test("RADAR e FOCO são ferramentas interativas, acessíveis e vinculadas à evi
 });
 
 test("painel do professor lê o modelo acadêmico multicursos", () => {
+  const page = read("professor-lideranca.html");
+  const app = read("assets/js/universidade-professor.js");
   const api = read("supabase/functions/vc-universidade-professor/index.ts");
+  assert.match(page, /href="#fila-revisao"/);
+  assert.match(page, /Acompanhamento pedagógico/);
+  assert.match(app, /Pulso da turma/);
+  assert.match(app, /FILA DE REVISÃO/i);
+  assert.match(app, /Acompanhamento individual/);
+  assert.match(app, /Registrar parecer/);
   assert.match(api, /vc_university_module_progress/);
   assert.match(api, /vc_university_final_attempts/);
+  assert.match(api, /vc_university_teachers/);
+  assert.match(api, /cohortIds/);
   assert.match(api, /question_count/);
   assert.match(api, /evidence_reviewed/);
   assert.doesNotMatch(api, /vc_course_assessment_attempts/);
   assert.doesNotMatch(api, /vc_course_evidence/);
+});
+
+test("contato não publica arquivos internos como downloads comerciais", () => {
+  const contact = read("contato.html");
+  assert.doesNotMatch(contact, /href="[^"]+\.md"/i);
+  assert.doesNotMatch(contact, /formato editável\/Markdown/i);
+  assert.match(contact, /Atendimento orientado/);
+});
+
+test("sala possui leitura orientada, índice e rascunho recuperável", () => {
+  const learner = read("assets/js/universidade-aluno-v2.js");
+  const styles = read("assets/css/universidade.css");
+  assert.match(learner, /NESTE MÓDULO/);
+  assert.match(learner, /lesson-roadmap/);
+  assert.match(learner, /localStorage\.getItem\(draftKey\)/);
+  assert.match(learner, /Critério de qualidade/);
+  assert.match(styles, /\.lesson-reading-grid/);
+  assert.match(styles, /\.lesson-outline/);
+});
+
+test("ativação v1.1 valida conteúdo e preserva o trigger de versão", () => {
+  const migration = read("supabase/migrations/20260928190000_universidade_ativar_conteudo_v11_homolog.sql");
+  assert.match(migration, /module_count is distinct from 10/);
+  assert.match(migration, /checkpoint_count is distinct from 50/);
+  assert.match(migration, /final_count < 30/);
+  assert.match(migration, /status='review'/);
+  assert.match(migration, /create trigger vc_university_pin_enrollment_version_guard/);
 });
 
 test("migração v1.1 exige cinco questões com distribuição pedagógica por módulo", () => {

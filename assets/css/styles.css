@@ -25,3 +25,18 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 @media(max-width:1120px){.nav-toggle{display:block}.header-cta{display:none}.main-nav{position:fixed;top:78px;left:0;right:0;flex-direction:column;align-items:stretch;background:var(--midnight);padding:18px;border-bottom:1px solid var(--line);transform:translateY(-130%);transition:transform .18s ease}.main-nav.open{transform:translateY(0)}.main-nav a{padding:10px 4px}.page-hero .section-inner,.section-head,.grid-5,.grid-4,.grid-3,.grid-2,.split,.split.reverse,.newsletter,.form-panel,.footer-grid,.pricing,.downloads{grid-template-columns:1fr}.method-map{grid-template-columns:repeat(2,minmax(0,1fr))}.trust-row,.ecosystem-row{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:1120px){.product-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.product-feature{align-items:flex-start;flex-direction:column}}
 @media(max-width:680px){.brand img{width:min(238px,68vw)}.hero{min-height:auto;background:linear-gradient(180deg,rgba(4,17,34,.98),rgba(4,17,34,.9) 70%,rgba(4,17,34,.56)),url("../images/mente-infinita-hero.png") center top/cover no-repeat,var(--midnight)}.hero-content{padding:78px 0 90px}.section,.page-hero{padding:72px 0}.trust-row,.ecosystem-row,.method-map,.kpi-grid,.heatmap,.form-grid,.product-grid{grid-template-columns:1fr}.product-grid.single{grid-template-columns:1fr}.card,.newsletter,.form-panel,.dashboard,.product-feature,.product-card{padding:24px}.premium-image{min-height:260px}.btn{width:100%}.catalog-group-head{grid-template-columns:1fr}.product-feature .actions{width:100%}}
+
+/* Legibilidade e contenção: superfícies escuras nunca herdam texto escuro. */
+html,body{max-width:100%;overflow-x:clip}
+.page-hero .section-inner>*,.section-inner>*,.grid>*,.split>*,.form-panel>*,.newsletter>*,.product-feature>*{min-width:0}
+.dashboard h2,.dashboard h3,.dashboard p,.dashboard span{color:var(--white)}
+.dashboard p,.dashboard span{color:rgba(255,255,255,.76)}
+.newsletter p,.form-panel p,.form-panel strong{color:rgba(255,255,255,.82)}
+.section.navy .offer-label{color:var(--gold-light)!important}
+.section.navy .card strong,.section.navy .card li{color:rgba(255,255,255,.9)}
+.card,.download-card,.product-card,.form-panel,.dashboard{overflow-wrap:anywhere}
+.download-card{display:flex;min-width:0;flex-direction:column;color:var(--ink);text-decoration:none}
+.download-card strong{color:var(--midnight);font-size:1.12rem}
+.download-card p{color:var(--muted)}
+input,textarea,select{min-width:0;max-width:100%}
+@media(max-width:420px){.section-inner{width:min(100% - 28px,var(--content))}.card,.newsletter,.form-panel,.dashboard,.product-feature,.product-card{padding:20px}}
