@@ -116,11 +116,69 @@ async function checkpointMinimum(courseId, moduleNo) {
  if (!Number.isInteger(minimum) || minimum < 1 || minimum > 5) throw new Error("checkpoint_config_unavailable");
  return minimum;
 }
-async function finalQuestions(courseId, course) {
+async function finalQuestionPool(courseId, course) {
  return database("vc_university_questions",
   "?select=question_id,prompt,choices,correct_index,review_concept,kind"
    + "&course_id=eq." + encodeURIComponent(courseId) + "&course_version=eq." + encodeURIComponent(course.version)
-   + "&purpose=eq.final&active=eq.true&order=question_id.asc&limit=20");
+   + "&purpose=eq.final&active=eq.true&order=question_id.asc&limit=100");
+}
+function shuffled(items) {
+ const result = [...items];
+ for (let index = result.length - 1; index > 0; index--) {
+  const random = new Uint32Array(1);
+  crypto.getRandomValues(random);
+  const target = random[0] % (index + 1);
+  [result[index], result[target]] = [result[target], result[index]];
+ }
+ return result;
+}
+function orderedSessionQuestions(pool, questionIds) {
+ const byId = new Map(pool.map(question => [question.question_id, question]));
+ const questions = questionIds.map(id => byId.get(id));
+ return questions.length === 20 && questions.every(Boolean) ? questions : null;
+}
+function selectFinalQuestions(pool) {
+ const kinds = ["concept", "application", "case", "decision"];
+ const selected = kinds.flatMap(kind => shuffled(pool.filter(question => question.kind === kind)).slice(0, 5));
+ if (selected.length !== 20) throw new Error("final_bank_distribution_unavailable");
+ return shuffled(selected);
+}
+async function finalAssessmentSession(enrollmentId, courseId, course) {
+ const now = new Date().toISOString();
+ const pool = await finalQuestionPool(courseId, course);
+ if (pool.length < 20) throw new Error("final_bank_unavailable");
+ const open = await database("vc_university_final_sessions",
+  "?select=session_id,question_ids,expires_at&" + scoped(enrollmentId)
+   + "&course_id=eq." + encodeURIComponent(courseId)
+   + "&course_version=eq." + encodeURIComponent(course.version)
+   + "&submitted_at=is.null&expires_at=gt." + encodeURIComponent(now)
+   + "&order=started_at.desc&limit=1");
+ const existing = open[0];
+ if (existing) {
+  const questions = orderedSessionQuestions(pool, existing.question_ids);
+  if (!questions) throw new Error("assessment_session_invalid");
+  return {sessionId: existing.session_id, expiresAt: existing.expires_at, questions};
+ }
+ const questions = selectFinalQuestions(pool);
+ const expiresAt = new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString();
+ const created = await database("vc_university_final_sessions", "", {
+  method: "POST", headers: {Prefer: "return=representation"},
+  body: JSON.stringify({enrollment_id: enrollmentId, course_id: courseId,
+   course_version: course.version, question_ids: questions.map(q => q.question_id), expires_at: expiresAt})
+ });
+ if (!created?.[0]?.session_id) throw new Error("assessment_session_unavailable");
+ return {sessionId: created[0].session_id, expiresAt, questions};
+}
+async function sessionQuestions(sessionId, enrollmentId, courseId, course) {
+ const sessions = await database("vc_university_final_sessions",
+  "?select=session_id,question_ids,expires_at&session_id=eq." + encodeURIComponent(sessionId)
+   + "&" + scoped(enrollmentId) + "&course_id=eq." + encodeURIComponent(courseId)
+   + "&course_version=eq." + encodeURIComponent(course.version)
+   + "&submitted_at=is.null&expires_at=gt." + encodeURIComponent(new Date().toISOString()) + "&limit=1");
+ if (!sessions.length) return null;
+ const pool = await finalQuestionPool(courseId, course);
+ const questions = orderedSessionQuestions(pool, sessions[0].question_ids);
+ return questions ? {session: sessions[0], questions} : null;
 }
 Deno.serve(async request => {
  const origin = request.headers.get("origin") ?? "";
@@ -143,26 +201,33 @@ Deno.serve(async request => {
   if (url.searchParams.get("view") === "final" || input?.action === "final") {
    if (!states.length || !states.every(s => s.completed))
     return reply(423, {error: "modules_required"}, origin);
-   const questions = await finalQuestions(courseId, course);
-   if (questions.length !== 20) return reply(503, {error: "final_unavailable"}, origin);
    const minimum = access.courseRecord.final_pass_percent;
    if (!Number.isInteger(minimum) || minimum < 1 || minimum > 100)
     throw new Error("final_config_unavailable");
-   if (request.method === "GET")
-    return reply(200, {minimum, questions: questions.map(({correct_index: _answer, review_concept: _concept, ...q}) => q)}, origin);
+   if (request.method === "GET") {
+    const assessment = await finalAssessmentSession(access.enrollment.enrollment_id, courseId, course);
+    return reply(200, {minimum, sessionId: assessment.sessionId, expiresAt: assessment.expiresAt,
+     questions: assessment.questions.map(({correct_index: _answer, review_concept: _concept, ...q}) => q)}, origin);
+   }
+   if (typeof input.session_id !== "string" ||
+       !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(input.session_id))
+    return reply(400, {error: "assessment_session_invalid"}, origin);
    if (!Array.isArray(input.answers) || input.answers.length !== 20 ||
        !input.answers.every(a => Number.isInteger(a) && a >= 0 && a <= 3))
     return reply(400, {error: "answers_invalid"}, origin);
-   const attempts = await database("vc_university_final_attempts",
-    "?select=attempt_id&" + scoped(access.enrollment.enrollment_id)
-     + "&submitted_at=gte." + new Date(Date.now()-86400000).toISOString());
-   if (attempts.length >= 3) return reply(429, {error: "attempt_limit", review: "Revise os módulos e tente amanhã."}, origin);
+   const assessment = await sessionQuestions(input.session_id, access.enrollment.enrollment_id, courseId, course);
+   if (!assessment) return reply(409, {error: "assessment_session_invalid"}, origin);
+   const questions = assessment.questions;
    const score = questions.reduce((n, q, i) => n + (input.answers[i] === q.correct_index ? 1 : 0), 0);
    const review = [...new Set(questions.filter((q, i) => input.answers[i] !== q.correct_index).map(q => q.review_concept))];
-   await database("vc_university_final_attempts", "", {
-    method: "POST", headers: {Prefer: "return=minimal"},
-    body: JSON.stringify({enrollment_id: access.enrollment.enrollment_id, score, review_concepts: review})
+   const stored = await database("rpc/vc_university_submit_final_attempt", "", {
+    method: "POST", body: JSON.stringify({p_session_id: input.session_id,
+     p_enrollment_id: access.enrollment.enrollment_id, p_course_id: courseId,
+     p_course_version: course.version, p_score: score, p_review_concepts: review})
    });
+   if (stored?.error === "attempt_limit")
+    return reply(429, {error: "attempt_limit", review: "Revise os módulos e tente amanhã."}, origin);
+   if (!stored?.attempt_id) return reply(409, {error: "assessment_session_invalid"}, origin);
    await recordEvent(access.enrollment.enrollment_id, access.user.id, "final_assessment_attempted", null,
     {course_id: courseId, course_version: course.version, score, total: 20,
      minimum_percent: minimum, passed: score * 5 >= minimum});

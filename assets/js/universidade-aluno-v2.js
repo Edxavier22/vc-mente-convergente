@@ -125,9 +125,9 @@ async function assessment(){
   data.questions.forEach((q,i)=>{const field=el("fieldset");field.append(el("legend",`${i+1}. ${q.prompt}`));q.choices.forEach((choice,j)=>{const label=el("label"),input=el("input");input.type="radio";input.name=`final${i}`;input.value=String(j);label.append(input,document.createTextNode(choice));field.append(label)});form.append(field)});
   const submit=el("button","Enviar avaliação"),result=el("p","","course-status");submit.type="submit";result.setAttribute("role","status");form.append(submit,result);
   form.onsubmit=async event=>{event.preventDefault();const selected=data.questions.map((_,i)=>form.querySelector(`input[name="final${i}"]:checked`));if(selected.some(x=>!x)){result.textContent="Responda às 20 questões antes de enviar.";return}submit.disabled=true;try{
-   const grade=await call("",{action:"final",answers:selected.map(x=>Number(x.value))});
+   const grade=await call("",{action:"final",session_id:data.sessionId,answers:selected.map(x=>Number(x.value))});
    result.textContent=grade.passed?`${grade.score}/20 — avaliação aprovada. A certificação depende dos demais critérios da formação.`:`${grade.score}/20 — revise: ${grade.review.join("; ")}. Você pode tentar novamente após a revisão.`;
-  }catch(error){result.textContent=error.message==="attempt_limit"?"Limite de três tentativas nas últimas 24 horas. Revise os módulos e tente amanhã.":error.message==="modules_required"?"Conclua todos os módulos antes da avaliação.":"Não foi possível registrar a avaliação. Tente novamente mais tarde."}finally{submit.disabled=false}};
+  }catch(error){result.textContent=error.message==="attempt_limit"?"Limite de três tentativas nas últimas 24 horas. Revise os módulos e tente amanhã.":error.message==="modules_required"?"Conclua todos os módulos antes da avaliação.":error.message==="assessment_session_invalid"?"Esta prova expirou ou já foi enviada. Abra uma nova avaliação para continuar.":"Não foi possível registrar a avaliação. Tente novamente mais tarde."}finally{submit.disabled=false}};
   panel.setAttribute("aria-busy","false");panel.replaceChildren(form);panel.focus()
  }catch(error){message("Avaliação indisponível",error.message==="modules_required"?"Conclua os módulos antes de fazer a avaliação.":"As questões ainda não estão disponíveis. Seu progresso permanece salvo na sua conta.")}
 }

@@ -163,3 +163,18 @@ test("migração v1.1 exige cinco questões com distribuição pedagógica por m
   assert.match(migration, /q\.kind = 'application'\) <> 2/);
   assert.match(migration, /q\.kind = 'decision'\) <> 1/);
 });
+
+test("avaliação final v1.1 usa banco ampliado e sessão atômica privada", () => {
+  const migration = read("supabase/migrations/20260928134000_universidade_avaliacao_final_v11.sql");
+  const api = read("supabase/functions/vc-universidade-learner-v2/index.ts");
+  const learner = read("assets/js/universidade-aluno-v2.js");
+  assert.match(migration, /active_items < 30/);
+  assert.match(migration, /cardinality\(question_ids\) = 20/);
+  assert.match(migration, /security invoker/i);
+  assert.match(migration, /grant execute on function public\.vc_university_submit_final_attempt[^;]+to service_role/s);
+  assert.match(api, /finalQuestionPool/);
+  assert.match(api, /crypto\.getRandomValues/);
+  assert.match(api, /const kinds = \["concept", "application", "case", "decision"\]/);
+  assert.match(api, /rpc\/vc_university_submit_final_attempt/);
+  assert.match(learner, /session_id:data\.sessionId/);
+});

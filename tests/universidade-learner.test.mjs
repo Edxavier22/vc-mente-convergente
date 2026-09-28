@@ -15,6 +15,8 @@ let attemptWrites = 0;
 let finalWrites = 0;
 let eventWrites = [];
 let finalAttempts = [];
+let finalSession = null;
+const finalSessionId = "11111111-1111-4111-8111-111111111111";
 let allowed = true;
 let rightsProducts = ["P-021"];
 let enrolled = true;
@@ -45,9 +47,24 @@ globalThis.fetch = async (input, options = {}) => {
   return Response.json(progress);
  }
  if (url.pathname.endsWith("/vc_university_questions")) return Response.json(
-  Array.from({length: url.searchParams.get("purpose") === "eq.final" ? 20 : 5}, (_, i) => ({question_id: `q-${i}`, prompt: "Qual decisão?", choices: ["A","B","C","D"],
-   correct_index: 2, review_concept: "Revisar diagnóstico", kind: "concept"}))
+  Array.from({length: url.searchParams.get("purpose") === "eq.final" ? 30 : 5}, (_, i) => ({question_id: `q-${i}`, prompt: "Qual decisão?", choices: ["A","B","C","D"],
+   correct_index: 2, review_concept: "Revisar diagnóstico", kind: url.searchParams.get("purpose") === "eq.final"
+    ? ["concept","application","case","decision"][i % 4] : "concept"}))
  );
+ if (url.pathname.endsWith("/vc_university_final_sessions")) {
+  if (options.method === "POST") {
+   const body = JSON.parse(options.body);
+   finalSession = {session_id: finalSessionId, question_ids: body.question_ids, expires_at: body.expires_at};
+   return Response.json([finalSession], {status: 201});
+  }
+  return Response.json(finalSession ? [finalSession] : []);
+ }
+ if (url.pathname.endsWith("/rpc/vc_university_submit_final_attempt")) {
+  if (finalAttempts.length >= 3) return Response.json({error: "attempt_limit"});
+  finalWrites++;
+  finalSession = null;
+  return Response.json({attempt_id: `attempt-${finalWrites}`});
+ }
  if (url.pathname.endsWith("/vc_university_final_attempts")) {
   if (options.method === "POST") {finalWrites++; return new Response(null, {status: 201});}
   return Response.json(finalAttempts);
@@ -212,20 +229,26 @@ test("avaliação final permanece bloqueada até todos os módulos", async () =>
 });
 test("avaliação corrige no servidor, oculta gabarito e registra tentativas", async () => {
  progress = [1,2].map(module_no => ({module_no, completed_at: "2026-09-19T00:00:00Z"}));
- finalAttempts = []; finalWrites = 0; eventWrites = [];
+ finalAttempts = []; finalWrites = 0; finalSession = null; eventWrites = [];
  const view = await handler(request("?view=final"));
  assert.equal(view.status, 200);
  const data = await view.json();
  assert.equal(data.questions.length, 20);
  assert.equal(data.minimum, 70);
+ assert.equal(data.sessionId, finalSessionId);
+ assert.deepEqual(Object.fromEntries(["concept","application","case","decision"].map(kind =>
+  [kind, data.questions.filter(question => question.kind === kind).length])),
+  {concept: 5, application: 5, case: 5, decision: 5});
  assert.equal(JSON.stringify(data).includes("correct_index"), false);
  assert.equal(JSON.stringify(data).includes("review_concept"), false);
- assert.equal((await handler(request("", "POST", {action: "final", answers: Array(19).fill(2)}))).status, 400);
+ assert.equal((await handler(request("", "POST", {action: "final", session_id: data.sessionId, answers: Array(19).fill(2)}))).status, 400);
  assert.equal(finalWrites, 0);
- const low = await (await handler(request("", "POST", {action: "final", answers: Array(20).fill(1)}))).json();
+ const low = await (await handler(request("", "POST", {action: "final", session_id: data.sessionId, answers: Array(20).fill(1)}))).json();
  assert.equal(low.passed, false);
  assert.deepEqual(low.review, ["Revisar diagnóstico"]);
- const high = await (await handler(request("", "POST", {action: "final", answers: [...Array(14).fill(2),...Array(6).fill(1)]}))).json();
+ const retry = await (await handler(request("?view=final"))).json();
+ const high = await (await handler(request("", "POST", {action: "final", session_id: retry.sessionId,
+  answers: [...Array(14).fill(2),...Array(6).fill(1)]}))).json();
  assert.equal(high.score, 14);
  assert.equal(high.passed, true);
  assert.equal(finalWrites, 2);
@@ -233,7 +256,18 @@ test("avaliação corrige no servidor, oculta gabarito e registra tentativas", a
   ["final_assessment_attempted", "final_assessment_attempted"]);
  assert.equal(JSON.stringify(eventWrites).includes("answers"), false);
  finalAttempts = [1,2,3].map(attempt_id => ({attempt_id}));
- assert.equal((await handler(request("", "POST", {action: "final", answers: Array(20).fill(2)}))).status, 429);
+ const limited = await (await handler(request("?view=final"))).json();
+ assert.equal((await handler(request("", "POST", {action: "final", session_id: limited.sessionId,
+  answers: Array(20).fill(2)}))).status, 429);
  assert.equal(finalWrites, 2);
- finalAttempts = [];
+ finalAttempts = []; finalSession = null;
+});
+
+test("avaliação rejeita envio sem sessão persistida", async () => {
+ progress = [1,2].map(module_no => ({module_no, completed_at: "2026-09-19T00:00:00Z"}));
+ finalWrites = 0; finalSession = null;
+ const response = await handler(request("", "POST", {action: "final", answers: Array(20).fill(2)}));
+ assert.equal(response.status, 400);
+ assert.equal((await response.json()).error, "assessment_session_invalid");
+ assert.equal(finalWrites, 0);
 });
