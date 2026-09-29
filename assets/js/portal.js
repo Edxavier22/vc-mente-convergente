@@ -364,6 +364,8 @@ async function renderAdmin(scope, session) {
   if (professorCard) professorCard.hidden = !platformAdmin;
   const universityAdminCard = document.querySelector("#university-admin-card");
   if (universityAdminCard) universityAdminCard.hidden = !platformAdmin || session?.user?.email?.toLowerCase() !== "vcmenteconvergente@gmail.com";
+  const corporateUniversityCard = document.querySelector("#corporate-university-card");
+  if (corporateUniversityCard) corporateUniversityCard.hidden = organizations.length === 0;
   const ownerCourseCard = document.querySelector("#owner-course-card");
   if (ownerCourseCard) ownerCourseCard.hidden = !platformAdmin || session?.user?.email?.toLowerCase() !== "vcmenteconvergente@gmail.com";
   const ownerProduct = document.querySelector("#owner-product");

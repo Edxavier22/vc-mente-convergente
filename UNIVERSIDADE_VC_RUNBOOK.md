@@ -1,6 +1,6 @@
 # Universidade V&C — ativação controlada
 
-Estado verificado em 29/09/2026. Este documento separa código, banco, funções remotas, preview e produção. O PR #5 da branch `feature/universidade-administracao` permanece como **Draft**, sem merge. A produção continua vinculada à `main`.
+Estado verificado em 29/09/2026. Este documento separa código, banco, funções remotas, preview e produção. Os PRs #5 (`feature/universidade-administracao`) e #6 (`feature/universidade-certificacao`) permanecem como **Draft**, sem merge. A produção continua vinculada à `main`.
 
 ## Estrutura acadêmica ativa
 
@@ -20,12 +20,12 @@ Estado verificado em 29/09/2026. Este documento separa código, banco, funções
 - A tabela de certificados está com RLS ativa e sem leitura para `anon` ou `authenticated`; a consulta pública passa por função limitada e retorna somente autenticidade, nome, curso, carga, conclusão, emissor e código.
 - O certificado autenticado possui frente e segunda página programática, QR Code e impressão/salvamento em PDF pelo navegador.
 - Certificados já emitidos permanecem verificáveis mesmo que o curso seja atualizado, pois título, versão, carga e programa são snapshots.
-- Funções remotas ativas: `vc-universidade-learner-v2` v11, `vc-universidade-admin` v2 e `vc-certificado-publico` v1.
+- Funções remotas ativas após as correções incrementais: `vc-universidade-learner-v2` v12, `vc-universidade-admin` v4, `vc-certificado-publico` v1 e `vc-universidade-empresa` v1.
 - Código inexistente retorna 404 sem expor dados; rota acadêmica sem sessão retorna 401.
 
 ## Verificações concluídas
 
-- 39 testes automatizados aprovados, sem falhas.
+- 43 testes automatizados aprovados, sem falhas.
 - `git diff --check` aprovado.
 - CORS validado no domínio oficial e nos previews versionados; origens externas não são refletidas.
 - RLS, ausência de grants públicos e prefixo `LEA` conferidos no banco.
@@ -44,12 +44,25 @@ Esses dados confirmam que a nova camada não certificou o administrador ou qualq
 
 ## Gates ainda abertos
 
-1. Aplicar o patch da Fase 11 em uma branch baseada em `feature/universidade-administracao`, publicar o preview e manter os PRs sem merge.
-2. Homologar visualmente as páginas de validação e certificado em desktop e celular no preview. A tentativa local automatizada ficou bloqueada pela indisponibilidade do binário Chrome no executor, não por erro da aplicação.
+1. Homologar visualmente as páginas de validação e certificado em desktop e celular no preview da Fase 11. A tentativa local automatizada ficou bloqueada pela indisponibilidade do binário Chrome no executor, não por erro da aplicação.
+2. Confirmar o PR #6 como Draft e preservar o PR #5 sem merge até o término da homologação.
 3. Repetir no navegador autenticado: aluno, professor e administração após a correção de CORS.
 4. Percorrer M1–M10 com conta de homologação, aprovar avaliação e projeto e emitir o primeiro certificado de homologação; conferir QR, impressão e validação pública.
 5. Definir razão social/CNPJ ofertante e responsável nominal antes da primeira emissão comercial. Enquanto não definidos, esses dados não são inventados.
 6. Habilitar proteção contra senhas vazadas no painel do Supabase Auth.
+
+## Fase 12 — arquitetura B2C/B2B
+
+- A Universidade reutiliza `vc_organizations`, `vc_memberships`, `vc_seat_pools` e `vc_seat_assignments`; não foi criado um cadastro corporativo paralelo.
+- Turmas distinguem B2C/B2B, modalidade Individual/Profissional/Empresarial e entrega on-line/presencial/híbrida.
+- Matrículas empresariais podem ser vinculadas a uma vaga canônica, e o banco bloqueia sobrelotação de turma mesmo sob concorrência.
+- O gestor corporativo precisa ter membership ativa com papel `owner`, `admin` ou `manager`.
+- O painel empresarial entrega somente participantes, início, progresso, conclusão, avaliação agregada e certificação consolidada.
+- Turmas abaixo do grupo mínimo configurado (padrão 5) têm indicadores acadêmicos suprimidos para evitar identificação indireta.
+- Evidências, respostas, reflexões, comentários, conceitos de revisão e histórico individual não fazem parte da resposta corporativa.
+- Migration principal e migration de índices aplicadas; testes transacionais foram revertidos e não deixaram dados fictícios.
+- `vc_university_corporate_reports` possui RLS, nenhuma leitura para `anon`/`authenticated` e grants explícitos somente para o serviço.
+- Advisors sem chaves estrangeiras desindexadas após a correção. Avisos de índices ainda não utilizados são esperados em tabelas novas/vazias.
 
 ## Produção e comunicação comercial
 

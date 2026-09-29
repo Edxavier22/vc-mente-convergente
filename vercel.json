@@ -5,7 +5,8 @@
   "rewrites": [
     { "source": "/meus-acessos", "destination": "/entrar" },
     { "source": "/admin", "destination": "/entrar" },
-    { "source": "/admin/universidade", "destination": "/administracao-universidade" }
+    { "source": "/admin/universidade", "destination": "/administracao-universidade" },
+    { "source": "/empresa/universidade", "destination": "/gestao-empresa-universidade" }
   ],
   "headers": [
     {

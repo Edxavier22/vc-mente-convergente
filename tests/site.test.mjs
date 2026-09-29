@@ -283,3 +283,54 @@ test("certificação verificável exige todos os critérios e preserva snapshots
   assert.match(certificateApp, /window\.print/);
   assert.match(JSON.stringify(JSON.parse(read("vercel.json")).headers), /img-src 'self' data: https:\/\/ctzgsxxbyvruzmfqibnl\.supabase\.co/);
 });
+
+test("Universidade reutiliza organizações e vagas canônicas para B2C e B2B", () => {
+  const migration = read("supabase/migrations/20260929233712_universidade_b2c_b2b_privacidade.sql");
+  assert.match(migration, /core_organization_id uuid unique[\s\S]+references public\.vc_organizations/);
+  assert.match(migration, /market_segment in \('b2c','b2b'\)/);
+  assert.match(migration, /commercial_modality in \('individual','professional','enterprise'\)/);
+  assert.match(migration, /seat_pool_id uuid references public\.vc_seat_pools/);
+  assert.match(migration, /seat_assignment_id uuid unique[\s\S]+vc_seat_assignments/);
+  assert.match(migration, /cohort_capacity_exceeded/);
+  assert.match(migration, /valid_user_seat_assignment_required/);
+});
+
+test("relatório corporativo é agregado e suprime amostras pequenas", () => {
+  const migration = read("supabase/migrations/20260929233712_universidade_b2c_b2b_privacidade.sql");
+  const api = read("supabase/functions/vc-universidade-empresa/index.ts");
+  assert.match(migration, /privacy_mode text not null default 'aggregated_only'/);
+  assert.match(migration, /minimum_report_group_size smallint not null default 5/);
+  assert.match(migration, /vc_university_guard_corporate_report_privacy/);
+  assert.match(migration, /revoke all on public\.vc_university_organizations,[\s\S]+vc_university_corporate_reports from public, anon, authenticated/);
+  assert.match(api, /member_role=in\.\(owner,admin,manager\)/);
+  assert.match(api, /privacy_suppressed: suppressed/);
+  assert.match(api, /average_assessment: suppressed \|\| evaluated\.length < minimum \? null/);
+  assert.doesNotMatch(api, /select=[^"\n]*(?:evidence|review_feedback|review_concepts|learner_name_snapshot)/);
+});
+
+test("gestor corporativo possui painel protegido e responsivo", () => {
+  const page = read("gestao-empresa-universidade.html");
+  const app = read("assets/js/universidade-empresa.js");
+  const portal = read("assets/js/portal.js");
+  const styles = read("assets/css/universidade.css");
+  const vercel = JSON.parse(read("vercel.json"));
+  assert.match(page, /noindex,nofollow/);
+  assert.match(page, /Privacidade por padrão/);
+  assert.match(app, /vc-universidade-empresa/);
+  assert.match(app, /Indicadores protegidos/);
+  assert.match(portal, /corporate-university-card/);
+  assert.match(styles, /\.vc-corporate-cohorts/);
+  assert.equal(vercel.rewrites.some((item) => item.source === "/empresa/universidade"), true);
+});
+
+test("administração distingue organizações sem expor conteúdo acadêmico", () => {
+  const page = read("administracao-universidade.html");
+  const app = read("assets/js/universidade-admin.js");
+  const api = read("supabase/functions/vc-universidade-admin/index.ts");
+  assert.match(page, /id="organizacoes"/);
+  assert.match(page, /id="organization-rows"/);
+  assert.match(app, /minimum_report_group_size/);
+  assert.match(api, /active_organizations/);
+  assert.match(api, /enterprise_cohorts/);
+  assert.doesNotMatch(api, /select=[^"\n]*(?:evidence|review_feedback|review_concepts)/);
+});
