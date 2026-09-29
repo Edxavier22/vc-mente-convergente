@@ -8,7 +8,7 @@ const OWNER_PRODUCT_ID = "P-021";
 const OWNER_ID = "70aa4d75-bbb9-4839-aad8-670b7654664d";
 const OWNER_EMAIL = "vcmenteconvergente@gmail.com";
 const PROD = "https://vc-mente-convergente.vercel.app";
-const FIELDS = "enrollment_id,course_id,course_version,status,cohort_id";
+const FIELDS = "enrollment_id,course_id,course_version,status,cohort_id,enrolled_at,completed_at";
 
 function trustedOrigin(origin) {
  return origin === PROD ||
@@ -74,7 +74,8 @@ async function context(bearer, courseId) {
  const user = await identity.json();
  if (!user?.id) return {error: 401};
  const metadata = await database("vc_university_courses",
-  "?select=course_id,product_id,version,final_pass_percent&course_id=eq." + encodeURIComponent(courseId) + "&limit=1");
+  "?select=course_id,product_id,title,version,modality,hours_minutes,final_pass_percent,certificate_requires_project_review" +
+   "&course_id=eq." + encodeURIComponent(courseId) + "&limit=1");
  const courseRecord = metadata[0];
  if (!courseRecord?.product_id || !courseRecord.version) return {error: 404};
  const rights = await core("/functions/v1/vc-core-private-api/v1/me/access?market=BR&locale=pt-BR", bearer);
@@ -89,7 +90,8 @@ async function context(bearer, courseId) {
   if (!scope.ok || (await scope.json())?.data?.platform_admin !== true) return {error: 403};
  }
  const enrollments = await database("vc_university_enrollments",
-  "?select=" + FIELDS + "&course_id=eq." + encodeURIComponent(courseId) + "&user_id=eq." + user.id + "&status=eq.active&limit=1");
+  "?select=" + FIELDS + "&course_id=eq." + encodeURIComponent(courseId) + "&user_id=eq." + user.id +
+   "&status=in.(active,completed)&limit=1");
  if (!enrollments.length) return {error: 409, code: "enrollment_sync_required"};
  return {user, enrollment: enrollments[0], courseRecord};
 }
@@ -144,6 +146,43 @@ function selectFinalQuestions(pool) {
  const selected = kinds.flatMap(kind => shuffled(pool.filter(question => question.kind === kind)).slice(0, 5));
  if (selected.length !== 20) throw new Error("final_bank_distribution_unavailable");
  return shuffled(selected);
+}
+function validLearnerName(value) {
+ return typeof value === "string" && value.trim().length >= 3 && value.trim().length <= 160 &&
+  value.trim().split(/\s+/).length >= 2 && /^[A-Za-zÀ-ÖØ-öø-ÿ' -]+$/.test(value.trim());
+}
+async function completionState(access, courseId, course, progress, states) {
+ const [attempts, certificates] = await Promise.all([
+  database("vc_university_final_attempts",
+   "?select=score,question_count,submitted_at&" + scoped(access.enrollment.enrollment_id) +
+    "&course_id=eq." + encodeURIComponent(courseId) +
+    "&course_version=eq." + encodeURIComponent(course.version) + "&order=score.desc,submitted_at.desc&limit=1"),
+  database("vc_university_certificates",
+   "?select=certificate_id,public_code,course_id_snapshot,course_title_snapshot,course_version_snapshot," +
+    "nature_snapshot,modality_snapshot,hours_minutes_snapshot,learner_name_snapshot,period_start_snapshot," +
+    "completion_date_snapshot,issued_at,issuer_snapshot,issuer_legal_name_snapshot,issuer_document_snapshot," +
+    "responsible_snapshot,result_percent_snapshot,program_snapshot,validation_url_snapshot,revoked_at&" +
+    scoped(access.enrollment.enrollment_id) + "&limit=1")
+ ]);
+ const best = attempts[0];
+ const finalPercent = best ? Math.floor(best.score * 100 / best.question_count) : null;
+ const projectModule = Math.max(...states.map(item => item.number));
+ const project = progress.find(item => item.module_no === projectModule);
+ const requirements = {
+  modules: {done: states.filter(item => item.completed).length, required: states.length,
+   met: states.length > 0 && states.every(item => item.completed)},
+  evidence: {done: progress.filter(item => item.submitted_at && item.evidence?.trim()).length,
+   required: states.length, met: states.length > 0 && progress.filter(item => item.submitted_at && item.evidence?.trim()).length === states.length},
+  checkpoints: {done: progress.filter(item => item.checkpoint_passed_at).length,
+   required: states.length, met: states.length > 0 && progress.filter(item => item.checkpoint_passed_at).length === states.length},
+  assessment: {score: finalPercent, required: access.courseRecord.final_pass_percent,
+   met: finalPercent !== null && finalPercent >= access.courseRecord.final_pass_percent},
+  project: {required: access.courseRecord.certificate_requires_project_review,
+   status: project?.review_status ?? "pending",
+   met: !access.courseRecord.certificate_requires_project_review || project?.review_status === "approved"}
+ };
+ const ready = Object.values(requirements).every(item => item.met);
+ return {ready, requirements, certificate: certificates[0] ?? null};
 }
 async function finalAssessmentSession(enrollmentId, courseId, course) {
  const now = new Date().toISOString();
@@ -200,6 +239,26 @@ Deno.serve(async request => {
    throw new Error("enrollment_version_unavailable");
   const {course, progress, states} = await courseAndProgress(courseId, enrollmentVersion, access.enrollment.enrollment_id);
   const input = request.method === "POST" ? await request.json().catch(() => null) : null;
+  if (url.searchParams.get("view") === "completion" || input?.action === "issue_certificate") {
+   const completion = await completionState(access, courseId, course, progress, states);
+   if (request.method === "GET" || completion.certificate)
+    return reply(200, completion, origin);
+   if (!completion.ready) return reply(423, {error: "completion_requirements_pending",
+    requirements: completion.requirements}, origin);
+   if (!validLearnerName(input.learner_name))
+    return reply(400, {error: "learner_name_required"}, origin);
+   let issued = await database("vc_university_certificates?on_conflict=enrollment_id", "", {
+    method: "POST", headers: {Prefer: "resolution=ignore-duplicates,return=representation"},
+    body: JSON.stringify({enrollment_id: access.enrollment.enrollment_id,
+     learner_name_snapshot: input.learner_name.trim()})
+   });
+   if (!issued?.length) issued = await database("vc_university_certificates",
+    "?select=certificate_id,public_code,issued_at,learner_name_snapshot&" +
+     scoped(access.enrollment.enrollment_id) + "&limit=1");
+   if (!issued?.[0]?.public_code) throw new Error("certificate_issue_failed");
+   return reply(201, {ready: true, requirements: completion.requirements,
+    certificate: issued[0]}, origin);
+  }
   if (url.searchParams.get("view") === "final" || input?.action === "final") {
    if (!states.length || !states.every(s => s.completed))
     return reply(423, {error: "modules_required"}, origin);

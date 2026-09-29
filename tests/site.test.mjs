@@ -186,6 +186,9 @@ test("administração da Universidade é privada, real e separada do professor",
   assert.match(api, /access\?\.platform_admin !== true/);
   assert.match(api, /select=enrollment_id,module_no,submitted_at,completed_at,review_status,reviewed_at/);
   assert.doesNotMatch(api, /select=[^\n"]*evidence/);
+  assert.match(page, /id="certificados"/);
+  assert.match(script, /certificate-rows/);
+  assert.match(api, /learner_name_snapshot,course_title_snapshot,issued_at,revoked_at/);
   assert.match(portal, /university-admin-card/);
   assert.equal(vercel.rewrites.some((item) => item.source === "/admin/universidade"), true);
 });
@@ -254,4 +257,29 @@ test("avaliação final v1.1 usa banco ampliado e sessão atômica privada", () 
   assert.match(api, /const kinds = \["concept", "application", "case", "decision"\]/);
   assert.match(api, /rpc\/vc_university_submit_final_attempt/);
   assert.match(learner, /session_id:data\.sessionId/);
+});
+
+test("certificação verificável exige todos os critérios e preserva snapshots", () => {
+  const migration = read("supabase/migrations/20260928201649_universidade_certificacao_verificavel.sql");
+  const learnerApi = read("supabase/functions/vc-universidade-learner-v2/index.ts");
+  const publicApi = read("supabase/functions/vc-certificado-publico/index.ts");
+  const validation = read("validar-certificado.html");
+  const certificate = read("certificado.html");
+  const certificateApp = read("assets/js/certificado-aluno.js");
+  assert.match(migration, /academic_requirements_incomplete/);
+  assert.match(migration, /final_assessment_required/);
+  assert.match(migration, /project_approval_required/);
+  assert.match(migration, /issued_certificate_is_immutable/);
+  assert.match(migration, /vc_university_certificate_number_seq/);
+  assert.match(migration, /revoke all on public\.vc_university_certificates from public, anon, authenticated/);
+  assert.match(learnerApi, /completion_requirements_pending/);
+  assert.match(learnerApi, /issue_certificate/);
+  assert.match(publicApi, /certificate_not_found/);
+  assert.match(publicApi, /"public_code", "learner_name_snapshot", "course_title_snapshot"/);
+  assert.doesNotMatch(publicApi, /evidence|review_feedback|answers|review_concepts/);
+  assert.match(validation, /Validação pública/);
+  assert.match(certificate, /noindex,nofollow/);
+  assert.match(certificateApp, /Conteúdo programático/);
+  assert.match(certificateApp, /window\.print/);
+  assert.match(JSON.stringify(JSON.parse(read("vercel.json")).headers), /img-src 'self' data: https:\/\/ctzgsxxbyvruzmfqibnl\.supabase\.co/);
 });
