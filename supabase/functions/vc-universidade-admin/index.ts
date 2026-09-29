@@ -56,15 +56,16 @@ Deno.serve(async request => {
   try {
     const owner = await assertOwner(bearer);
     if (owner.error) return reply(owner.error, { error: owner.error === 403 ? "owner_required" : owner.error === 401 ? "sign_in_required" : "service_unavailable" }, origin);
-    const [courses, modules, cohorts, organizations, enrollments, teachers, progress, finals] = await Promise.all([
-      db("vc_university_courses", "?select=course_id,title,description,modality,hours_minutes,version,status,final_pass_percent,certificate_requires_project_review&order=created_at.asc&limit=100"),
+    const [courses, modules, cohorts, organizations, enrollments, teachers, progress, finals, certificates] = await Promise.all([
+      db("vc_university_courses", "?select=course_id,title,description,modality,hours_minutes,version,status,final_pass_percent,certificate_requires_project_review,certificate_prefix&order=created_at.asc&limit=100"),
       db("vc_university_modules", "?select=course_id,module_no&limit=1000"),
       db("vc_university_cohorts", "?select=cohort_id,course_id,organization_id,label,capacity,status,created_at&order=created_at.desc&limit=1000"),
       db("vc_university_organizations", "?select=organization_id,legal_name&limit=1000"),
       db("vc_university_enrollments", "?select=enrollment_id,cohort_id,course_id,user_id,status,enrolled_at,completed_at&order=enrolled_at.desc&limit=2000"),
       db("vc_university_teachers", "?select=cohort_id,user_id&limit=1000"),
       db("vc_university_module_progress", "?select=enrollment_id,module_no,submitted_at,completed_at,review_status,reviewed_at&limit=10000"),
-      db("vc_university_final_attempts", "?select=enrollment_id,score,question_count,submitted_at&order=submitted_at.desc&limit=5000")
+      db("vc_university_final_attempts", "?select=enrollment_id,score,question_count,submitted_at&order=submitted_at.desc&limit=5000"),
+      db("vc_university_certificates", "?select=certificate_id,enrollment_id,public_code,learner_name_snapshot,course_title_snapshot,issued_at,revoked_at&order=issued_at.desc&limit=5000")
     ]);
     const userIds = [...new Set([...enrollments.map((row: any) => row.user_id), ...teachers.map((row: any) => row.user_id)])].slice(0, 500);
     const people: Record<string, string> = {};
@@ -105,9 +106,11 @@ Deno.serve(async request => {
       enrollments: enrollmentRows,
       teachers: [...new Set(teachers.map((row: any) => row.user_id))].map(id => ({ teacher: people[id] ?? id,
         cohorts: teachers.filter((row: any) => row.user_id === id).map((row: any) => cohortMap[row.cohort_id]?.label ?? row.cohort_id) })),
+      certificates: certificates.map((row: any) => ({ code: row.public_code, learner: row.learner_name_snapshot,
+        course: row.course_title_snapshot, issued_at: row.issued_at, status: row.revoked_at ? "Revogado" : "Autêntico" })),
       readiness: [
         { label: "Pagamentos", status: "Não implementado", message: "A Universidade ainda não possui conciliação financeira própria. Nenhum valor é estimado neste painel." },
-        { label: "Certificados", status: "Fase 11", message: "Emissão e validação pública serão ativadas somente após os requisitos acadêmicos e a auditoria final." }
+        { label: "Certificados", status: "Operacional", message: `${certificates.filter((row: any) => !row.revoked_at).length} certificado(s) ativo(s), com emissão condicionada e validação pública por código ou QR Code.` }
       ], scope: { owner_id: owner.user.id, privacy: "aggregated_only" }
     }, origin);
   } catch (error) {

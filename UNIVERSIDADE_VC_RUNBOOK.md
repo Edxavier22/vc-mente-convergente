@@ -1,41 +1,56 @@
 # Universidade V&C — ativação controlada
 
-Estado verificado em 25/09/2026. Este documento distingue código na branch, ambiente remoto e validação. O PR da branch `feature/universidade-multicursos` permanece sem merge.
+Estado verificado em 29/09/2026. Este documento separa código, banco, funções remotas, preview e produção. O PR #5 da branch `feature/universidade-administracao` permanece como **Draft**, sem merge. A produção continua vinculada à `main`.
 
-## Implementado na branch
+## Estrutura acadêmica ativa
 
-- O mesmo site institucional contém o catálogo público e a sala do aluno; não foi criado outro site.
-- O modelo persistente inclui cursos, módulos, turmas, organizações, matrículas, professores, questões, tentativas de checkpoint e avaliação, progresso, eventos e certificados. As tabelas acadêmicas têm RLS e acesso de escrita pelo navegador revogado.
-- A API privada `vc-universidade-learner-v2` verifica identidade, direito no V&C Core e matrícula ativa antes de ler conteúdo. Aceita `course=<slug>` e vincula o direito ao `product_id` do curso; o padrão sem parâmetro continua Liderança. A exceção de acesso do proprietário aplica-se somente a Liderança/P-021 e exige identidade, e-mail confirmado, escopo administrativo no Core e matrícula ativa.
-- Módulos seguintes dependem da conclusão persistida do anterior; evidência e cinco respostas do checkpoint são corrigidas no servidor. O banco tem um gatilho adicional que exige evidência, tentativa aprovada e sequência para registrar conclusão.
-- A sala v2 usa a nova API, com estados de acesso, entrega de evidência e checkpoint. O conteúdo completo e os gabaritos não ficam em arquivos públicos.
-- A branch contém o fluxo de avaliação final com 20 questões, bloqueio até concluir os módulos, correção no servidor e registro de tentativas. Ainda não há questões finais ativas no banco; a API responde `final_unavailable` até o banco ser preparado e homologado.
+- O site institucional, catálogo, portal, sala do aluno, professor e administração permanecem no mesmo projeto Vercel.
+- O modelo persistente inclui cursos versionados, módulos, organizações, turmas, matrículas, professores, questões, tentativas, progresso, eventos e certificados.
+- Conteúdo completo, respostas e gabaritos permanecem fora dos arquivos públicos.
+- A progressão exige evidência válida e checkpoint aprovado; a avaliação final exige todos os módulos e registra tentativas no servidor.
+- O conteúdo Liderança 1.1, seus 50 itens formativos e banco ampliado da avaliação final estão ativos no ambiente acadêmico.
+- O painel do professor usa escopo por turma; o administrador proprietário continua separado e validado no backend.
 
-## Conteúdo pedagógico 1.1 — candidato controlado
+## Fase 11 — conclusão e certificação verificável
 
-- Os dez módulos foram aprofundados e estruturados em fonte privada com abertura, objetivos, cinco núcleos de estudo, conceitos, Princípio V&C, exemplo, caso, erros comuns, aplicação, estudo guiado, reflexão, oficina, evidência, preparação para checkpoint, síntese e referências.
-- A versão `1.1` foi gravada como linha separada em `vc_university_course_content`; a versão `1.0` permanece preservada e continua ativa no curso.
-- A matriz de 20 horas foi registrada como estimativa pedagógica: 7h de conteúdo/estudo, 3h de casos/checkpoints, 6h de oficinas/evidências, 3h de projeto e 1h de avaliação/revisão. Não há timer artificial de página.
-- O conteúdo pago não foi incluído no repositório público. O GitHub contém somente renderizador, estilos, testes e este contrato editorial.
-- Hash SHA-256 do JSON privado candidato 1.1: `f2a9deba76b42717e6ef285c0e00c35036b2e59ba1f3b165d95b26367c6b3c39`.
-- Não promover o curso para `1.1` antes de o commit do renderizador chegar ao preview e a sala autenticada ser validada em desktop e celular.
+- Migration `20260928201649_universidade_certificacao_verificavel.sql` aplicada com sucesso.
+- Emissão exige, no banco e na API: todos os módulos, todas as evidências, todos os checkpoints, avaliação final igual ou superior ao mínimo e aprovação do projeto quando configurada.
+- O banco bloqueou uma tentativa privilegiada de emissão para matrícula incompleta; nenhum certificado de teste foi persistido.
+- Cada certificado recebe código `VC-<PREFIXO>-<ANO>-<SEQUÊNCIA>`, snapshots acadêmicos imutáveis, programa, resultado, período, emissor e URL de validação.
+- A tabela de certificados está com RLS ativa e sem leitura para `anon` ou `authenticated`; a consulta pública passa por função limitada e retorna somente autenticidade, nome, curso, carga, conclusão, emissor e código.
+- O certificado autenticado possui frente e segunda página programática, QR Code e impressão/salvamento em PDF pelo navegador.
+- Certificados já emitidos permanecem verificáveis mesmo que o curso seja atualizado, pois título, versão, carga e programa são snapshots.
+- Funções remotas ativas: `vc-universidade-learner-v2` v11, `vc-universidade-admin` v2 e `vc-certificado-publico` v1.
+- Código inexistente retorna 404 sem expor dados; rota acadêmica sem sessão retorna 401.
 
-## Situação remota e bloqueios
+## Verificações concluídas
 
-- A função `vc-universidade-learner-v2` está publicada na versão **6** e seu código confere com a fonte versionada. O bloqueio temporário anterior de implantação foi superado sem migração para outro projeto Supabase.
-- O curso está em `review`; o produto P-021 em `development`; a oferta de R$147 em `draft`, com `commerce_enabled=false`. O valor não foi alterado.
-- Os 23 testes locais passam, mas **M1 → evidência → checkpoint → M2 e o conteúdo candidato 1.1 ainda precisam de homologação final no navegador com conta autenticada**. Testes simulados não substituem essa verificação.
-- O fluxo legado `vc-universidade-course` ainda existe, inclusive avaliação antiga corrigida no navegador. Planejar desligamento ou redirecionamento seguro após a migração das dependências; não usar o fluxo legado como prova de conclusão oficial.
-- Banco da avaliação final, registro e revisão do projeto, regras de conclusão, emissão e validação pública do certificado, painel premium do professor e administração, fluxo empresarial, pagamentos e integração Orça Fácil/ConfirmaPro continuam pendentes ou sem homologação.
+- 39 testes automatizados aprovados, sem falhas.
+- `git diff --check` aprovado.
+- CORS validado no domínio oficial e nos previews versionados; origens externas não são refletidas.
+- RLS, ausência de grants públicos e prefixo `LEA` conferidos no banco.
+- Advisors sem alertas de nível `ERROR` após a migration.
+- O advisor mantém um aviso de configuração: proteção contra senhas vazadas ainda precisa ser habilitada manualmente no Supabase Auth.
 
-## Sequência de retomada
+## Estado real dos dados
 
-1. Aplicar o commit da Fase 5 na branch e aguardar o preview Vercel aprovado, mantendo o PR em Draft.
-2. Homologar em conta autorizada, com captura de respostas/status e registros persistidos: M1 aberto, evidência válida, checkpoint sem gabarito exposto, M2 bloqueado antes e liberado depois. Testar anônimo e usuário sem direito/matrícula.
-3. Validar a apresentação do conteúdo 1.1 em desktop e celular; somente depois atualizar a versão ativa do curso de `1.0` para `1.1`, mantendo rollback imediato.
-4. Completar e testar percurso M1–M10, banco e avaliação final, projeto, fila docente, emissão e consulta pública de certificado com dados mínimos. Verificar RLS com perfis separados e dispositivos móveis.
-5. Homologar as modalidades comercial e empresarial, pagamento sandbox, webhook, conciliação, cancelamento e suporte. Cobrança real, mudança destrutiva e publicação comercial irreversível exigem autorização do proprietário.
+- Uma matrícula existente.
+- Um módulo concluído no momento da auditoria.
+- Nenhuma avaliação final registrada.
+- Nenhum projeto final aprovado.
+- Nenhum certificado emitido.
 
-## Comunicação enquanto o gate está fechado
+Esses dados confirmam que a nova camada não certificou o administrador ou qualquer aluno artificialmente.
 
-A página pública pode ser usada para apresentar a proposta em preparação. Não anunciar inscrições abertas, compra disponível, certificação automática ou data garantida enquanto as etapas acima não estiverem homologadas.
+## Gates ainda abertos
+
+1. Aplicar o patch da Fase 11 em uma branch baseada em `feature/universidade-administracao`, publicar o preview e manter os PRs sem merge.
+2. Homologar visualmente as páginas de validação e certificado em desktop e celular no preview. A tentativa local automatizada ficou bloqueada pela indisponibilidade do binário Chrome no executor, não por erro da aplicação.
+3. Repetir no navegador autenticado: aluno, professor e administração após a correção de CORS.
+4. Percorrer M1–M10 com conta de homologação, aprovar avaliação e projeto e emitir o primeiro certificado de homologação; conferir QR, impressão e validação pública.
+5. Definir razão social/CNPJ ofertante e responsável nominal antes da primeira emissão comercial. Enquanto não definidos, esses dados não são inventados.
+6. Habilitar proteção contra senhas vazadas no painel do Supabase Auth.
+
+## Produção e comunicação comercial
+
+Não fazer merge, cobrança real ou abertura comercial antes da homologação autenticada completa. A página pública pode apresentar a formação, mas checkout, certificado comercial e inscrições devem permanecer fechados até os gates acima serem aprovados.

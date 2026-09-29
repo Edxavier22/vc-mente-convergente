@@ -36,6 +36,7 @@ function update(){
  const activeModule=catalog.modules.find(module=>module.number===current);
  document.querySelector("#workspace-step").textContent=activeModule?`Módulo ${String(current).padStart(2,"0")} · ${activeModule.title}`:"Universidade V&C";
  const exam=document.querySelector("#show-assessment");exam.hidden=!catalog.modules.length||done!==catalog.modules.length;
+ const completion=document.querySelector("#show-completion");completion.hidden=!catalog.modules.length||done!==catalog.modules.length;
  menu.replaceChildren(...catalog.modules.map(m=>{const b=el("button",m.title);b.type="button";b.disabled=!m.unlocked;b.dataset.status=m.completed?"✓":String(m.number).padStart(2,"0");b.classList.toggle("current",m.number===current);b.classList.toggle("completed",m.completed);if(m.number===current)b.setAttribute("aria-current","step");if(!m.unlocked)b.setAttribute("aria-label",`${m.title} bloqueado. Conclua o Módulo ${m.number-1} para liberar.`);else b.setAttribute("aria-label",`Módulo ${m.number}: ${m.title}${m.completed?", concluído":""}`);b.onclick=()=>{if(window.matchMedia("(max-width: 780px)").matches){navigation.classList.remove("is-open");navigationToggle.setAttribute("aria-expanded","false");navigationToggle.textContent="Ver trilha e indicadores"}openModule(m.number)};return b}));
  const locked=catalog.modules.find(m=>!m.unlocked);
  if(locked)menu.append(el("p",`Conclua o Módulo ${locked.number-1} para liberar o próximo.`,"course-status"))
@@ -136,10 +137,27 @@ async function assessment(){
   const submit=el("button","Enviar avaliação"),result=el("p","","course-status");submit.type="submit";result.setAttribute("role","status");form.append(submit,result);
   form.onsubmit=async event=>{event.preventDefault();const selected=data.questions.map((_,i)=>form.querySelector(`input[name="final${i}"]:checked`));if(selected.some(x=>!x)){result.textContent="Responda às 20 questões antes de enviar.";return}submit.disabled=true;try{
    const grade=await call("",{action:"final",session_id:data.sessionId,answers:selected.map(x=>Number(x.value))});
-   result.textContent=grade.passed?`${grade.score}/20 — avaliação aprovada. A certificação depende dos demais critérios da formação.`:`${grade.score}/20 — revise: ${grade.review.join("; ")}. Você pode tentar novamente após a revisão.`;
+   result.textContent=grade.passed?`${grade.score}/20 — avaliação aprovada. Consulte Conclusão e certificado para acompanhar os critérios restantes.`:`${grade.score}/20 — revise: ${grade.review.join("; ")}. Você pode tentar novamente após a revisão.`;
+   if(grade.passed){const next=el("button","Ver conclusão e certificado");next.type="button";next.onclick=completion;result.append(" ",next)}
   }catch(error){result.textContent=error.message==="attempt_limit"?"Limite de três tentativas nas últimas 24 horas. Revise os módulos e tente amanhã.":error.message==="modules_required"?"Conclua todos os módulos antes da avaliação.":error.message==="assessment_session_invalid"?"Esta prova expirou ou já foi enviada. Abra uma nova avaliação para continuar.":"Não foi possível registrar a avaliação. Tente novamente mais tarde."}finally{submit.disabled=false}};
   panel.setAttribute("aria-busy","false");panel.replaceChildren(form);panel.focus()
  }catch(error){message("Avaliação indisponível",error.message==="modules_required"?"Conclua os módulos antes de fazer a avaliação.":"As questões ainda não estão disponíveis. Seu progresso permanece salvo na sua conta.")}
+}
+function requirement(label,item,detail){const row=el("li",undefined,item.met?"completion-ok":"completion-pending");row.append(el("span",item.met?"✓":"●"),el("strong",label),el("small",detail));return row}
+function certificateLink(certificate){const link=el("a","Abrir certificado");link.className="certificate-open";link.href=`certificado.html?codigo=${encodeURIComponent(certificate.public_code)}`;return link}
+async function completion(){
+ message("Conclusão da formação","Conferindo módulos, evidências, checkpoints, avaliação e projeto final…");
+ try{
+  const data=await call("?view=completion");const section=el("section",undefined,"completion-center");
+  section.append(el("p","CONCLUSÃO E CERTIFICAÇÃO","course-eyebrow"),el("h1",data.certificate?"Formação concluída":"Seus critérios de conclusão"),el("p",data.certificate?"Seu certificado verificável foi emitido e permanece vinculado a esta matrícula.":"A certificação só é liberada quando todos os requisitos acadêmicos forem comprovados."));
+  const list=el("ul",undefined,"completion-requirements");const r=data.requirements;
+  list.append(requirement("Módulos",r.modules,`${r.modules.done}/${r.modules.required} concluídos`),requirement("Evidências",r.evidence,`${r.evidence.done}/${r.evidence.required} entregues`),requirement("Checkpoints V&C",r.checkpoints,`${r.checkpoints.done}/${r.checkpoints.required} aprovados`),requirement("Avaliação final",r.assessment,r.assessment.score===null?`Aguardando · mínimo ${r.assessment.required}%`:`${r.assessment.score}% · mínimo ${r.assessment.required}%`),requirement("Projeto final",r.project,r.project.required?(r.project.status==="approved"?"Aprovado pelo professor":r.project.status==="revise"?"Revisão solicitada":"Aguardando parecer"):"Entrega registrada"));section.append(list);
+  const status=el("p","","course-status");status.setAttribute("role","status");
+  if(data.certificate){const card=el("div",undefined,"certificate-ready");card.append(el("span","✓","completion-mark"),el("div",undefined));card.lastChild.append(el("strong",data.certificate.public_code),el("p",`Emitido em ${new Date(data.certificate.issued_at).toLocaleDateString("pt-BR")}`),certificateLink(data.certificate));section.append(card)}
+  else if(data.ready){const form=el("form",undefined,"certificate-name-form");const label=el("label","Nome completo para o certificado"),name=el("input");name.name="learner-name";name.autocomplete="name";name.required=true;name.minLength=3;name.maxLength=160;name.placeholder="Digite seu nome completo";label.append(name);const issue=el("button","Emitir certificado verificável");issue.type="submit";form.append(label,el("p","Confira com atenção: após a emissão, os dados acadêmicos do certificado ficam imutáveis.","form-help"),issue,status);form.onsubmit=async event=>{event.preventDefault();issue.disabled=true;status.textContent="Emitindo certificado…";try{const issued=await call("",{action:"issue_certificate",learner_name:name.value});status.textContent="Certificado emitido com segurança.";form.replaceWith(certificateLink(issued.certificate))}catch(error){status.textContent=error.message==="learner_name_required"?"Informe nome e sobrenome usando apenas letras.":"Não foi possível emitir agora. Seus requisitos permanecem preservados."}finally{issue.disabled=false}};section.append(form)}
+  else section.append(el("p","Conclua os itens pendentes. Se o projeto estiver em análise, aguarde o parecer do professor.","completion-guidance"),status);
+  panel.replaceChildren(section);panel.setAttribute("aria-busy","false");panel.focus()
+ }catch{message("Conclusão indisponível","Não foi possível consultar os requisitos agora. Seu progresso permanece salvo.")}
 }
 async function openModule(number){
  current=number;update();panel.setAttribute("aria-busy","true");message("Abrindo o módulo","Consultando sua matrícula e seu progresso…");
@@ -187,7 +205,7 @@ async function openModule(number){
 }
 navigationToggle.addEventListener("click",()=>{const expanded=navigationToggle.getAttribute("aria-expanded")==="true";navigationToggle.setAttribute("aria-expanded",String(!expanded));navigationToggle.textContent=expanded?"Ver trilha e indicadores":"Ocultar trilha";navigation.classList.toggle("is-open",!expanded)});
 async function start(){
- try{document.querySelector("#show-assessment").onclick=assessment;document.querySelector("#export-work").hidden=true;await reload();const active=catalog.modules.find(m=>m.unlocked&&!m.completed)||catalog.modules.find(m=>m.unlocked);if(active)await openModule(active.number);else message("Formação indisponível","Nenhum módulo liberado nesta matrícula.")}
+ try{document.querySelector("#show-assessment").onclick=assessment;document.querySelector("#show-completion").onclick=completion;document.querySelector("#export-work").hidden=true;await reload();const active=catalog.modules.find(m=>m.unlocked&&!m.completed)||catalog.modules.find(m=>m.unlocked);if(active)await openModule(active.number);else message("Formação indisponível","Nenhum módulo liberado nesta matrícula.")}
  catch(error){const states={sign_in_required:["Entre na sua conta","Use o mesmo acesso de Meus Acessos.",true],access_denied:["Matrícula não encontrada","Esta conta ainda não tem acesso a esta formação.",true],enrollment_sync_required:["Matrícula em conferência","Seu direito foi localizado, mas a turma ainda não foi vinculada. Contate o suporte V&C.",false]};message(...(states[error.message]||["Acesso indisponível","Não foi possível consultar sua matrícula. Tente novamente mais tarde.",false]))}
 }
 start();

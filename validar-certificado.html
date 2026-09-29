@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Validação pública de certificados emitidos pela Universidade V&C Mente Convergente.">
+  <meta name="theme-color" content="#061524">
+  <title>Validar certificado | Universidade V&C</title>
+  <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/certificado.css">
+</head>
+<body class="validation-body">
+  <a class="certificate-skip" href="#validacao">Ir para a validação</a>
+  <header class="validation-header"><a href="universidade-vc.html"><strong>V&amp;C</strong><span>Universidade</span></a><span>Validação pública</span></header>
+  <main id="validacao" class="validation-shell">
+    <section class="validation-intro">
+      <p class="certificate-kicker">Certificação verificável</p>
+      <h1>Confirme a autenticidade de um certificado V&C.</h1>
+      <p>Digite o código impresso no certificado. A consulta exibe somente os dados necessários para confirmar a emissão.</p>
+    </section>
+    <section class="validation-card" aria-labelledby="validation-title">
+      <h2 id="validation-title">Código do certificado</h2>
+      <form id="validation-form" novalidate>
+        <label for="certificate-code">Identificador</label>
+        <div><input id="certificate-code" name="codigo" autocomplete="off" spellcheck="false" placeholder="VC-LEA-2026-000127" required><button type="submit">Validar</button></div>
+        <p class="validation-help">O código não diferencia letras maiúsculas de minúsculas.</p>
+      </form>
+      <div id="validation-result" class="validation-result" role="status" aria-live="polite"></div>
+    </section>
+    <p class="validation-privacy">Esta página não apresenta respostas, atividades, reflexões, documentos pessoais ou histórico acadêmico privado.</p>
+  </main>
+  <script src="assets/js/certificado-publico.js" defer></script>
+</body>
+</html>

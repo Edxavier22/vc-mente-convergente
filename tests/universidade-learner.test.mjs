@@ -15,6 +15,8 @@ let attemptWrites = 0;
 let finalWrites = 0;
 let eventWrites = [];
 let finalAttempts = [];
+let certificates = [];
+let certificateWrites = 0;
 let finalSession = null;
 const finalSessionId = "11111111-1111-4111-8111-111111111111";
 let allowed = true;
@@ -32,9 +34,9 @@ globalThis.fetch = async (input, options = {}) => {
  if (url.pathname.includes("/vc-core-private-api/")) return Response.json({data: {accesses: allowed ? rightsProducts.map(product_id => ({product_id})) : []}});
  const secondCourse = url.searchParams.get("course_id") === "eq.inteligencia-emocional";
  if (url.pathname.endsWith("/vc_university_courses")) return Response.json(
-  secondCourse ? [{course_id: "inteligencia-emocional", product_id: "P-022", version: "1.0", final_pass_percent: 70}]
+  secondCourse ? [{course_id: "inteligencia-emocional", product_id: "P-022", title: "Inteligência Emocional", version: "1.0", modality: "online", hours_minutes: 1200, final_pass_percent: 70, certificate_requires_project_review: false}]
    : url.searchParams.get("course_id") === "eq.lideranca-estrategica-aplicada"
-    ? [{course_id: "lideranca-estrategica-aplicada", product_id: "P-021", version: "1.0", final_pass_percent: 70}] : []);
+    ? [{course_id: "lideranca-estrategica-aplicada", product_id: "P-021", title: "Liderança Estratégica Aplicada", version: "1.0", modality: "online", hours_minutes: 1200, final_pass_percent: 70, certificate_requires_project_review: true}] : []);
  if (url.pathname.endsWith("/vc_university_course_content")) {contentReads++; return Response.json(sourceAvailable ? [{content: {
   id: secondCourse ? "inteligencia-emocional" : "lideranca-estrategica-aplicada", version: "1.0", title: "Liderança",
   modules: [lesson(1), lesson(2)]
@@ -68,6 +70,16 @@ globalThis.fetch = async (input, options = {}) => {
  if (url.pathname.endsWith("/vc_university_final_attempts")) {
   if (options.method === "POST") {finalWrites++; return new Response(null, {status: 201});}
   return Response.json(finalAttempts);
+ }
+ if (url.pathname.endsWith("/vc_university_certificates")) {
+  if (options.method === "POST") {
+   certificateWrites++;
+   const issued = {certificate_id: "cert-1", public_code: "VC-LEA-2026-000001", issued_at: "2026-09-29T00:00:00Z",
+    learner_name_snapshot: JSON.parse(options.body).learner_name_snapshot};
+   certificates = [issued];
+   return Response.json([issued], {status: 201});
+  }
+  return Response.json(certificates);
  }
  if (url.pathname.endsWith("/vc_university_checkpoint_attempts")) {
   if (options.method === "POST") {attemptWrites++; return new Response(null, {status: 201});}
@@ -270,4 +282,36 @@ test("avaliação rejeita envio sem sessão persistida", async () => {
  assert.equal(response.status, 400);
  assert.equal((await response.json()).error, "assessment_session_invalid");
  assert.equal(finalWrites, 0);
+});
+
+test("certificado permanece bloqueado sem aprovação do projeto", async () => {
+ progress = [1,2].map(module_no => ({module_no, evidence: "Evidência aplicada válida", submitted_at: "2026-09-19T00:00:00Z",
+  checkpoint_passed_at: "2026-09-19T00:01:00Z", completed_at: "2026-09-19T00:02:00Z",
+  review_status: module_no === 2 ? "pending" : null}));
+ finalAttempts = [{score: 14, question_count: 20, submitted_at: "2026-09-19T00:03:00Z"}];
+ certificates = []; certificateWrites = 0;
+ const view = await (await handler(request("?view=completion"))).json();
+ assert.equal(view.ready, false);
+ assert.equal(view.requirements.project.met, false);
+ const blocked = await handler(request("", "POST", {action: "issue_certificate", learner_name: "Edgar Xavier"}));
+ assert.equal(blocked.status, 423);
+ assert.equal(certificateWrites, 0);
+});
+
+test("certificado é emitido uma única vez após todos os critérios", async () => {
+ progress = [1,2].map(module_no => ({module_no, evidence: "Evidência aplicada válida", submitted_at: "2026-09-19T00:00:00Z",
+  checkpoint_passed_at: "2026-09-19T00:01:00Z", completed_at: "2026-09-19T00:02:00Z",
+  review_status: module_no === 2 ? "approved" : null}));
+ finalAttempts = [{score: 14, question_count: 20, submitted_at: "2026-09-19T00:03:00Z"}];
+ certificates = []; certificateWrites = 0;
+ const ready = await (await handler(request("?view=completion"))).json();
+ assert.equal(ready.ready, true);
+ assert.equal((await handler(request("", "POST", {action: "issue_certificate", learner_name: "Edgar"}))).status, 400);
+ const issued = await handler(request("", "POST", {action: "issue_certificate", learner_name: "Edgar Xavier"}));
+ assert.equal(issued.status, 201);
+ assert.equal((await issued.json()).certificate.public_code, "VC-LEA-2026-000001");
+ const repeated = await handler(request("", "POST", {action: "issue_certificate", learner_name: "Outro Nome"}));
+ assert.equal(repeated.status, 200);
+ assert.equal(certificateWrites, 1);
+ finalAttempts = []; certificates = [];
 });
