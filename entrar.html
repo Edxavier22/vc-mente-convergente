@@ -55,7 +55,7 @@
           </div>
           <p id="auth-status" class="status-message" role="status" aria-live="polite"></p>
         </form>
-        <p class="privacy-note">A V&amp;C não armazena sua senha neste site. A sessão fica somente nesta aba e os direitos de acesso são validados pelo Core.</p>
+        <p class="privacy-note">Sua senha é protegida pelo serviço seguro de identidade. Esta página consulta somente os acessos vinculados à sua conta.</p>
         </div>
 
         <div id="reset-panel" hidden>
@@ -89,6 +89,21 @@
         <span>Consultando seus direitos de acesso…</span>
       </div>
 
+      <section id="workspace-overview" class="workspace-overview" hidden aria-label="Resumo da conta">
+        <article>
+          <span class="overview-icon" aria-hidden="true">01</span>
+          <div><strong id="overview-access-count">0</strong><small>experiências disponíveis</small></div>
+        </article>
+        <article>
+          <span class="overview-icon" aria-hidden="true">02</span>
+          <div><strong id="overview-organization-count">0</strong><small>vínculos institucionais</small></div>
+        </article>
+        <article>
+          <span class="overview-icon" aria-hidden="true">✓</span>
+          <div><strong>Conta protegida</strong><small>acessos verificados a cada entrada</small></div>
+        </article>
+      </section>
+
       <section id="bootstrap-section" class="bootstrap-section" hidden aria-labelledby="bootstrap-title">
         <div>
           <p class="eyebrow">Ativação controlada</p>
@@ -103,7 +118,7 @@
         <div class="section-heading">
           <div>
             <p class="eyebrow">Disponíveis agora</p>
-            <h2 id="access-title">Produtos e benefícios</h2>
+            <h2 id="access-title">Suas experiências V&amp;C</h2>
           </div>
           <span id="access-count" class="count-badge">0 acessos</span>
         </div>
@@ -170,9 +185,11 @@
           </article>
           <article id="owner-course-card" class="admin-card" hidden>
             <h3>Meu acesso ao curso</h3>
-            <p>Libere na sua conta o curso completo para revisar as aulas como aluno. Esta autorização administrativa fica registrada no V&amp;C Core.</p>
-            <button id="owner-course-button" class="secondary-button" type="button">Liberar meu acesso à formação</button>
-            <a href="aluno-lideranca.html">Abrir o curso</a>
+            <p>Confira a formação exatamente como um aluno matriculado. O acesso de revisão fica vinculado à sua conta administrativa.</p>
+            <div class="admin-actions">
+              <button id="owner-course-button" class="secondary-button" type="button">Ativar acesso de revisão</button>
+              <a class="admin-text-link" href="aluno-lideranca.html">Entrar na formação</a>
+            </div>
             <p id="owner-course-status" class="status-message neutral" role="status"></p>
             <label for="owner-product">Outros produtos disponíveis</label>
             <select id="owner-product"><option value="">Carregando catálogo…</option></select>
@@ -229,7 +246,7 @@
 
           <article id="create-seat-pool-card" class="admin-card" hidden>
             <h3>Criar licença coletiva</h3>
-            <p>A capacidade cria seats dentro do produto oficial — nunca cópias separadas.</p>
+            <p>Defina a quantidade de vagas que a organização poderá distribuir no produto selecionado.</p>
             <form id="create-seat-pool-form" novalidate>
               <label for="pool-organization">Organização</label>
               <select id="pool-organization" name="organization_id" required></select>
@@ -239,7 +256,7 @@
               </select>
               <label for="pool-capacity">Quantidade de acessos</label>
               <input id="pool-capacity" name="seats_total" type="number" min="1" max="100000" step="1" required value="100">
-              <button class="primary-button" type="submit">Criar pool de acessos</button>
+              <button class="primary-button" type="submit">Criar licença coletiva</button>
             </form>
           </article>
         </div>

@@ -34,6 +34,26 @@ test("links locais e recursos referenciados existem", () => {
   }
 });
 
+test("âncoras, abas e links externos possuem destino verificável", () => {
+  for (const file of htmlFiles) {
+    const html = read(file);
+    const scripts = [...html.matchAll(/<script\b[^>]*src="([^"]+)"[^>]*><\/script>/gi)]
+      .map(([, source]) => source.split(/[?#]/)[0])
+      .filter((source) => source && existsSync(join(root, source)))
+      .map(read)
+      .join("\n");
+    const navigableSource = `${html}\n${scripts}`;
+    assert.doesNotMatch(html, /href="(?:javascript:|\s*$)/i, file);
+    for (const [, id] of html.matchAll(/href="#([^"]+)"/g)) {
+      const escaped = id.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      assert.match(navigableSource, new RegExp(`(?:id=["']${escaped}["']|\\.id=["']${escaped}["'])`), `${file} -> #${id}`);
+    }
+    for (const match of html.matchAll(/<a\b[^>]*target="_blank"[^>]*>/gi)) {
+      assert.match(match[0], /rel="[^"]*noopener[^"]*"/i, `${file} -> ${match[0]}`);
+    }
+  }
+});
+
 test("a marca pública canônica é V&C Mente Convergente", () => {
   const publicSources = [
     ...htmlFiles.map(read),
@@ -43,6 +63,14 @@ test("a marca pública canônica é V&C Mente Convergente", () => {
   assert.doesNotMatch(publicSources, /Mente Infinita/i);
   assert.match(publicSources, /V(?:&amp;|&)C Mente Convergente/i);
   assert.doesNotMatch(publicSources, /5500000000000|contato@menteinfinita|instagram\.com\/menteinfinita/i);
+});
+
+test("comunicação pública apresenta a Universidade única sem linguagem interna", () => {
+  const publicSources = htmlFiles.map(read).join("\n");
+  assert.doesNotMatch(publicSources, /Universidade REAL|Integração em validação|Portfólio em validação|\bgates\b|captação de leads|Autoridade em construção|Conteúdo e SEO|Pautas estratégicas/i);
+  assert.match(publicSources, /Universidade V(?:&amp;|&)C/);
+  const legacy = read("universidade-real.html");
+  assert.match(legacy, /url=universidade-vc\.html/);
 });
 
 test("navegação consolidada aponta para catálogo e portal", () => {
@@ -67,6 +95,9 @@ test("portal possui cadastro, login, recuperação e áreas protegidas", () => {
   assert.match(app, /vc-core-private-api/);
   assert.match(app, /vc-core-api/);
   assert.doesNotMatch(app, /service_role|MERCADO_PAGO_ACCESS_TOKEN|SUPABASE_SECRET_KEY/i);
+  assert.doesNotMatch(app, /canal \" \+ access\.channel|access\.version/);
+  assert.doesNotMatch(html, /V&amp;C Core|pool de acessos/i);
+  assert.match(html, /id="workspace-overview"/);
 });
 
 test("configuração Vercel mantém um único site com rotas internas", () => {
@@ -75,6 +106,7 @@ test("configuração Vercel mantém um único site com rotas internas", () => {
   assert.ok(config.rewrites.some((item) => item.source === "/meus-acessos" && item.destination === "/entrar"));
   assert.ok(config.rewrites.some((item) => item.source === "/admin" && item.destination === "/entrar"));
   assert.ok(config.rewrites.every((item) => !item.destination.endsWith(".html")));
+  assert.ok(config.redirects.some((item) => item.source === "/universidade-real" && item.destination === "/universidade-vc"));
   const headers = JSON.stringify(config.headers);
   assert.match(headers, /Content-Security-Policy/);
   assert.match(headers, /frame-ancestors 'none'/);
@@ -170,6 +202,8 @@ test("contato não publica arquivos internos como downloads comerciais", () => {
   assert.doesNotMatch(contact, /href="[^"]+\.md"/i);
   assert.doesNotMatch(contact, /formato editável\/Markdown/i);
   assert.match(contact, /Atendimento orientado/);
+  assert.match(contact, /Nenhum aplicativo externo será aberto automaticamente/);
+  assert.doesNotMatch(read("assets/js/main.js"), /mailto:/i);
 });
 
 test("administração da Universidade é privada, real e separada do professor", () => {

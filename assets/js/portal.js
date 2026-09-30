@@ -26,6 +26,9 @@ const elements = {
   signoutButton: document.querySelector("#signout-button"),
   accountCopy: document.querySelector("#account-copy"),
   workspaceStatus: document.querySelector("#workspace-status"),
+  workspaceOverview: document.querySelector("#workspace-overview"),
+  overviewAccessCount: document.querySelector("#overview-access-count"),
+  overviewOrganizationCount: document.querySelector("#overview-organization-count"),
   bootstrapSection: document.querySelector("#bootstrap-section"),
   bootstrapCopy: document.querySelector("#bootstrap-copy"),
   bootstrapStatus: document.querySelector("#bootstrap-status"),
@@ -134,19 +137,21 @@ function element(tag, className, text) {
 
 function renderAccessCard(access) {
   const card = element("article", "access-card");
-  card.append(element("span", "product-mark", initials(access.product_name)));
-  card.append(element("h3", "", access.product_name || access.product_id || "Produto V&C"));
-  const details = [access.market, access.locale, access.channel ? "canal " + access.channel : null, access.version].filter(Boolean).join(" · ");
-  card.append(element("p", "access-meta", details || "Edição oficial disponível"));
+  const head = element("div", "access-card-head");
+  head.append(element("span", "product-mark", initials(access.product_name)));
+  head.append(element("span", "active-badge", "Acesso ativo"));
+  card.append(head);
+  card.append(element("h3", "", access.product_name || "Experiência V&C"));
+  card.append(element("p", "access-description", access.product_id === "P-021"
+    ? "Continue sua formação, consulte seu progresso e retome as atividades do ponto em que parou."
+    : "Seu ambiente oficial está disponível e pronto para continuar."));
 
   const actions = element("div", "access-actions");
   actions.append(element("span", "source-label", humanAccessSource(access.access_source)));
   if (typeof access.launch_url === "string" && /^https:\/\//i.test(access.launch_url)) {
     const link = element("a", "launch-button", "Abrir produto");
     link.href = access.launch_url;
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-    link.setAttribute("aria-label", "Abrir " + (access.product_name || "produto") + " em nova aba");
+    link.setAttribute("aria-label", "Abrir " + (access.product_name || "experiência"));
     actions.append(link);
   }
   card.append(actions);
@@ -193,7 +198,7 @@ function populateProductSelect(products) {
     return option;
   });
   if (options.length === 0) {
-    const option = element("option", "", "Nenhum produto ativo no Registry");
+    const option = element("option", "", "Nenhum produto ativo disponível");
     option.value = "";
     options.push(option);
   }
@@ -216,7 +221,7 @@ function renderOverview(payload) {
   const card = element("article", "overview-card");
   const head = element("div", "overview-head");
   head.append(element("h3", "", payload?.organization?.name || "Organização"));
-  head.append(element("span", "", (payload?.seat_pools?.length || 0) + " pools"));
+  head.append(element("span", "", (payload?.seat_pools?.length || 0) + " licenças coletivas"));
   card.append(head);
   const pools = element("div", "pool-list");
   const rows = Array.isArray(payload?.seat_pools) ? payload.seat_pools : [];
@@ -257,6 +262,7 @@ function showWorkspace(session) {
   elements.workspaceView.hidden = false;
   elements.accountCopy.textContent = session?.user?.email ? "Acessos vigentes para " + session.user.email : "Produtos liberados para sua conta.";
   elements.workspaceStatus.hidden = false;
+  elements.workspaceOverview.hidden = true;
   elements.workspaceStatus.classList.remove("is-error");
   elements.workspaceStatus.replaceChildren(element("span", "spinner"), element("span", "", "Consultando seus direitos de acesso…"));
   elements.accessSection.hidden = true;
@@ -422,6 +428,9 @@ async function loadWorkspace(session) {
     elements.accessGrid.replaceChildren(...accesses.map(renderAccessCard));
     elements.emptyState.hidden = accesses.length > 0;
     elements.accessCount.textContent = accesses.length + (accesses.length === 1 ? " acesso" : " acessos");
+    elements.overviewAccessCount.textContent = String(accesses.length);
+    elements.overviewOrganizationCount.textContent = String(organizations.length);
+    elements.workspaceOverview.hidden = false;
 
     elements.organizationList.replaceChildren(...organizations.map(renderOrganization));
     elements.organizationSection.hidden = organizations.length === 0;
@@ -627,7 +636,7 @@ elements.createSeatPoolForm.addEventListener("submit", async (event) => {
     const input = Object.fromEntries(new FormData(elements.createSeatPoolForm));
     input.seats_total = Number(input.seats_total);
     const result = await protectedMutation("/v1/admin/seat-pools", input, currentSession, "create-seat-pool");
-    setAdminResult("Pool criado: " + result.seats_total + " acessos de " + result.product_id + ".");
+    setAdminResult("Licença coletiva criada com " + result.seats_total + " acessos para " + result.product_id + ".");
     await refreshAdmin();
   } catch (error) {
     setAdminResult("Não foi possível criar a licença coletiva: " + error.message + ".", true);
