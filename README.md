@@ -20,6 +20,7 @@ Site institucional e Portal **Meus Acessos** da V&C reunidos no mesmo projeto Ve
 - `/meus-acessos`: atalho estável para o Portal.
 - `/admin`: atalho para a área administrativa protegida pelo mesmo login.
 - `/empresas`, `/escolas`, `/palestras` e `/sobre-edgar`: jornadas institucionais.
+- `/universidade/empresas`: formação empresarial e solicitação protegida de proposta.
 - `/contato`: contato oficial por e-mail.
 
 As páginas históricas continuam publicadas para preservar links existentes e conteúdo já indexado.

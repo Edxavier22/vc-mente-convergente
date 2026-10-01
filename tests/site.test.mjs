@@ -368,3 +368,62 @@ test("administração distingue organizações sem expor conteúdo acadêmico", 
   assert.match(api, /enterprise_cohorts/);
   assert.doesNotMatch(api, /select=[^"\n]*(?:evidence|review_feedback|review_concepts)/);
 });
+
+test("formação empresarial apresenta escopo, privacidade e solicitação sem cobrança", () => {
+  const page = read("formacao-empresas.html");
+  const privacy = read("privacidade.html");
+  assert.match(page, /Liderança Estratégica Aplicada/);
+  assert.match(page, /Indicadores acadêmicos são consolidados/);
+  assert.match(page, /id="enterprise-proposal-form"/);
+  assert.match(page, /name="consent"/);
+  assert.match(page, /não cria cobrança nem contrato/i);
+  assert.match(privacy, /finalidade/);
+  assert.match(privacy, /até 12 meses/);
+});
+
+test("solicitação empresarial é validada no servidor e limitada contra abuso", () => {
+  const app = read("assets/js/universidade-propostas.js");
+  const api = read("supabase/functions/vc-universidade-propostas/index.ts");
+  assert.match(app, /vc-universidade-propostas/);
+  assert.match(app, /request_id/);
+  assert.match(api, /trustedOrigin/);
+  assert.match(api, /origin_not_allowed/);
+  assert.match(api, /payload_too_large/);
+  assert.match(api, /input\.website/);
+  assert.match(api, /proposal_rate_limited/);
+  assert.doesNotMatch(app, /service_role|SUPABASE_SECRET_KEY/i);
+});
+
+test("propostas possuem RLS, protocolo, idempotência e identidade imutável", () => {
+  const migration = read("supabase/migrations/20261001153851_universidade_formacao_empresas_propostas.sql");
+  assert.match(migration, /VC-PROP-/);
+  assert.match(migration, /idempotency_key uuid not null unique/);
+  assert.match(migration, /enable row level security/);
+  assert.match(migration, /revoke all on public\.vc_university_proposal_requests from public, anon, authenticated/);
+  assert.match(migration, /proposal_identity_is_immutable/);
+  assert.match(migration, /proposal_rate_limited/);
+  assert.match(migration, /quote_provider_target text not null default 'orca_facil'/);
+  assert.match(migration, /acceptance_provider_target text not null default 'confirmapro'/);
+});
+
+test("administração recebe fila e usa transições comerciais auditáveis", () => {
+  const page = read("administracao-universidade.html");
+  const app = read("assets/js/universidade-admin.js");
+  const api = read("supabase/functions/vc-universidade-admin/index.ts");
+  assert.match(page, /id="propostas"/);
+  assert.match(page, /id="proposal-rows"/);
+  assert.match(app, /transition_proposal/);
+  assert.match(api, /vc_university_transition_proposal/);
+  assert.match(api, /proposalTransitions/);
+  assert.match(api, /open_proposals/);
+  assert.match(api, /não conectados/);
+});
+
+test("Orça Fácil e ConfirmaPro permanecem preparados sem integração fictícia", () => {
+  const migration = read("supabase/migrations/20261001153851_universidade_formacao_empresas_propostas.sql");
+  const api = read("supabase/functions/vc-universidade-admin/index.ts");
+  assert.match(migration, /integration_state text not null default 'not_connected'/);
+  assert.match(migration, /ready_for_manual_handoff/);
+  assert.match(api, /Nenhuma proposta ou aceite é enviado automaticamente/);
+  assert.doesNotMatch(read("assets/js/universidade-propostas.js"), /orca|confirma|external_ref/i);
+});

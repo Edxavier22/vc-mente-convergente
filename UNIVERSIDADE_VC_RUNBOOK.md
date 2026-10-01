@@ -67,3 +67,24 @@ Esses dados confirmam que a nova camada não certificou o administrador ou qualq
 ## Produção e comunicação comercial
 
 Não fazer merge, cobrança real ou abertura comercial antes da homologação autenticada completa. A página pública pode apresentar a formação, mas checkout, certificado comercial e inscrições devem permanecer fechados até os gates acima serem aprovados.
+
+## Fase 13 — formação para empresas e propostas
+
+- Página empresarial própria com escopo, entregas, privacidade e processo de contratação.
+- Formulário envia a solicitação para uma Edge Function controlada; não abre aplicativos externos e não cria cobrança ou contrato.
+- Cada solicitação recebe protocolo `VC-PROP-ANO-SEQUÊNCIA`, chave de idempotência e trilha de eventos.
+- Validação no servidor, honeypot, limite de tamanho e até cinco solicitações por impressão anonimizada a cada hora.
+- Dados de contato, contexto e proposta ficam em tabelas com RLS, sem leitura para `anon` ou `authenticated`.
+- Campos originais da solicitação são imutáveis; apenas situação comercial e referências de integração podem evoluir.
+- Administração proprietária recebe fila de propostas e transições válidas auditadas.
+- Orça Fácil e ConfirmaPro estão registrados apenas como destinos planejados. O estado inicial é `not_connected`; nenhum orçamento, aceite ou link externo é criado automaticamente.
+- Aviso de privacidade informa finalidade, acesso, retenção inicial e canal para exercício de direitos.
+- Migration `universidade_formacao_empresas_propostas` aplicada no projeto de homologação.
+- Funções remotas ativas: `vc-universidade-propostas` v1 e `vc-universidade-admin` v5.
+- Teste remoto confirmou CORS do preview, bloqueio de origem externa, honeypot, criação com protocolo e bloqueio sem sessão administrativa.
+- Dados de homologação removidos após o teste: zero solicitações artificiais e zero eventos órfãos.
+- Suíte local ampliada para 50 testes, todos aprovados; TypeScript das duas funções validado pelo Deno.
+
+### Gate da Fase 13
+
+Antes de produção: publicar a branch em preview, conferir a página em desktop/celular e confirmar com sessão proprietária que a fila recebe e movimenta uma solicitação controlada. A inspeção visual automática local ficou indisponível porque o daemon do navegador não iniciou.
