@@ -59,8 +59,8 @@ Deno.serve(async request => {
     const [courses, modules, cohorts, organizations, enrollments, teachers, progress, finals, certificates] = await Promise.all([
       db("vc_university_courses", "?select=course_id,title,description,modality,hours_minutes,version,status,final_pass_percent,certificate_requires_project_review,certificate_prefix&order=created_at.asc&limit=100"),
       db("vc_university_modules", "?select=course_id,module_no&limit=1000"),
-      db("vc_university_cohorts", "?select=cohort_id,course_id,organization_id,label,capacity,status,created_at&order=created_at.desc&limit=1000"),
-      db("vc_university_organizations", "?select=organization_id,legal_name&limit=1000"),
+      db("vc_university_cohorts", "?select=cohort_id,course_id,organization_id,label,capacity,status,market_segment,commercial_modality,delivery_mode,reporting_enabled,created_at&order=created_at.desc&limit=1000"),
+      db("vc_university_organizations", "?select=organization_id,core_organization_id,legal_name,status,privacy_mode,minimum_report_group_size&limit=1000"),
       db("vc_university_enrollments", "?select=enrollment_id,cohort_id,course_id,user_id,status,enrolled_at,completed_at&order=enrolled_at.desc&limit=2000"),
       db("vc_university_teachers", "?select=cohort_id,user_id&limit=1000"),
       db("vc_university_module_progress", "?select=enrollment_id,module_no,submitted_at,completed_at,review_status,reviewed_at&limit=10000"),
@@ -96,13 +96,25 @@ Deno.serve(async request => {
         awaiting_review: progress.filter((row: any) => row.submitted_at && !row.reviewed_at).length,
         completed: enrollments.filter((row: any) => row.status === "completed").length,
         average_final: finalScores.length ? Math.round(finalScores.reduce((a: number, b: number) => a + b, 0) / finalScores.length) : null,
-        active_cohorts: cohorts.filter((row: any) => ["active", "open"].includes(row.status)).length },
+        active_cohorts: cohorts.filter((row: any) => ["active", "open"].includes(row.status)).length,
+        active_organizations: organizations.filter((row: any) => row.status === "active").length,
+        enterprise_cohorts: cohorts.filter((row: any) => row.market_segment === "b2b").length },
       courses: courses.map((row: any) => ({ ...row, status_label: human(row.status), hours_label: `${Math.round(row.hours_minutes / 60)}h`,
         module_count: modules.filter((item: any) => item.course_id === row.course_id).length,
         enrollment_count: enrollments.filter((item: any) => item.course_id === row.course_id).length })),
       cohorts: cohorts.map((row: any) => ({ ...row, status_label: human(row.status), course_title: courseMap[row.course_id]?.title ?? row.course_id,
         organization_name: row.organization_id ? organizationMap[row.organization_id] : null,
         enrollment_count: enrollments.filter((item: any) => item.cohort_id === row.cohort_id).length })),
+      organizations: organizations.map((row: any) => {
+        const organizationCohorts = cohorts.filter((item: any) => item.organization_id === row.organization_id);
+        const cohortIds = new Set(organizationCohorts.map((item: any) => item.cohort_id));
+        return { organization_id: row.organization_id, legal_name: row.legal_name,
+          status_label: human(row.status), privacy_mode: row.privacy_mode,
+          minimum_report_group_size: row.minimum_report_group_size,
+          cohort_count: organizationCohorts.length,
+          participant_count: enrollments.filter((item: any) => cohortIds.has(item.cohort_id) && item.status !== "cancelled").length,
+          capacity: organizationCohorts.reduce((total: number, item: any) => total + (item.capacity ?? 0), 0) };
+      }),
       enrollments: enrollmentRows,
       teachers: [...new Set(teachers.map((row: any) => row.user_id))].map(id => ({ teacher: people[id] ?? id,
         cohorts: teachers.filter((row: any) => row.user_id === id).map((row: any) => cohortMap[row.cohort_id]?.label ?? row.cohort_id) })),

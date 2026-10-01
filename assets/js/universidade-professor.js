@@ -99,9 +99,18 @@ function renderStudents(students){
  search.addEventListener("input",fill);filter.addEventListener("change",fill);fill();return section
 }
 
+function renderAssessments(students){
+ const attempts=students.flatMap(student=>student.attempts.map(attempt=>({student,attempt}))).sort((a,b)=>new Date(b.attempt.submitted_at)-new Date(a.attempt.submitted_at));
+ const section=node("section",undefined,"teacher-section");section.id="avaliacoes";
+ const heading=node("div",undefined,"teacher-section-heading");const copy=node("div");copy.append(node("p","AVALIAÇÕES","teacher-kicker"),node("h2","Resultados e tentativas"));heading.append(copy,node("p","Acompanhe resultados consolidados sem expor respostas ou gabaritos."));section.append(heading);
+ const list=node("div",undefined,"attempt-history");
+ if(!attempts.length){const empty=node("div",undefined,"teacher-empty");empty.append(node("strong","Nenhuma tentativa registrada"),node("p","Os resultados aparecerão aqui quando os alunos concluírem a avaliação final."));list.append(empty)}else attempts.forEach(({student,attempt},index)=>{const item=node("article",undefined,"student-module-row");const percent=Math.round(attempt.score/(attempt.question_count||20)*100);item.append(node("span",String(attempts.length-index).padStart(2,"0")),node("strong",student.email),node("small",`${percent}% · ${formatDate(attempt.submitted_at)}`));list.append(item)});
+ section.append(list);return section
+}
+
 function render(data){
  dashboardData=data;const students=buildStudents(data);const evidence=students.reduce((sum,student)=>sum+student.progress.length,0);summary.textContent=`${students.length} ${students.length===1?"aluno matriculado":"alunos matriculados"} · ${evidence} ${evidence===1?"evidência registrada":"evidências registradas"}`;
- panel.setAttribute("aria-busy","false");panel.replaceChildren(renderOverview(students),renderQueue(students),renderStudents(students));panel.focus()
+ panel.setAttribute("aria-busy","false");panel.replaceChildren(renderOverview(students),renderQueue(students),renderStudents(students),renderAssessments(students));panel.focus()
 }
 
 async function load(){

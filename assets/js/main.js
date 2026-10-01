@@ -45,7 +45,7 @@ function renderFooter() {
 
 function setupForms() {
   document.querySelectorAll("form").forEach((form) => {
-    form.addEventListener("submit", (event) => {
+    form.addEventListener("submit", async (event) => {
       event.preventDefault();
       if (!form.reportValidity()) return;
       const fields = [...form.elements]
@@ -55,32 +55,49 @@ function setupForms() {
           return `${label}: ${String(field.value).trim()}`;
         });
       const pageTitle = document.querySelector("h1")?.textContent?.trim() || "Contato";
-      const subject = encodeURIComponent(`Contato pelo site V&C — ${pageTitle}`);
-      const body = encodeURIComponent([
+      const message = [
+        `Assunto: Contato pelo site V&C — ${pageTitle}`,
+        `Destinatário: ${siteConfig.email}`,
+        "",
         "Olá, equipe V&C Mente Convergente.",
         "",
         ...fields,
         "",
         `Origem: ${window.location.href}`
-      ].join("\n"));
+      ].join("\n");
       const success = form.querySelector(".form-success");
-      if (success) {
-        success.textContent = "Abrimos seu aplicativo de e-mail com a mensagem preenchida. Revise e toque em Enviar.";
-        success.hidden = false;
+      let copied = false;
+      try {
+        await navigator.clipboard.writeText(message);
+        copied = true;
+      } catch {
+        const helper = document.createElement("textarea");
+        helper.value = message;
+        helper.setAttribute("readonly", "");
+        helper.style.position = "fixed";
+        helper.style.opacity = "0";
+        document.body.append(helper);
+        helper.select();
+        copied = document.execCommand("copy");
+        helper.remove();
       }
-      window.location.href = `mailto:${siteConfig.email}?subject=${subject}&body=${body}`;
+      if (success) {
+        success.textContent = copied
+          ? `Mensagem copiada. Cole no seu e-mail e envie para ${siteConfig.email}.`
+          : `Envie estas informações para ${siteConfig.email}. Não foi possível copiar automaticamente neste navegador.`;
+        success.hidden = false;
+        success.focus?.();
+      }
     });
   });
 }
 
 function setupLinks() {
   document.querySelectorAll("[data-whatsapp]").forEach((link) => {
-    const message = link.getAttribute("data-message") || "Olá. Quero conhecer a V&C Mente Convergente.";
-    link.href = `mailto:${siteConfig.email}?subject=${encodeURIComponent("Contato pelo site V&C")}&body=${encodeURIComponent(message)}`;
+    link.href = "contato.html#formulario";
   });
   document.querySelectorAll("[data-email]").forEach((link) => {
-    const subject = link.getAttribute("data-subject") || "Contato pelo site V&C";
-    link.href = `mailto:${siteConfig.email}?subject=${encodeURIComponent(subject)}`;
+    link.href = "contato.html#formulario";
   });
 }
 

@@ -2,10 +2,14 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
   "trailingSlash": false,
+  "redirects": [
+    { "source": "/universidade-real", "destination": "/universidade-vc", "permanent": true }
+  ],
   "rewrites": [
     { "source": "/meus-acessos", "destination": "/entrar" },
     { "source": "/admin", "destination": "/entrar" },
-    { "source": "/admin/universidade", "destination": "/administracao-universidade" }
+    { "source": "/admin/universidade", "destination": "/administracao-universidade" },
+    { "source": "/empresa/universidade", "destination": "/gestao-empresa-universidade" }
   ],
   "headers": [
     {
