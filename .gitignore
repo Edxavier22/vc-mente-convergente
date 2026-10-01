@@ -10,3 +10,6 @@ Desktop.ini
 
 # Sistema
 .DS_Store
+
+# Supabase CLI local cache
+supabase/.temp/
