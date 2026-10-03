@@ -15,13 +15,13 @@ function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(draft)); upda
 function updateProgress() { document.querySelector("#progress-copy").textContent = `${draft.completed.length} de ${course?.modules.length || 10} módulos marcados neste dispositivo`; document.querySelector("#progress").value = draft.completed.length; }
 function showState(title, description, link) { panel.replaceChildren(node("h1", title), node("p", description)); if (link) { const a=node("a", "Ir para Meus Acessos"); a.href="entrar.html"; panel.append(a); } }
 async function token() {
-  let session; try { session = JSON.parse(sessionStorage.getItem(SESSION_KEY) || "null"); } catch { return null; }
+  let session; try { session = JSON.parse(localStorage.getItem(SESSION_KEY) || "null"); } catch { return null; }
   if (!session?.access_token || !session?.refresh_token) return null;
   if (Number(session.expires_at || 0) > Math.floor(Date.now()/1000)+30) return session.access_token;
   const response=await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=refresh_token`,{method:"POST",headers:{apikey:PUBLISHABLE_KEY,"content-type":"application/json"},body:JSON.stringify({refresh_token:session.refresh_token})});
-  if (!response.ok) {sessionStorage.removeItem(SESSION_KEY);return null;}
+  if (!response.ok) {localStorage.removeItem(SESSION_KEY);return null;}
   const renewed=await response.json();
-  sessionStorage.setItem(SESSION_KEY,JSON.stringify({access_token:renewed.access_token,refresh_token:renewed.refresh_token,expires_at:Math.floor(Date.now()/1000)+Number(renewed.expires_in || 3600),user:renewed.user}));
+  localStorage.setItem(SESSION_KEY,JSON.stringify({access_token:renewed.access_token,refresh_token:renewed.refresh_token,expires_at:Math.floor(Date.now()/1000)+Number(renewed.expires_in || 3600),user:renewed.user}));
   return renewed.access_token;
 }
 function section(title, contents, ordered=false) { const wrapper=node("section"); wrapper.append(node("h2",title)); const list=node(ordered?"ol":"ul"); for(const item of contents) list.append(node("li",item)); wrapper.append(list); return wrapper; }

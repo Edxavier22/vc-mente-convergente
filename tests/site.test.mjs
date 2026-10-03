@@ -75,8 +75,9 @@ test("comunicação pública apresenta a Universidade única sem linguagem inter
 
 test("navegação consolidada aponta para catálogo e portal", () => {
   const script = read("assets/js/main.js");
-  assert.match(script, /produtos\.html/);
-  assert.match(script, /entrar\.html/);
+  assert.match(script, /"\/produtos"/);
+  assert.match(script, /"\/entrar"/);
+  assert.doesNotMatch(script, /"(?:index|produtos|empresas|escolas|palestras|universidade-vc|sobre-edgar|contato)\.html"/);
   assert.match(script, /vcmenteconvergente@gmail\.com/);
   assert.doesNotMatch(script, /header-cta[^\n]+real-360-psicossocial/);
 });
@@ -100,6 +101,15 @@ test("portal possui cadastro, login, recuperação e áreas protegidas", () => {
   assert.match(html, /id="workspace-overview"/);
 });
 
+test("página institucional apresenta Edgar, Carla e a origem da V&C", () => {
+  const about = read("sobre-edgar.html");
+  const navigation = read("assets/js/main.js");
+  assert.match(navigation, /"\/sobre-edgar", "Sobre nós"/);
+  assert.match(about, /Edgar Xavier e Carla Amanda/);
+  assert.match(about, /Como surgiu a V&amp;C Mente Convergente/);
+  assert.match(about, /Vidas Conectadas ao propósito/);
+});
+
 test("configuração Vercel mantém um único site com rotas internas", () => {
   const config = JSON.parse(read("vercel.json"));
   assert.equal(config.cleanUrls, true);
@@ -110,6 +120,25 @@ test("configuração Vercel mantém um único site com rotas internas", () => {
   const headers = JSON.stringify(config.headers);
   assert.match(headers, /Content-Security-Policy/);
   assert.match(headers, /frame-ancestors 'none'/);
+});
+
+test("rotas aninhadas resolvem recursos e destinos internos a partir da raiz", () => {
+  const config = JSON.parse(read("vercel.json"));
+  const nested = config.rewrites.filter(item => item.source.split("/").filter(Boolean).length > 1);
+  assert.ok(nested.length >= 3);
+  for (const route of nested) {
+    const page = `${route.destination.replace(/^\//, "")}.html`;
+    const html = read(page);
+    for (const [, value] of html.matchAll(/(?:href|src)="([^"]+)"/g)) {
+      if (/^(?:https?:|mailto:|#|data:)/i.test(value)) continue;
+      assert.match(value, /^\//, `${route.source} -> ${value} precisa partir da raiz`);
+      const pathname = value.split(/[?#]/)[0].replace(/^\//, "");
+      const candidates = [pathname, `${pathname}.html`];
+      const linkedRewrite = config.rewrites.find(item => item.source === `/${pathname}`);
+      if (linkedRewrite) candidates.push(`${linkedRewrite.destination.replace(/^\//, "")}.html`);
+      assert.ok(candidates.some(candidate => existsSync(join(root, candidate))), `${route.source} -> ${value}`);
+    }
+  }
 });
 
 test("Universidade possui catálogo multicursos e sala premium acessível", () => {
@@ -131,6 +160,7 @@ test("Universidade possui catálogo multicursos e sala premium acessível", () =
   assert.match(learner, /aria-busy/);
   assert.match(styles, /@media\(max-width:780px\)/);
   assert.match(styles, /prefers-reduced-motion/);
+  assert.match(styles, /\[hidden\]\{display:none!important\}/);
 });
 
 test("sala renderiza o contrato pedagógico premium sem expor gabaritos", () => {
@@ -219,12 +249,44 @@ test("administração da Universidade é privada, real e separada do professor",
   assert.match(api, /OWNER_EMAIL = "vcmenteconvergente@gmail\.com"/);
   assert.match(api, /access\?\.platform_admin !== true/);
   assert.match(api, /select=enrollment_id,module_no,submitted_at,completed_at,review_status,reviewed_at/);
-  assert.doesNotMatch(api, /select=[^\n"]*evidence/);
+  assert.doesNotMatch(api, /select=[^\n"]*(?:,evidence(?:,|&)|review_feedback|review_concepts)/);
   assert.match(page, /id="certificados"/);
   assert.match(script, /certificate-rows/);
   assert.match(api, /learner_name_snapshot,course_title_snapshot,issued_at,revoked_at/);
   assert.match(portal, /university-admin-card/);
   assert.equal(vercel.rewrites.some((item) => item.source === "/admin/universidade"), true);
+});
+
+test("proprietário possui espelho integral privado com provas e gabaritos", () => {
+  const page = read("administracao-conteudo-universidade.html");
+  const app = read("assets/js/universidade-admin-conteudo.js");
+  const admin = read("administracao-universidade.html");
+  const api = read("supabase/functions/vc-universidade-admin/index.ts");
+  const learnerApi = read("supabase/functions/vc-universidade-learner-v2/index.ts");
+  const vercel = JSON.parse(read("vercel.json"));
+  assert.match(page, /noindex,nofollow/);
+  assert.match(page, /Conteúdo integral do proprietário/);
+  assert.match(admin, /href="\/admin\/universidade\/conteudo"/);
+  assert.match(app, /view=curriculum/);
+  assert.match(app, /question\.correct_index/);
+  assert.match(app, /Prova final e gabaritos/);
+  assert.ok(api.indexOf("await assertOwner(bearer)") < api.indexOf('url.searchParams.get("view") === "curriculum"'));
+  assert.match(api, /access: "owner_full_curriculum"/);
+  assert.match(api, /includes_answer_keys: true/);
+  assert.match(api, /correct_choice/);
+  assert.doesNotMatch(learnerApi, /correct_choice/);
+  assert.equal(vercel.rewrites.some((item) => item.source === "/admin/universidade/conteudo"), true);
+});
+
+test("sessão autenticada persiste entre abas sem expor segredos", () => {
+  const clients = [
+    "portal.js", "universidade-admin.js", "universidade-admin-conteudo.js",
+    "universidade-empresa.js", "universidade-professor.js", "universidade-aluno-v2.js",
+    "universidade-aluno.js", "certificado-aluno.js"
+  ].map(name => read(`assets/js/${name}`)).join("\n");
+  assert.doesNotMatch(clients, /sessionStorage/);
+  assert.match(clients, /localStorage/);
+  assert.doesNotMatch(clients, /service_role|SUPABASE_SECRET_KEY/i);
 });
 
 test("APIs acadêmicas aceitam previews versionados sem liberar origens externas", () => {
@@ -366,7 +428,7 @@ test("administração distingue organizações sem expor conteúdo acadêmico", 
   assert.match(app, /minimum_report_group_size/);
   assert.match(api, /active_organizations/);
   assert.match(api, /enterprise_cohorts/);
-  assert.doesNotMatch(api, /select=[^"\n]*(?:evidence|review_feedback|review_concepts)/);
+  assert.doesNotMatch(api, /select=[^"\n]*(?:,evidence(?:,|&)|review_feedback|review_concepts)/);
 });
 
 test("formação empresarial apresenta escopo, privacidade e solicitação sem cobrança", () => {

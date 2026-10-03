@@ -11,12 +11,12 @@ const navigationToggle=document.querySelector("#toggle-course-navigation");
 function el(tag,text,klass){const x=document.createElement(tag);if(text!==undefined)x.textContent=text;if(klass)x.className=klass;return x}
 function message(title,detail,link=false){panel.setAttribute("aria-busy","false");panel.replaceChildren(el("h1",title),el("p",detail));if(link){const a=el("a","Ir para Meus Acessos");a.href="entrar.html";panel.append(a)}}
 async function token(){
- let s;try{s=JSON.parse(sessionStorage.getItem(SESSION)||"null")}catch{return null}
+ let s;try{s=JSON.parse(localStorage.getItem(SESSION)||"null")}catch{return null}
  if(!s?.access_token||!s?.refresh_token)return null;
  if(Number(s.expires_at||0)>Date.now()/1000+30)return s.access_token;
  const r=await fetch(ROOT+"/auth/v1/token?grant_type=refresh_token",{method:"POST",headers:{apikey:KEY,"content-type":"application/json"},body:JSON.stringify({refresh_token:s.refresh_token})});
- if(!r.ok){sessionStorage.removeItem(SESSION);return null}
- const n=await r.json();sessionStorage.setItem(SESSION,JSON.stringify({access_token:n.access_token,refresh_token:n.refresh_token,expires_at:Math.floor(Date.now()/1000)+Number(n.expires_in||3600),user:n.user}));return n.access_token
+ if(!r.ok){localStorage.removeItem(SESSION);return null}
+ const n=await r.json();localStorage.setItem(SESSION,JSON.stringify({access_token:n.access_token,refresh_token:n.refresh_token,expires_at:Math.floor(Date.now()/1000)+Number(n.expires_in||3600),user:n.user}));return n.access_token
 }
 async function call(path="",body){
  const access=await token();if(!access)throw Error("sign_in_required");
@@ -205,7 +205,8 @@ async function openModule(number){
 }
 navigationToggle.addEventListener("click",()=>{const expanded=navigationToggle.getAttribute("aria-expanded")==="true";navigationToggle.setAttribute("aria-expanded",String(!expanded));navigationToggle.textContent=expanded?"Ver trilha e indicadores":"Ocultar trilha";navigation.classList.toggle("is-open",!expanded)});
 async function start(){
- try{document.querySelector("#show-assessment").onclick=assessment;document.querySelector("#show-completion").onclick=completion;document.querySelector("#export-work").hidden=true;await reload();const active=catalog.modules.find(m=>m.unlocked&&!m.completed)||catalog.modules.find(m=>m.unlocked);if(active)await openModule(active.number);else message("Formação indisponível","Nenhum módulo liberado nesta matrícula.")}
- catch(error){const states={sign_in_required:["Entre na sua conta","Use o mesmo acesso de Meus Acessos.",true],access_denied:["Matrícula não encontrada","Esta conta ainda não tem acesso a esta formação.",true],enrollment_sync_required:["Matrícula em conferência","Seu direito foi localizado, mas a turma ainda não foi vinculada. Contate o suporte V&C.",false]};message(...(states[error.message]||["Acesso indisponível","Não foi possível consultar sua matrícula. Tente novamente mais tarde.",false]))}
+ const accountStatus=document.querySelector("#account-sync-status");
+ try{document.querySelector("#show-assessment").onclick=assessment;document.querySelector("#show-completion").onclick=completion;document.querySelector("#export-work").hidden=true;await reload();accountStatus.lastChild.textContent="Progresso salvo na sua conta";const active=catalog.modules.find(m=>m.unlocked&&!m.completed)||catalog.modules.find(m=>m.unlocked);if(active)await openModule(active.number);else message("Formação indisponível","Nenhum módulo liberado nesta matrícula.")}
+ catch(error){accountStatus.lastChild.textContent="Acesso protegido por sessão";const states={sign_in_required:["Entre na sua conta","Use o mesmo acesso de Meus Acessos.",true],access_denied:["Matrícula não encontrada","Esta conta ainda não tem acesso a esta formação.",true],enrollment_sync_required:["Matrícula em conferência","Seu direito foi localizado, mas a turma ainda não foi vinculada. Contate o suporte V&C.",false]};message(...(states[error.message]||["Acesso indisponível","Não foi possível consultar sua matrícula. Tente novamente mais tarde.",false]))}
 }
 start();
