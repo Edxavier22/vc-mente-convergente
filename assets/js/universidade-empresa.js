@@ -4,7 +4,7 @@ const SESSION_KEY="vc_portal_session_v1";
 const status=document.querySelector("#corporate-status");
 const content=document.querySelector("#corporate-content");
 const node=(tag,value="",className="")=>{const item=document.createElement(tag);item.textContent=value;if(className)item.className=className;return item};
-function session(){try{return JSON.parse(sessionStorage.getItem(SESSION_KEY)||"null")}catch{return null}}
+function session(){try{return JSON.parse(localStorage.getItem(SESSION_KEY)||"null")}catch{return null}}
 async function request(){const current=session();if(!current?.access_token)throw new Error("sign_in_required");const response=await fetch(ROOT+"/functions/v1/vc-universidade-empresa",{headers:{apikey:KEY,authorization:"Bearer "+current.access_token,accept:"application/json"},cache:"no-store"});if(response.status===401)throw new Error("sign_in_required");if(response.status===403)throw new Error("corporate_manager_required");if(!response.ok)throw new Error("service_unavailable");return response.json()}
 function metric(label,value){const card=node("div","","vc-corporate-metric");card.append(node("span",label),node("strong",value===null?"Protegido":String(value)));return card}
 function cohortCard(item){const card=node("article","","vc-corporate-cohort");const head=node("div","","vc-corporate-cohort-head"),copy=node("div");copy.append(node("p",item.course,"vc-admin-kicker"),node("h3",item.label));head.append(copy,node("span",item.status,"vc-admin-badge"));card.append(head);
