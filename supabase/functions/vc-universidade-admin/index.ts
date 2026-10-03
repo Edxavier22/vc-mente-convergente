@@ -7,7 +7,7 @@ const PROD = "https://vc-mente-convergente.vercel.app";
 
 function trusted(origin: string) {
   return origin === PROD ||
-    /^https:\/\/vc-mente-convergente-git-feature-universidade-[a-z0-9-]+-life-os22\.vercel\.app$/.test(origin) ||
+    /^https:\/\/vc-mente-convergente-[a-z0-9-]+-life-os22\.vercel\.app$/.test(origin) ||
     ["http://localhost:4173", "http://127.0.0.1:4173"].includes(origin);
 }
 function reply(status: number, body: unknown, origin: string) {

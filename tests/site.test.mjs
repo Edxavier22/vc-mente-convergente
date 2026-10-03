@@ -290,12 +290,14 @@ test("sessão autenticada persiste entre abas sem expor segredos", () => {
 });
 
 test("APIs acadêmicas aceitam previews versionados sem liberar origens externas", () => {
-  const learner = read("supabase/functions/vc-universidade-learner-v2/index.ts");
-  const professor = read("supabase/functions/vc-universidade-professor/index.ts");
-  for (const api of [learner, professor]) {
-    assert.match(api, /git-feature-universidade-\[a-z0-9-\]\+-life-os22/);
-    assert.match(api, /trustedOrigin\(origin\) \? origin : PROD/);
-    assert.doesNotMatch(api, /git-feature-universidade-(?:4ebcec|ac557f)-life-os22/);
+  const apis = [
+    "vc-universidade-learner-v2", "vc-universidade-professor", "vc-universidade-admin",
+    "vc-universidade-empresa", "vc-universidade-propostas", "vc-certificado-publico"
+  ].map(name => read(`supabase/functions/${name}/index.ts`));
+  for (const api of apis) {
+    assert.match(api, /vc-mente-convergente-\[a-z0-9-\]\+-life-os22/);
+    assert.match(api, /(?:trustedOrigin|trusted)\(origin\) \? origin : PROD/);
+    assert.doesNotMatch(api, /https:\/\/\[a-z0-9-\]\+\.vercel\.app/);
   }
 });
 

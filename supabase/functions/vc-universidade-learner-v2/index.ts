@@ -12,7 +12,7 @@ const FIELDS = "enrollment_id,course_id,course_version,status,cohort_id,enrolled
 
 function trustedOrigin(origin) {
  return origin === PROD ||
-  /^https:\/\/vc-mente-convergente-git-feature-universidade-[a-z0-9-]+-life-os22\.vercel\.app$/.test(origin) ||
+  /^https:\/\/vc-mente-convergente-[a-z0-9-]+-life-os22\.vercel\.app$/.test(origin) ||
   ["http://localhost:4173", "http://127.0.0.1:4173"].includes(origin);
 }
 

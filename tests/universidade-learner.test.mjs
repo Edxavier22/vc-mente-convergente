@@ -102,10 +102,15 @@ test("sem credencial não consulta matrícula", async () => {
  const response = await handler(request("", "GET", null, false));
  assert.equal(response.status, 401);
 });
-test("qualquer prévia da branch Universidade recebe CORS e outra origem não", async () => {
- const preview = "https://vc-mente-convergente-git-feature-universidade-f893e0-life-os22.vercel.app";
- const allowed = await handler(new Request("https://example.invalid/", {headers: {origin: preview}}));
- assert.equal(allowed.headers.get("access-control-allow-origin"), preview);
+test("previews da branch e do deployment recebem CORS e outra origem não", async () => {
+ const previews = [
+  "https://vc-mente-convergente-git-feature-universidade-f893e0-life-os22.vercel.app",
+  "https://vc-mente-convergente-8r9z25ecx-life-os22.vercel.app"
+ ];
+ for (const preview of previews) {
+  const allowed = await handler(new Request("https://example.invalid/", {headers: {origin: preview}}));
+  assert.equal(allowed.headers.get("access-control-allow-origin"), preview);
+ }
  const rejected = await handler(new Request("https://example.invalid/", {headers: {origin: "https://outra-origem.vercel.app"}}));
  assert.notEqual(rejected.headers.get("access-control-allow-origin"), "https://outra-origem.vercel.app");
 });
