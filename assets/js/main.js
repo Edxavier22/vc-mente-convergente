@@ -3,14 +3,14 @@ const siteConfig = {
 };
 
 const navItems = [
-  ["index.html", "Início", "home"],
-  ["produtos.html", "Soluções", "produtos"],
-  ["empresas.html", "Para Empresas", "empresas"],
-  ["escolas.html", "Para Escolas", "escolas"],
-  ["palestras.html", "Palestras", "palestras"],
-  ["universidade-vc.html", "Universidade V&C", "universidade"],
-  ["sobre-edgar.html", "Sobre Edgar", "sobre"],
-  ["contato.html", "Contato", "contato"]
+  ["/", "Início", "home"],
+  ["/produtos", "Soluções", "produtos"],
+  ["/empresas", "Para Empresas", "empresas"],
+  ["/escolas", "Para Escolas", "escolas"],
+  ["/palestras", "Palestras", "palestras"],
+  ["/universidade-vc", "Universidade V&C", "universidade"],
+  ["/sobre-edgar", "Sobre Edgar", "sobre"],
+  ["/contato", "Contato", "contato"]
 ];
 
 function renderHeader() {
@@ -19,12 +19,12 @@ function renderHeader() {
   if (!header) return;
   header.innerHTML = `
     <div class="nav-wrap">
-      <a class="brand" href="index.html" aria-label="V&C Mente Convergente"><img src="assets/images/logo-vc-mente-convergente.svg" alt="V&C Mente Convergente"></a>
+      <a class="brand" href="/" aria-label="V&C Mente Convergente"><img src="/assets/images/logo-vc-mente-convergente.svg" alt="V&C Mente Convergente"></a>
       <button class="nav-toggle" aria-label="Abrir menu" aria-expanded="false"><span></span><span></span><span></span></button>
       <nav class="main-nav" aria-label="Menu principal">
         ${navItems.map(([href, label, key]) => `<a class="${page === key ? "active" : ""}" href="${href}">${label}</a>`).join("")}
       </nav>
-      <a class="header-cta" href="entrar.html">Meus acessos</a>
+      <a class="header-cta" href="/entrar">Meus acessos</a>
     </div>`;
 }
 
@@ -34,10 +34,10 @@ function renderFooter() {
   footer.innerHTML = `
     <div class="footer-inner">
       <div class="footer-grid">
-        <div><img src="assets/images/logo-vc-mente-convergente.svg" alt="V&C Mente Convergente" width="270"><p>Vidas conectadas ao propósito por meio de desenvolvimento humano, tecnologia, educação e sistemas práticos.</p></div>
-        <div><h3>Ecossistema</h3><a href="produtos.html">Todas as soluções</a><a href="pessoas.html">Pessoas</a><a href="empresas.html">Empresas</a><a href="escolas.html">Escolas</a><a href="familias.html">Famílias</a></div>
-        <div><h3>Plataformas</h3><a href="metodo-real.html">Método REAL</a><a href="real-360-psicossocial.html">REAL 360 Psicossocial</a><a href="universidade-vc.html">Universidade V&amp;C</a><a href="entrar.html">Meus acessos</a></div>
-        <div><h3>Contato</h3><a href="palestras.html">Palestras</a><a href="livros.html">Livros</a><a href="blog.html">Conteúdos</a><a data-email>E-mail oficial</a><a href="contato.html">Fale com a V&C</a><a href="privacidade.html">Privacidade</a></div>
+        <div><img src="/assets/images/logo-vc-mente-convergente.svg" alt="V&C Mente Convergente" width="270"><p>Vidas conectadas ao propósito por meio de desenvolvimento humano, tecnologia, educação e sistemas práticos.</p></div>
+        <div><h3>Ecossistema</h3><a href="/produtos">Todas as soluções</a><a href="/pessoas">Pessoas</a><a href="/empresas">Empresas</a><a href="/escolas">Escolas</a><a href="/familias">Famílias</a></div>
+        <div><h3>Plataformas</h3><a href="/metodo-real">Método REAL</a><a href="/real-360-psicossocial">REAL 360 Psicossocial</a><a href="/universidade-vc">Universidade V&amp;C</a><a href="/entrar">Meus acessos</a></div>
+        <div><h3>Contato</h3><a href="/palestras">Palestras</a><a href="/livros">Livros</a><a href="/blog">Conteúdos</a><a data-email>E-mail oficial</a><a href="/contato">Fale com a V&C</a><a href="/privacidade">Privacidade</a></div>
       </div>
       <div class="footer-bottom">&copy; 2026 V&amp;C Mente Convergente. Vidas conectadas ao propósito. O REAL 360&deg; Psicossocial apoia gestão e desenvolvimento; não realiza diagnóstico clínico nem substitui avaliação especializada.</div>
     </div>`;
@@ -94,10 +94,10 @@ function setupForms() {
 
 function setupLinks() {
   document.querySelectorAll("[data-whatsapp]").forEach((link) => {
-    link.href = "contato.html#formulario";
+    link.href = "/contato#formulario";
   });
   document.querySelectorAll("[data-email]").forEach((link) => {
-    link.href = "contato.html#formulario";
+    link.href = "/contato#formulario";
   });
 }
 

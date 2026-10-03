@@ -75,8 +75,9 @@ test("comunicação pública apresenta a Universidade única sem linguagem inter
 
 test("navegação consolidada aponta para catálogo e portal", () => {
   const script = read("assets/js/main.js");
-  assert.match(script, /produtos\.html/);
-  assert.match(script, /entrar\.html/);
+  assert.match(script, /"\/produtos"/);
+  assert.match(script, /"\/entrar"/);
+  assert.doesNotMatch(script, /"(?:index|produtos|empresas|escolas|palestras|universidade-vc|sobre-edgar|contato)\.html"/);
   assert.match(script, /vcmenteconvergente@gmail\.com/);
   assert.doesNotMatch(script, /header-cta[^\n]+real-360-psicossocial/);
 });
@@ -110,6 +111,23 @@ test("configuração Vercel mantém um único site com rotas internas", () => {
   const headers = JSON.stringify(config.headers);
   assert.match(headers, /Content-Security-Policy/);
   assert.match(headers, /frame-ancestors 'none'/);
+});
+
+test("rotas aninhadas resolvem recursos e destinos internos a partir da raiz", () => {
+  const config = JSON.parse(read("vercel.json"));
+  const nested = config.rewrites.filter(item => item.source.split("/").filter(Boolean).length > 1);
+  assert.ok(nested.length >= 3);
+  for (const route of nested) {
+    const page = `${route.destination.replace(/^\//, "")}.html`;
+    const html = read(page);
+    for (const [, value] of html.matchAll(/(?:href|src)="([^"]+)"/g)) {
+      if (/^(?:https?:|mailto:|#|data:)/i.test(value)) continue;
+      assert.match(value, /^\//, `${route.source} -> ${value} precisa partir da raiz`);
+      const pathname = value.split(/[?#]/)[0].replace(/^\//, "");
+      const candidates = [pathname, `${pathname}.html`];
+      assert.ok(candidates.some(candidate => existsSync(join(root, candidate))), `${route.source} -> ${value}`);
+    }
+  }
 });
 
 test("Universidade possui catálogo multicursos e sala premium acessível", () => {
