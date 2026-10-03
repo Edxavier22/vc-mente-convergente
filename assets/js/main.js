@@ -9,7 +9,7 @@ const navItems = [
   ["/escolas", "Para Escolas", "escolas"],
   ["/palestras", "Palestras", "palestras"],
   ["/universidade-vc", "Universidade V&C", "universidade"],
-  ["/sobre-edgar", "Sobre Edgar", "sobre"],
+  ["/sobre-edgar", "Sobre nós", "sobre"],
   ["/contato", "Contato", "contato"]
 ];
 

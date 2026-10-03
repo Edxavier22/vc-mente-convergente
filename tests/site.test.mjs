@@ -101,6 +101,15 @@ test("portal possui cadastro, login, recuperação e áreas protegidas", () => {
   assert.match(html, /id="workspace-overview"/);
 });
 
+test("página institucional apresenta Edgar, Carla e a origem da V&C", () => {
+  const about = read("sobre-edgar.html");
+  const navigation = read("assets/js/main.js");
+  assert.match(navigation, /"\/sobre-edgar", "Sobre nós"/);
+  assert.match(about, /Edgar Xavier e Carla Amanda/);
+  assert.match(about, /Como surgiu a V&amp;C Mente Convergente/);
+  assert.match(about, /Vidas Conectadas ao propósito/);
+});
+
 test("configuração Vercel mantém um único site com rotas internas", () => {
   const config = JSON.parse(read("vercel.json"));
   assert.equal(config.cleanUrls, true);
