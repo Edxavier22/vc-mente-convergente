@@ -4,8 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "check": "node --check assets/js/main.js && node --check assets/js/portal.js && node --check assets/js/universidade-aluno-v2.js && node --check assets/js/universidade-professor.js && node --check assets/js/universidade-admin.js && node --check assets/js/universidade-empresa.js && node --check assets/js/universidade-propostas.js && node --check assets/js/certificado-publico.js && node --check assets/js/certificado-aluno.js && node --test tests/*.test.mjs",
-    "test": "node --test tests/*.test.mjs"
+    "check": "npm run check:scripts && npm test",
+    "check:scripts": "node --check assets/js/main.js && node --check assets/js/portal.js && node --check assets/js/universidade-aluno-v2.js && node --check assets/js/universidade-professor.js && node --check assets/js/universidade-admin.js && node --check assets/js/universidade-empresa.js && node --check assets/js/universidade-propostas.js && node --check assets/js/certificado-publico.js && node --check assets/js/certificado-aluno.js && node --check scripts/phase14-capacity.mjs",
+    "check:functions": "npx --yes deno check supabase/functions/vc-universidade-propostas/index.ts supabase/functions/vc-universidade-admin/index.ts",
+    "test": "node --test tests/*.test.mjs",
+    "test:capacity": "node scripts/phase14-capacity.mjs"
   },
   "engines": {
     "node": ">=20"

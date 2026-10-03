@@ -39,6 +39,14 @@ Para servir a pasta localmente:
 python3 -m http.server 4173
 ```
 
+Para executar o ensaio limitado da Fase 14 contra uma prévia já publicada:
+
+```bash
+CAPACITY_BASE_URL="https://URL-EXATA-DO-PREVIEW" npm run test:capacity
+```
+
+O ensaio aceita no máximo 100 requisições por cenário e concorrência 10. A verificação opcional da API de propostas usa o honeypot e não persiste dados; consulte o runbook antes de ativá-la.
+
 ## Publicação
 
 A branch `main` está conectada ao projeto Vercel existente. Pull requests e branches geram previews; a produção só deve ser atualizada depois da homologação do preview. As rotas e os cabeçalhos de segurança são definidos em `vercel.json`.

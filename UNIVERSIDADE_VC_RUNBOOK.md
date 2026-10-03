@@ -88,3 +88,29 @@ Não fazer merge, cobrança real ou abertura comercial antes da homologação au
 ### Gate da Fase 13
 
 Antes de produção: publicar a branch em preview, conferir a página em desktop/celular e confirmar com sessão proprietária que a fila recebe e movimenta uma solicitação controlada. A inspeção visual automática local ficou indisponível porque o daemon do navegador não iniciou.
+
+## Fase 14 — testes integrados e capacidade controlada
+
+- O gate local reúne sintaxe do frontend, contratos estáticos e testes comportamentais das Edge Functions em `npm run check`.
+- A função pública de propostas é exercitada com origem, método, tamanho, consentimento, honeypot, normalização, indisponibilidade, rate limit e 80 chamadas concorrentes contra backend simulado.
+- O ensaio de preview em `npm run test:capacity` mede home, catálogo, página empresarial e portal, com limites rígidos de 100 requisições por cenário e concorrência máxima 10.
+- A API pública de propostas só entra no ensaio remoto quando URL e chave publicável são fornecidas juntas; o payload usa o honeypot, retorna 202 e não grava solicitação.
+- O gate considera falha qualquer resposta inesperada ou p95 acima do limite configurado (2,5 s por padrão).
+- GitHub Actions executa Node 24, testes, checagem das funções de propostas e administração com Deno 2 e `git diff --check` em PRs e branches da Universidade.
+- O ensaio remoto deve usar a URL exata do preview, nunca produção, e ser executado uma vez por versão candidata.
+- As funções acadêmicas mais antigas ainda não passam no modo estrito do Deno 2 (tipos implícitos e import de `qrcode`); essa dívida deve ser corrigida em mudança própria, sem alterar em massa APIs já ativas durante o gate de capacidade.
+
+### Comandos da Fase 14
+
+```bash
+npm run check
+npm run check:functions
+CAPACITY_BASE_URL="https://URL-EXATA-DO-PREVIEW" npm run test:capacity
+CAPACITY_BASE_URL="https://URL-EXATA-DO-PREVIEW" \
+CAPACITY_PROPOSAL_URL="https://ctzgsxxbyvruzmfqibnl.supabase.co/functions/v1/vc-universidade-propostas" \
+CAPACITY_PUBLISHABLE_KEY="CHAVE_PUBLICAVEL" npm run test:capacity
+```
+
+### Gate da Fase 14
+
+Antes de avançar: publicar esta branch, confirmar o workflow verde e executar o ensaio contra a prévia. A homologação humana completa em desktop/celular e as jornadas autenticadas pertencem à Fase 15; não fazer merge nem testar carga contra produção.
