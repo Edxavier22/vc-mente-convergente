@@ -16,6 +16,8 @@
   --vc-radius:18px;
 }
 
+[hidden]{display:none!important}
+
 /* Universidade pública */
 .university-page{background:var(--vc-paper)}
 .university-page .site-header{box-shadow:0 1px 0 rgba(255,255,255,.08)}

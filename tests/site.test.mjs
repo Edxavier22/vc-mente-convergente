@@ -158,6 +158,7 @@ test("Universidade possui catálogo multicursos e sala premium acessível", () =
   assert.match(learner, /aria-busy/);
   assert.match(styles, /@media\(max-width:780px\)/);
   assert.match(styles, /prefers-reduced-motion/);
+  assert.match(styles, /\[hidden\]\{display:none!important\}/);
 });
 
 test("sala renderiza o contrato pedagógico premium sem expor gabaritos", () => {
