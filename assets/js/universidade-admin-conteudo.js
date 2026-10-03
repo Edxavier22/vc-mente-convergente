@@ -5,7 +5,9 @@ const SESSION="vc_portal_session_v1";
 const status=document.querySelector("#owner-content-status");
 const content=document.querySelector("#owner-content");
 const summary=document.querySelector("#owner-content-summary");
+const audit=document.querySelector("#owner-content-audit");
 const navigation=document.querySelector("#owner-content-navigation");
+const selector=document.querySelector("#owner-content-selector");
 const panel=document.querySelector("#owner-content-panel");
 let payload;
 
@@ -30,6 +32,28 @@ async function request(){
  return data
 }
 function metric(label,value,detail){const card=el("article",undefined,"vc-owner-metric");append(card,el("span",label),el("strong",value),el("small",detail));return card}
+function hours(minutes){const value=Number(minutes)||0;return Number.isInteger(value/60)?value/60+"h":(Math.round(value/6)/10)+"h"}
+function count(modules,key){return modules.reduce((total,module)=>total+(Array.isArray(module[key])?module[key].length:0),0)}
+function renderAudit(course){
+ const modules=course.content.modules||[];const workload=course.content.workload||{};
+ const heading=el("div",undefined,"vc-owner-audit-heading");const copy=el("div");append(copy,el("p","AUDITORIA PEDAGÓGICA","vc-admin-kicker"),el("h2","Profundidade que pode ser conferida."));
+ heading.append(copy,el("p","A qualidade não é medida apenas pelo volume de texto. Este painel confirma a combinação de estudo, casos, prática, evidências, avaliação e fontes que sustenta as 20 horas do percurso."));
+ const coverage=el("div",undefined,"vc-owner-audit-grid");[
+  [count(modules,"study"),"leituras orientadas","Conteúdo conceitual distribuído pelos dez módulos"],
+  [modules.filter(module=>module.caseStudy?.scenario).length,"estudos de caso","Situações para análise e tomada de decisão"],
+  [count(modules,"workshop"),"etapas de oficina","Aplicação prática antes da entrega de evidências"],
+  [count(modules,"references"),"fontes declaradas","Referências acadêmicas, técnicas e normativas"]
+ ].forEach(([value,label,detail])=>coverage.append(metric(label,value,detail)));
+ const workloadGrid=el("div",undefined,"vc-owner-workload");[
+  ["Estudo e orientação",workload.guidedContentMinutes],
+  ["Casos e checkpoints",workload.casesCheckpointsMinutes],
+  ["Oficinas e evidências",workload.workshopsEvidenceMinutes],
+  ["Projeto de 30 dias",workload.finalProjectMinutes],
+  ["Avaliação e revisão",workload.assessmentReviewMinutes]
+ ].forEach(([label,minutes])=>{const item=el("div");append(item,el("span",label),el("strong",hours(minutes)));workloadGrid.append(item)});
+ const note=el("p","A carga horária representa o percurso ativo completo. Permanecer com a página aberta não comprova aprendizagem nem conclusão.","vc-owner-audit-note");
+ audit.replaceChildren(heading,coverage,workloadGrid,note)
+}
 function listSection(label,title,items,className=""){
  if(!Array.isArray(items)||!items.length)return null;
  const section=el("section",undefined,"vc-owner-section "+className);append(section,el("p",label,"vc-admin-kicker"),el("h2",title));
@@ -92,7 +116,7 @@ function renderFinal(){
  groups.forEach(kind=>{const rows=payload.final_exam.filter(item=>item.kind===kind);if(rows.length)body.append(questionsSection(({concept:"Conceitos",application:"Aplicação",case:"Estudos de caso",decision:"Tomada de decisão"})[kind],rows))});
  panel.replaceChildren(body);panel.focus();window.scrollTo({top:0,behavior:"smooth"});selectNavigation("final")
 }
-function selectNavigation(key){navigation.querySelectorAll("button").forEach(button=>button.classList.toggle("is-current",button.dataset.view===key))}
+function selectNavigation(key){navigation.querySelectorAll("button").forEach(button=>button.classList.toggle("is-current",button.dataset.view===key));selector.value=key}
 function render(data){
  payload=data;const course=data.course;summary.replaceChildren(
   metric("Curso",course.title,"Versão "+course.version),
@@ -100,8 +124,10 @@ function render(data){
   metric("Checkpoints",data.summary.checkpoint_questions,"Perguntas com gabarito"),
   metric("Prova final",data.summary.final_questions,"Banco ativo completo")
  );
- navigation.replaceChildren();course.content.modules.forEach(module=>{const button=el("button",String(module.number).padStart(2,"0")+" · "+module.title);button.type="button";button.dataset.view="module-"+module.number;button.onclick=()=>renderModule(module);navigation.append(button)});
- const final=el("button","Prova final · banco completo");final.type="button";final.dataset.view="final";final.onclick=renderFinal;navigation.append(final);
+ renderAudit(course);
+ navigation.replaceChildren();selector.replaceChildren();course.content.modules.forEach(module=>{const key="module-"+module.number;const label=String(module.number).padStart(2,"0")+" · "+module.title;const button=el("button",label);button.type="button";button.dataset.view=key;button.onclick=()=>renderModule(module);navigation.append(button);const option=el("option",label);option.value=key;selector.append(option)});
+ const final=el("button","Prova final · banco completo");final.type="button";final.dataset.view="final";final.onclick=renderFinal;navigation.append(final);const finalOption=el("option","Prova final · banco completo");finalOption.value="final";selector.append(finalOption);
+ selector.onchange=()=>{if(selector.value==="final")renderFinal();else{const number=Number(selector.value.replace("module-",""));const module=course.content.modules.find(item=>Number(item.number)===number);if(module)renderModule(module)}};
  content.hidden=false;status.hidden=true;renderModule(course.content.modules[0])
 }
 function failure(error){

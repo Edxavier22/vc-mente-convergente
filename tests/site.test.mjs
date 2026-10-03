@@ -56,13 +56,16 @@ test("âncoras, abas e links externos possuem destino verificável", () => {
 
 test("a marca pública canônica é V&C Mente Convergente", () => {
   const publicSources = [
-    ...htmlFiles.map(read),
+    ...htmlFiles.filter((file) => file !== "sobre-edgar.html").map(read),
     read("assets/js/main.js"),
     read("assets/images/logo-vc-mente-convergente.svg")
   ].join("\n");
   assert.doesNotMatch(publicSources, /Mente Infinita/i);
   assert.match(publicSources, /V(?:&amp;|&)C Mente Convergente/i);
   assert.doesNotMatch(publicSources, /5500000000000|contato@menteinfinita|instagram\.com\/menteinfinita/i);
+  const about = read("sobre-edgar.html");
+  assert.equal((about.match(/Mente Infinita/gi) || []).length, 1);
+  assert.match(about, /Mente Infinita abriu espaço para a mensagem/);
 });
 
 test("comunicação pública apresenta a Universidade única sem linguagem interna", () => {
@@ -108,6 +111,10 @@ test("página institucional apresenta Edgar, Carla e a origem da V&C", () => {
   assert.match(about, /Edgar Xavier e Carla Amanda/);
   assert.match(about, /Como surgiu a V&amp;C Mente Convergente/);
   assert.match(about, /Vidas Conectadas ao propósito/);
+  assert.match(about, /Edgar Xavier · cofundador/);
+  assert.match(about, /Carla Amanda · cofundadora/);
+  assert.match(about, /Mente Infinita abriu espaço para a mensagem/);
+  assert.match(about, /A marca existe na construção conjunta dos dois fundadores/);
 });
 
 test("configuração Vercel mantém um único site com rotas internas", () => {
@@ -270,6 +277,12 @@ test("proprietário possui espelho integral privado com provas e gabaritos", () 
   assert.match(app, /view=curriculum/);
   assert.match(app, /question\.correct_index/);
   assert.match(app, /Prova final e gabaritos/);
+  assert.match(page, /id="owner-content-audit"/);
+  assert.match(page, /id="owner-content-selector"/);
+  assert.match(page, /Ver experiência do aluno/);
+  assert.match(app, /Profundidade que pode ser conferida/);
+  assert.match(app, /workshopsEvidenceMinutes/);
+  assert.match(app, /fontes declaradas/);
   assert.ok(api.indexOf("await assertOwner(bearer)") < api.indexOf('url.searchParams.get("view") === "curriculum"'));
   assert.match(api, /access: "owner_full_curriculum"/);
   assert.match(api, /includes_answer_keys: true/);
