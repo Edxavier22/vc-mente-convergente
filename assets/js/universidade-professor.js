@@ -11,20 +11,21 @@ function formatDate(value){if(!value)return "—";return new Intl.DateTimeFormat
 function latest(values){return values.filter(Boolean).sort((a,b)=>new Date(b)-new Date(a))[0]||null}
 
 async function token(){
- let session;try{session=JSON.parse(sessionStorage.getItem(SESSION)||"null")}catch{return null}
+ let session;try{session=JSON.parse(localStorage.getItem(SESSION)||"null")}catch{return null}
  if(!session?.access_token)return null;
  if(Number(session.expires_at||0)>Date.now()/1000+30)return session.access_token;
  if(!session.refresh_token)return null;
  const response=await fetch(ROOT+"/auth/v1/token?grant_type=refresh_token",{method:"POST",headers:{apikey:KEY,"content-type":"application/json"},body:JSON.stringify({refresh_token:session.refresh_token})});
- if(!response.ok){sessionStorage.removeItem(SESSION);return null}
- const next=await response.json();sessionStorage.setItem(SESSION,JSON.stringify({access_token:next.access_token,refresh_token:next.refresh_token,expires_at:Math.floor(Date.now()/1000)+Number(next.expires_in||3600),user:next.user}));return next.access_token
+ if(!response.ok){localStorage.removeItem(SESSION);return null}
+ const next=await response.json();localStorage.setItem(SESSION,JSON.stringify({access_token:next.access_token,refresh_token:next.refresh_token,expires_at:Math.floor(Date.now()/1000)+Number(next.expires_in||3600),user:next.user}));return next.access_token
 }
 
 async function request(method="GET",payload){
- const access=await token();if(!access)throw new Error("Entre em Meus Acessos para abrir o painel.");
+ const access=await token();if(!access)throw new Error("sign_in_required");
  const response=await fetch(ROOT+"/functions/v1/vc-universidade-professor",{method,headers:{apikey:KEY,authorization:"Bearer "+access,"content-type":"application/json"},body:payload?JSON.stringify(payload):undefined,cache:"no-store"});
  const data=await response.json().catch(()=>({}));
- if(response.status===403)throw new Error("Sua conta não possui turma atribuída neste curso.");
+ if(response.status===401)throw new Error("sign_in_required");
+ if(response.status===403)throw new Error("teacher_scope_required");
  if(!response.ok)throw new Error(data.error==="invalid_review"?"Preencha um parecer objetivo com pelo menos três caracteres.":"Não foi possível consultar o painel. Tente novamente.");
  return data
 }
@@ -115,7 +116,7 @@ function render(data){
 
 async function load(){
  refresh.disabled=true;panel.setAttribute("aria-busy","true");panel.replaceChildren();const loading=node("div",undefined,"teacher-loading");loading.append(node("span"),node("h2","Atualizando o painel"),node("p","Consolidando a trilha acadêmica da turma."));panel.append(loading);
- try{render(await request())}catch(error){panel.setAttribute("aria-busy","false");const state=node("div",undefined,"teacher-error");state.append(node("p","ACESSO AO PAINEL","teacher-kicker"),node("h1","Painel indisponível"),node("p",error.message));const link=node("a","Ir para Meus Acessos","teacher-primary");link.href="entrar.html";state.append(link);panel.replaceChildren(state)}finally{refresh.disabled=false}
+ try{render(await request())}catch(error){panel.setAttribute("aria-busy","false");const missingSession=error.message==="sign_in_required";const denied=error.message==="teacher_scope_required";const state=node("div",undefined,"teacher-error");state.append(node("p","ACESSO AO PAINEL","teacher-kicker"),node("h1",missingSession?"Sessão necessária":denied?"Acesso de professor não encontrado":"Painel temporariamente indisponível"),node("p",missingSession?"Entre em Meus Acessos para abrir o painel.":denied?"Sua conta não possui turma atribuída neste curso.":"Não foi possível consultar os dados acadêmicos. Atualize a página e tente novamente."));const link=node("a","Ir para Meus Acessos","teacher-primary");link.href="/entrar";state.append(link);panel.replaceChildren(state)}finally{refresh.disabled=false}
 }
 
 refresh.addEventListener("click",load);

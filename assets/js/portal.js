@@ -69,22 +69,22 @@ function saveSession(session) {
     expires_at: session.expires_at || Math.floor(Date.now() / 1000) + Number(session.expires_in || 3600),
     user: session.user ? { id: session.user.id, email: session.user.email } : undefined
   };
-  sessionStorage.setItem(SESSION_KEY, JSON.stringify(safeSession));
+  localStorage.setItem(SESSION_KEY, JSON.stringify(safeSession));
   return safeSession;
 }
 
 function readSession() {
   try {
-    const session = JSON.parse(sessionStorage.getItem(SESSION_KEY) || "null");
+    const session = JSON.parse(localStorage.getItem(SESSION_KEY) || "null");
     return session && session.access_token && session.refresh_token ? session : null;
   } catch {
-    sessionStorage.removeItem(SESSION_KEY);
+    localStorage.removeItem(SESSION_KEY);
     return null;
   }
 }
 
 function clearSession() {
-  sessionStorage.removeItem(SESSION_KEY);
+  localStorage.removeItem(SESSION_KEY);
 }
 
 function setSigninLoading(loading) {

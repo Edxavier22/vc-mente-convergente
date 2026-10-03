@@ -114,3 +114,17 @@ CAPACITY_PUBLISHABLE_KEY="CHAVE_PUBLICAVEL" npm run test:capacity
 ### Gate da Fase 14
 
 Antes de avançar: publicar esta branch, confirmar o workflow verde e executar o ensaio contra a prévia. A homologação humana completa em desktop/celular e as jornadas autenticadas pertencem à Fase 15; não fazer merge nem testar carga contra produção.
+
+## Fase 15 — homologação e correções de preview
+
+- PR #9 confirmado como Draft, com base `feature/universidade-formacao-empresas`, compare `feature/universidade-testes-capacidade` e checks de qualidade/Vercel aprovados.
+- A primeira inspeção visual do preview encontrou a página `/universidade/empresas` sem identidade visual, cabeçalho, rodapé ou comportamento JavaScript.
+- Causa confirmada: recursos relativos de uma página entregue por rota aninhada eram resolvidos como `/universidade/assets/...`; o link de privacidade também apontava para `/universidade/privacidade.html`.
+- Correção aplicada às três rotas aninhadas: `/universidade/empresas`, `/admin/universidade` e `/empresa/universidade` agora usam recursos e destinos a partir da raiz.
+- Cabeçalho, rodapé e links programáticos passaram a usar URLs limpas absolutas, preservando navegação em qualquer profundidade.
+- A suíte ganhou um teste que percorre as rotas aninhadas do `vercel.json`, exige caminhos enraizados e confirma que cada recurso/destino existe.
+- A prévia está protegida por Vercel Authentication. O navegador autenticado conseguiu inspecioná-la, mas o ensaio HTTP remoto não pode ser declarado aprovado enquanto a conexão automatizada não receber acesso ao deployment.
+
+### Gate de continuidade da Fase 15
+
+Publicar a correção em uma nova prévia e repetir primeiro as três rotas aninhadas. Somente depois prosseguir com desktop/celular, formulário controlado e jornadas autenticadas de aluno, professor, administrador e empresa. Manter todos os PRs como Draft e sem merge.

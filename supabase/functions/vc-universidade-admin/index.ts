@@ -7,7 +7,7 @@ const PROD = "https://vc-mente-convergente.vercel.app";
 
 function trusted(origin: string) {
   return origin === PROD ||
-    /^https:\/\/vc-mente-convergente-git-feature-universidade-[a-z0-9-]+-life-os22\.vercel\.app$/.test(origin) ||
+    /^https:\/\/vc-mente-convergente-[a-z0-9-]+-life-os22\.vercel\.app$/.test(origin) ||
     ["http://localhost:4173", "http://127.0.0.1:4173"].includes(origin);
 }
 function reply(status: number, body: unknown, origin: string) {
@@ -60,6 +60,24 @@ const proposalTransitions: Record<string, string[]> = {received: ["reviewing","q
   reviewing: ["qualified","declined","archived"], qualified: ["proposal_prepared","declined","archived"],
   proposal_prepared: ["qualified","sent","archived"], sent: ["accepted","declined","archived"],
   accepted: ["archived"], declined: ["reviewing","archived"], archived: []};
+function validCourseId(value: string) {
+  return value.length <= 96 && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value);
+}
+function ownerQuestion(row: any) {
+  const choices = Array.isArray(row.choices) ? row.choices.map(String) : [];
+  const correctIndex = Number(row.correct_index);
+  return {
+    question_id: row.question_id,
+    purpose: row.purpose,
+    module_no: row.module_no,
+    kind: row.kind,
+    prompt: row.prompt,
+    choices,
+    correct_index: correctIndex,
+    correct_choice: Number.isInteger(correctIndex) ? choices[correctIndex] ?? null : null,
+    review_concept: row.review_concept
+  };
+}
 
 Deno.serve(async request => {
   const origin = request.headers.get("origin") ?? "";
@@ -70,6 +88,48 @@ Deno.serve(async request => {
   try {
     const owner = await assertOwner(bearer);
     if (owner.error) return reply(owner.error, { error: owner.error === 403 ? "owner_required" : owner.error === 401 ? "sign_in_required" : "service_unavailable" }, origin);
+    const url = new URL(request.url);
+    if (request.method === "GET" && url.searchParams.get("view") === "curriculum") {
+      const courseId = url.searchParams.get("course") ?? "lideranca-estrategica-aplicada";
+      if (!validCourseId(courseId)) return reply(400, {error: "invalid_course"}, origin);
+      const courseRows = await db("vc_university_courses",
+        "?select=course_id,title,description,audience,modality,hours_minutes,version,status,final_pass_percent,certificate_requires_project_review" +
+        "&course_id=eq." + encodeURIComponent(courseId) + "&limit=1");
+      const course = courseRows[0];
+      if (!course?.version) return reply(404, {error: "course_not_found"}, origin);
+      const version = url.searchParams.get("version") ?? course.version;
+      if (version.length > 32 || !/^[A-Za-z0-9._-]+$/.test(version))
+        return reply(400, {error: "invalid_version"}, origin);
+      const [contentRows, modules, questions] = await Promise.all([
+        db("vc_university_course_content",
+          "?select=course_id,course_version,content,imported_at&course_id=eq." + encodeURIComponent(courseId) +
+          "&course_version=eq." + encodeURIComponent(version) + "&limit=1"),
+        db("vc_university_modules",
+          "?select=module_no,title,estimated_minutes,evidence_required,checkpoint_pass_count&course_id=eq." +
+          encodeURIComponent(courseId) + "&order=module_no.asc&limit=200"),
+        db("vc_university_questions",
+          "?select=question_id,purpose,module_no,kind,prompt,choices,correct_index,review_concept,active" +
+          "&course_id=eq." + encodeURIComponent(courseId) +
+          "&course_version=eq." + encodeURIComponent(version) +
+          "&active=eq.true&order=purpose.asc,module_no.asc,kind.asc,question_id.asc&limit=1000")
+      ]);
+      const source = contentRows[0];
+      if (!source?.content || source.content.id !== courseId || source.content.version !== version)
+        return reply(404, {error: "course_content_not_found"}, origin);
+      const normalizedQuestions = questions.map(ownerQuestion);
+      return reply(200, {
+        course: {...course, version, content: source.content, imported_at: source.imported_at},
+        modules,
+        checkpoints: normalizedQuestions.filter((item: any) => item.purpose === "checkpoint"),
+        final_exam: normalizedQuestions.filter((item: any) => item.purpose === "final"),
+        summary: {
+          modules: Array.isArray(source.content.modules) ? source.content.modules.length : 0,
+          checkpoint_questions: normalizedQuestions.filter((item: any) => item.purpose === "checkpoint").length,
+          final_questions: normalizedQuestions.filter((item: any) => item.purpose === "final").length
+        },
+        scope: {owner_id: owner.user.id, access: "owner_full_curriculum", includes_answer_keys: true}
+      }, origin);
+    }
     if (request.method === "POST") {
       if (!trusted(origin)) return reply(403, {error: "origin_not_allowed"}, origin);
       const input = await request.json().catch(() => ({}));
