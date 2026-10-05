@@ -6,7 +6,9 @@
   "scripts": {
     "check": "npm run check:scripts && npm test",
     "check:scripts": "node --check assets/js/main.js && node --check assets/js/portal.js && node --check assets/js/universidade-aluno-v2.js && node --check assets/js/universidade-professor.js && node --check assets/js/universidade-admin.js && node --check assets/js/universidade-admin-conteudo.js && node --check assets/js/universidade-empresa.js && node --check assets/js/universidade-propostas.js && node --check assets/js/certificado-publico.js && node --check assets/js/certificado-aluno.js && node --check scripts/phase14-capacity.mjs",
-    "check:functions": "npx --yes deno check supabase/functions/vc-universidade-propostas/index.ts supabase/functions/vc-universidade-admin/index.ts",
+    "check:functions": "npx --yes deno check supabase/functions/vc-universidade-propostas/index.ts supabase/functions/vc-universidade-admin/index.ts supabase/functions/vc-universidade-professor/index.ts",
+    "lint": "npm run check:scripts",
+    "typecheck": "npm run check:functions",
     "test": "node --test tests/*.test.mjs",
     "test:capacity": "node scripts/phase14-capacity.mjs"
   },
