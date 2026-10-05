@@ -1,4 +1,4 @@
--- Execute after 20261005013102_ie_course_academic_foundation.sql.
+-- Execute after 20261005014328_ie_course_academic_foundation.sql.
 -- The transaction is always rolled back and does not retain test data.
 begin;
 
