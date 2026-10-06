@@ -62,7 +62,8 @@ Learner v19; professor v12. Configurações IE30/E10/novo requisito continuam Dr
 - RLS alunoA/B, professor atribuído/não atribuído, quick logs privados, owner sem bypass e B2B aprovados.
 - M10 concluído antes de E10 no fluxo SQL; progressão sequencial canônica preservada.
 - SQL regressão PR3 E01→checkpoint→M2, foundation RLS, PR2 RLS e Liderança M1→M2 aprovados, rollback completo.
-- Browser, mobile 390px, preview, Vercel e Actions: resultado final registrado no PR/head correspondente após verificação.
+- Vercel inicial READY, deployment dpl_BQ6nvrkwoavpWv88AmSCzjPtXikN, SHA 3ff2445123bae65ff874aa60e15bb4f4882d48cb; Actions run37500493114 success.
+- Timeout interno de navegador recuperado; preview administrativo carregou com sign-in requerido na sessão nova. Fixture técnica em tests/universidade-cycle-preview.html usa exatamente o renderer e manifesto canônicos em memória para validação sem autenticação/escrita. Resultado visual final no head/PR.
 
 ## Gaps PR5 e riscos
 
