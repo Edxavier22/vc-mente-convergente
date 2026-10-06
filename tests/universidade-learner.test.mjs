@@ -27,6 +27,10 @@ let enrollmentVersion = "1.0";
 let contentReads = 0;
 let identity = {id: "u-1"};
 let isAdmin = false;
+let structuredMode = false;
+let structuredStatus = "published";
+let lessonProgress = [];
+let lessonWrites = 0;
 globalThis.fetch = async (input, options = {}) => {
  const url = new URL(input);
  if (url.pathname === "/auth/v1/user") return Response.json(identity);
@@ -37,22 +41,59 @@ globalThis.fetch = async (input, options = {}) => {
   secondCourse ? [{course_id: "inteligencia-emocional", product_id: "P-022", title: "Inteligência Emocional", version: "1.0", modality: "online", hours_minutes: 1200, final_pass_percent: 70, certificate_requires_project_review: false}]
    : url.searchParams.get("course_id") === "eq.lideranca-estrategica-aplicada"
     ? [{course_id: "lideranca-estrategica-aplicada", product_id: "P-021", title: "Liderança Estratégica Aplicada", version: "1.0", modality: "online", hours_minutes: 1200, final_pass_percent: 70, certificate_requires_project_review: true}] : []);
+ if (url.pathname.endsWith("/vc_university_course_versions")) return Response.json([{
+  course_id: secondCourse ? "inteligencia-emocional" : "lideranca-estrategica-aplicada",version:"1.0",
+  title_snapshot:secondCourse?"Inteligência Emocional":"Liderança",subtitle_snapshot:"",institution_snapshot:"Universidade V&C",
+  school_snapshot:"",language_code:"pt-BR",modality_snapshot:"online",hours_minutes:1200,content_model:structuredMode?"structured_blocks":"legacy_json",status:structuredMode?structuredStatus:"published"
+ }]);
  if (url.pathname.endsWith("/vc_university_course_content")) {contentReads++; return Response.json(sourceAvailable ? [{content: {
   id: secondCourse ? "inteligencia-emocional" : "lideranca-estrategica-aplicada", version: "1.0", title: "Liderança",
   modules: [lesson(1), lesson(2)]
  }}] : []);}
  if (url.pathname.endsWith("/vc_university_enrollments"))
   return Response.json(enrolled ? [{enrollment_id: "e-1", course_id: secondCourse ? "inteligencia-emocional" : "lideranca-estrategica-aplicada", course_version: enrollmentVersion, status: "active", cohort_id: "c-1"}] : []);
+ if (url.pathname.endsWith("/vc_university_lesson_versions")) return Response.json([{lesson_version_id:"lv-1",title:"Fixture técnica",learning_objectives:["Verificar entrega"],status:"published"}]);
+ if (url.pathname.endsWith("/vc_university_content_blocks")) return Response.json([{content_block_id:"b-1",block_type:"paragraph",position:1,content:{text:"Fixture técnica sem conteúdo oficial"},status:"published"}]);
+ if (url.pathname.endsWith("/vc_university_lesson_progress")) {
+  if(options.method==="POST"){lessonWrites++;lessonProgress=[JSON.parse(options.body)];return new Response(null,{status:201})}
+  if(options.method==="PATCH"){lessonWrites++;lessonProgress=lessonProgress.map(row=>({...row,...JSON.parse(options.body)}));return new Response(null,{status:204})}
+  return Response.json(lessonProgress);
+ }
  if (url.pathname.endsWith("/vc_university_modules")) return Response.json([{checkpoint_pass_count: 4}]);
+ if (url.pathname.endsWith("/vc_university_module_versions")) return Response.json([
+  {module_version_id:"mv-1",module_no:1,title:"Módulo 1"},{module_version_id:"mv-2",module_no:2,title:"Módulo 2"}
+ ]);
+ if (url.pathname.endsWith("/vc_university_module_requirements")) {
+  const moduleId=url.searchParams.get("module_version_id")?.replace("eq.","");
+  const all=[1,2].flatMap(number=>[
+   {requirement_id:`r-e-${number}`,module_version_id:`mv-${number}`,requirement_key:"evidence",requirement_type:"evidence_completed",required:true,position:1,status:"published",configuration:{}},
+   {requirement_id:`r-c-${number}`,module_version_id:`mv-${number}`,requirement_key:"checkpoint",requirement_type:"checkpoint_passed",required:true,position:2,status:"published",configuration:{question_count:5,minimum_correct:4,pass_percent:80}}
+  ]);
+  return Response.json(moduleId?all.filter(item=>item.module_version_id===moduleId&&item.requirement_type==="checkpoint_passed"):all);
+ }
+ if (url.pathname.endsWith("/vc_university_module_dependencies")) return Response.json([
+  {module_version_id:"mv-2",depends_on_module_version_id:"mv-1",status:"published"}
+ ]);
+ if (url.pathname.endsWith("/vc_university_requirement_progress")) {
+  if(options.method==="POST") return new Response(null,{status:201});
+  return Response.json(progress.flatMap(item=>[
+   ...(item.submitted_at?[{requirement_id:`r-e-${item.module_no}`,status:"completed",satisfied_at:item.submitted_at}]:[]),
+   ...(item.checkpoint_passed_at?[{requirement_id:`r-c-${item.module_no}`,status:"completed",satisfied_at:item.checkpoint_passed_at}]:[])
+  ]));
+ }
  if (url.pathname.endsWith("/vc_university_module_progress")) {
   if (options.method === "POST") {databaseWrites++; return Response.json([{enrollment_id: "e-1"}]);}
-  return Response.json(progress);
+  return Response.json(progress.map(item=>({...item,module_version_id:`mv-${item.module_no}`})));
  }
  if (url.pathname.endsWith("/vc_university_questions")) return Response.json(
-  Array.from({length: url.searchParams.get("purpose") === "eq.final" ? 30 : 5}, (_, i) => ({question_id: `q-${i}`, prompt: "Qual decisão?", choices: ["A","B","C","D"],
-   correct_index: 2, review_concept: "Revisar diagnóstico", kind: url.searchParams.get("purpose") === "eq.final"
+  Array.from({length: url.searchParams.get("purpose") === "eq.final" ? 30 : 5}, (_, i) => ({question_id: `q-${i}`,question_key:`qk-${i}`,question_version:1,prompt: "Qual decisão?", choices: ["A","B","C","D"],
+   correct_index: 2,correct_option_id:`q-${i}-o-2`,correct_feedback:"Boa decisão.",review_concept: "Revisar diagnóstico", kind: url.searchParams.get("purpose") === "eq.final"
     ? ["concept","application","case","decision"][i % 4] : "concept"}))
  );
+ if (url.pathname.endsWith("/vc_university_question_options")) {
+  const questionId=url.searchParams.get("question_id")?.replace("eq.","");
+  return Response.json(["A","B","C","D"].map((option_text,option_order)=>({option_id:`${questionId}-o-${option_order}`,option_order,option_text,feedback:option_order===2?"Boa decisão.":"Revisar diagnóstico"})));
+ }
  if (url.pathname.endsWith("/vc_university_final_sessions")) {
   if (options.method === "POST") {
    const body = JSON.parse(options.body);
@@ -67,6 +108,7 @@ globalThis.fetch = async (input, options = {}) => {
   finalSession = null;
   return Response.json({attempt_id: `attempt-${finalWrites}`});
  }
+ if (url.pathname.endsWith("/rpc/vc_university_complete_module_if_ready")) return Response.json({completed:true});
  if (url.pathname.endsWith("/vc_university_final_attempts")) {
   if (options.method === "POST") {finalWrites++; return new Response(null, {status: 201});}
   return Response.json(finalAttempts);
@@ -82,7 +124,7 @@ globalThis.fetch = async (input, options = {}) => {
   return Response.json(certificates);
  }
  if (url.pathname.endsWith("/vc_university_checkpoint_attempts")) {
-  if (options.method === "POST") {attemptWrites++; return new Response(null, {status: 201});}
+  if (options.method === "POST") {attemptWrites++; return Response.json([{attempt_id:"attempt-stable"}], {status: 201});}
   return Response.json([]);
  }
  if (url.pathname.endsWith("/vc_university_events")) {
@@ -319,4 +361,36 @@ test("certificado é emitido uma única vez após todos os critérios", async ()
  assert.equal(repeated.status, 200);
  assert.equal(certificateWrites, 1);
  finalAttempts = []; certificates = [];
+});
+
+
+test("curso estruturado entrega blocos e registra início/conclusão das aulas", async () => {
+ structuredMode=true;progress=[];lessonProgress=[];lessonWrites=0;
+ try {
+  const unopened=await handler(request("?module=1","POST",{action:"content_complete"}));
+  assert.equal(unopened.status,409);assert.equal(lessonWrites,0);
+  const opened=await handler(request("?module=1"));assert.equal(opened.status,200);
+  assert.equal((await opened.json()).lesson.lessons[0].blocks[0].content.text,"Fixture técnica sem conteúdo oficial");
+  assert.equal(lessonProgress[0].status,"in_progress");assert.ok(lessonProgress[0].first_viewed_at);
+  const completed=await handler(request("?module=1","POST",{action:"content_complete"}));
+  assert.equal(completed.status,200);assert.equal(lessonProgress[0].status,"completed");
+  assert.ok(lessonProgress[0].content_completed_at);
+ } finally {structuredMode=false;lessonProgress=[]}
+});
+
+test("draft estruturado não é entregue a aluno e preview não grava aulas", async () => {
+ structuredMode=true;structuredStatus="draft";isAdmin=true;lessonWrites=0;eventWrites=[];
+ try {
+  assert.equal((await handler(request("?module=1"))).status,503);
+  const preview=await handler(request("?course=lideranca-estrategica-aplicada&version=1.0&preview=content_master"));
+  assert.equal(preview.status,200);assert.equal((await preview.json()).course.modules[0].lessons[0].title,"Fixture técnica");
+  assert.equal(lessonWrites,0);assert.equal(eventWrites.length,0);
+ } finally {structuredMode=false;structuredStatus="published";isAdmin=false}
+});
+
+test("checkpoint estruturado rejeita índices numéricos legados", async () => {
+ structuredMode=true;progress=[{module_no:1,evidence:"Fixture técnica válida",submitted_at:"2026-10-06T00:00:00Z"}];
+ const previous=attemptWrites;
+ try {assert.equal((await handler(request("?module=1","POST",{action:"checkpoint",answers:Array(5).fill(2)}))).status,400);assert.equal(attemptWrites,previous)}
+ finally {structuredMode=false;progress=[]}
 });
