@@ -1,4 +1,5 @@
 // @ts-nocheck -- arquivo legado em JavaScript/Deno; o motor compartilhado abaixo é tipado.
+import {evidenceDefinitions, evidenceRead, evidenceWrite} from "../_shared/evidence-api.ts";
 import {checkpointSnapshot, gradeStableCheckpoint, resolveModuleStates} from "../_shared/academic-engine.ts";
 
 // Private academic API. Versioned lesson content is read server-side from restricted tables.
@@ -45,7 +46,11 @@ async function database(table, query = "", options = {}) {
    ...(options.body ? {"content-type": "application/json"} : {}), ...(options.headers ?? {})},
   signal: AbortSignal.timeout(10000), cache: "no-store"
  });
- if (!response.ok) throw new Error("database_error:" + response.status);
+ if (!response.ok) {
+  const failure=await response.json().catch(()=>({}));
+  const safe=["draft_version_conflict","submission_locked","idempotency_payload_conflict","previous_module_required","evidence_structure_invalid","evidence_context_denied","evidence_definition_unavailable","evidence_review_denied","review_revision_stale","review_state_conflict"].find(code=>failure.message?.includes(code));
+  throw new Error(safe||("database_error:"+response.status));
+ }
  const body = await response.text();
  return body ? JSON.parse(body) : null;
 }
@@ -160,7 +165,7 @@ async function courseAndProgress(courseId, version, enrollmentId) {
    "&course_id=eq." + encodeURIComponent(courseId) + "&course_version=eq." + encodeURIComponent(version) +
    "&status=eq.published&order=position.asc"),
   database("vc_university_requirement_progress",
-   "?select=requirement_id,status,satisfied_at&" + scoped(enrollmentId)),
+   "?select=requirement_id,status,satisfied_at,source_id&" + scoped(enrollmentId)),
   database("vc_university_module_dependencies",
    "?select=module_version_id,depends_on_module_version_id,status&course_id=eq." + encodeURIComponent(courseId) +
    "&course_version=eq." + encodeURIComponent(version) + "&status=eq.published")
@@ -346,7 +351,8 @@ async function previewCourse(bearer, courseId, version, perspective) {
   "&course_version=eq." + encodeURIComponent(version) + "&status=in.(draft,review,published)");
  const previewDependencies = dependencies.map(item => ({...item,status:"published"}));
  const states = resolveModuleStates(moduleVersions,[],previewDependencies,[],[]);
- return {preview:true,perspective,role:access.role,course,states,
+ const evidence = await evidenceDefinitions(database,courseId,version,true);
+ return {preview:true,perspective,role:access.role,course,states,evidence,
   writes:{enrollment:false,progress:false,attempt:false,certificate:false,analytics:false}};
 }
 Deno.serve(async request => {
@@ -458,6 +464,14 @@ Deno.serve(async request => {
   const lesson = course.modules.find(m => m.number === moduleNo);
   const moduleVersion = moduleVersions.find(module => module.module_no === moduleNo);
   if (!moduleVersion) throw new Error("module_version_unavailable");
+  if (url.searchParams.get("view") === "evidence" && request.method === "GET") {
+   const evidence = await evidenceRead(database,courseId,enrollmentVersion,access.enrollment.enrollment_id,moduleNo);
+   return reply(evidence.error?404:200,evidence,origin);
+  }
+  if (["evidence_draft","evidence_submit"].includes(input?.action)) {
+   const evidence=await evidenceWrite(database,access.user.id,access.enrollment.enrollment_id,moduleVersion.module_version_id,input);
+   return reply(evidence.status||200,evidence,origin);
+  }
   if (request.method === "GET") {
    if (url.searchParams.get("view") === "checkpoint") {
     const questions = await checkpointQuestions(courseId, course, moduleNo);
@@ -528,6 +542,7 @@ Deno.serve(async request => {
    return reply(200,{contentCompleted:true,moduleCompleted:completion?.completed === true,nextAction:state.nextAction},origin);
   }
   if (input?.action === "evidence") {
+   if(course.contentModel!=="legacy_json")return reply(400,{error:"structured_evidence_required"},origin);
    const evidence = input.evidence;
    if (typeof evidence !== "string" || evidence.trim().length < 20 || evidence.length > 12000)
     return reply(400, {error: "evidence_invalid"}, origin);
@@ -554,7 +569,9 @@ Deno.serve(async request => {
    const submitted = progress.find(p => p.module_no === moduleNo);
    const evidenceRequired = course.contentModel === "legacy_json" || requirements.some(requirement =>
     requirement.module_version_id === moduleVersion.module_version_id && requirement.requirement_type === "evidence_completed" && requirement.required);
-   if (evidenceRequired && (!submitted?.evidence?.trim() || !submitted.submitted_at))
+   const canonicalProgress=course.contentModel!=="legacy_json" && evidenceRequired ? await database("vc_university_requirement_progress","?select=requirement_id,status,satisfied_at,source_id&enrollment_id=eq."+access.enrollment.enrollment_id) : [];
+   const evidenceReady=course.contentModel==="legacy_json" ? !!(submitted?.evidence?.trim() && submitted.submitted_at) : requirements.filter(r=>r.module_version_id===moduleVersion.module_version_id && r.requirement_type==="evidence_completed" && r.required && r.status==="published").every(r=>canonicalProgress.some(p=>p.requirement_id===r.requirement_id && p.status==="completed" && p.satisfied_at));
+   if (evidenceRequired && !evidenceReady)
     return reply(409, {error: "evidence_required"}, origin);
    const questions = await checkpointQuestions(courseId, course, moduleNo);
    if (questions.length !== 5) return reply(503, {error: "checkpoint_unavailable"}, origin);

@@ -28,7 +28,7 @@ function validCourseId(value: unknown): value is string {
  return typeof value === "string" && value.length <= 96 &&
   /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value);
 }
-async function db(table: string, query = "", options: DbOptions = {}): Promise<any[]> {
+async function db(table: string, query = "", options: DbOptions = {}): Promise<any> {
  const service = SERVICE;
  if (!service) throw new Error("server_configuration_missing");
  const response = await fetch(ROOT + "/rest/v1/" + table + query, {
@@ -36,7 +36,11 @@ async function db(table: string, query = "", options: DbOptions = {}): Promise<a
    ...(options.body ? {"content-type": "application/json"} : {}), ...(options.headers ?? {})},
   signal: AbortSignal.timeout(10000), cache: "no-store"
  });
- if (!response.ok) throw new Error("database_error:" + response.status);
+ if (!response.ok) {
+  const failure=await response.json().catch(()=>({}));
+  const safe=["draft_version_conflict","submission_locked","idempotency_payload_conflict","previous_module_required","evidence_structure_invalid","evidence_context_denied","evidence_definition_unavailable","evidence_review_denied","review_revision_stale","review_state_conflict"].find(code=>failure.message?.includes(code));
+  throw new Error(safe||("database_error:"+response.status));
+ }
  const text = await response.text();
  return text ? JSON.parse(text) : [];
 }
@@ -53,12 +57,11 @@ async function assertReviewer(bearer: string): Promise<Reviewer> {
  if (!user.email_confirmed_at) return {error: 403};
  const platformAdmin = user.id === OWNER_ID && user.email?.toLowerCase() === OWNER_EMAIL &&
   access?.platform_admin === true;
- if (platformAdmin) return {user, platformAdmin, cohortIds: [] as string[]};
  const assignments = await db("vc_university_teachers",
   "?select=cohort_id&user_id=eq." + user.id + "&limit=1000");
  const cohortIds = assignments.map((row: {cohort_id: string}) => row.cohort_id);
- if (!cohortIds.length) return {error: 403};
- return {user, platformAdmin: false, cohortIds};
+ if (!cohortIds.length && !platformAdmin) return {error: 403};
+ return {user, platformAdmin, cohortIds};
 }
 
 Deno.serve(async request => {
@@ -73,6 +76,12 @@ Deno.serve(async request => {
   const url = new URL(request.url);
   if (request.method === "POST") {
    const input = await request.json().catch(() => null);
+   if(input?.action==="evidence_review") {
+    if(!/^[0-9a-f-]{36}$/i.test(input.submission_id||"") || !/^[0-9a-f-]{36}$/i.test(input.revision_id||"") || !["under_review","revision_requested","approved"].includes(input.decision) || typeof input.feedback!=="string" || input.feedback.trim().length<3 || input.feedback.length>4000) return reply(400,{error:"invalid_review"},origin);
+    // No platform-admin bypass: the RPC checks actual teaching assignment, selection and exact revision.
+    const review=await db("rpc/vc_university_evidence_review","",{method:"POST",body:JSON.stringify({p_actor:reviewer.user.id,p_submission:input.submission_id,p_revision:input.revision_id,p_decision:input.decision,p_feedback:input.feedback})});
+    return reply(200,{review},origin);
+   }
    const courseId = input?.course_id ?? DEFAULT_COURSE_ID;
    if (!validCourseId(courseId)) return reply(400, {error: "invalid_course"}, origin);
    if (!input || typeof input.user_id !== "string" || !/^[-0-9a-f]{36}$/.test(input.user_id) ||
@@ -80,7 +89,7 @@ Deno.serve(async request => {
        !["approved", "revise"].includes(input.status) || typeof input.feedback !== "string" ||
        input.feedback.trim().length < 3 || input.feedback.length > 2000)
     return reply(400, {error: "invalid_review"}, origin);
-   const scopeFilter = reviewer.platformAdmin ? "" : "&cohort_id=in.(" + (reviewer.cohortIds ?? []).join(",") + ")";
+   const scopeFilter = reviewer.cohortIds?.length ? "&cohort_id=in.(" + reviewer.cohortIds.join(",") + ")" : "&cohort_id=is.null";
    const enrollments = await db("vc_university_enrollments",
     "?select=enrollment_id,cohort_id&course_id=eq." + encodeURIComponent(courseId) + "&user_id=eq." + input.user_id +
     "&status=eq.active" + scopeFilter + "&limit=1");
@@ -105,7 +114,11 @@ Deno.serve(async request => {
 
   const courseId = url.searchParams.get("course") ?? DEFAULT_COURSE_ID;
   if (!validCourseId(courseId)) return reply(400, {error: "invalid_course"}, origin);
-  const scopeFilter = reviewer.platformAdmin ? "" : "&cohort_id=in.(" + (reviewer.cohortIds ?? []).join(",") + ")";
+  if(url.searchParams.get("view")==="evidence") {
+   const evidence=await db("rpc/vc_university_evidence_queue","",{method:"POST",body:JSON.stringify({p_actor:reviewer.user.id,p_course:courseId})});
+   return reply(200,{evidence},origin);
+  }
+  const scopeFilter = reviewer.cohortIds?.length ? "&cohort_id=in.(" + reviewer.cohortIds.join(",") + ")" : "&cohort_id=is.null";
   const [enrollments, modules, courseRows] = await Promise.all([
    db("vc_university_enrollments",
     "?select=enrollment_id,user_id,course_id,course_version,cohort_id,status,enrolled_at&course_id=eq." +
@@ -151,6 +164,7 @@ Deno.serve(async request => {
    evidence, reviews, attempts: normalizedAttempts, students,
    course, scope: {platform_admin: reviewer.platformAdmin, cohort_count: cohortIds.length}}, origin);
  } catch (error) {
+  if(error instanceof Error && ["evidence_review_denied","review_revision_stale","review_state_conflict"].includes(error.message))return reply(error.message==="evidence_review_denied"?403:409,{error:error.message},origin);
   console.error("University professor API failed", error instanceof Error ? error.message : "unknown");
   return reply(503, {error: "service_unavailable"}, origin);
  }
