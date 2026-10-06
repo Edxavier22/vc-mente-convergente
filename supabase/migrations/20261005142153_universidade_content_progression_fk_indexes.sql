@@ -1,0 +1,16 @@
+-- Índices de suporte às FKs introduzidas pelo motor de progressão.
+create index if not exists vc_university_checkpoint_attempts_module_version_idx
+ on public.vc_university_checkpoint_attempts(module_version_id);
+create index if not exists vc_university_checkpoint_attempts_version_idx
+ on public.vc_university_checkpoint_attempts(course_id,course_version);
+create index if not exists vc_university_lesson_progress_last_block_idx
+ on public.vc_university_lesson_progress(last_content_block_id)
+ where last_content_block_id is not null;
+create index if not exists vc_university_module_dependencies_identity_idx
+ on public.vc_university_module_dependencies(module_version_id,course_id,course_version);
+create index if not exists vc_university_module_dependencies_target_version_idx
+ on public.vc_university_module_dependencies(depends_on_module_version_id,course_id,course_version);
+create index if not exists vc_university_module_requirements_module_version_idx
+ on public.vc_university_module_requirements(module_version_id);
+create index if not exists vc_university_module_requirements_identity_idx
+ on public.vc_university_module_requirements(module_version_id,course_id,course_version);

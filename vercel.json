@@ -9,6 +9,7 @@
     { "source": "/meus-acessos", "destination": "/entrar" },
     { "source": "/admin", "destination": "/entrar" },
     { "source": "/admin/universidade/conteudo", "destination": "/administracao-conteudo-universidade" },
+    { "source": "/admin/universidade/preview", "destination": "/preview-universidade" },
     { "source": "/admin/universidade", "destination": "/administracao-universidade" },
     { "source": "/empresa/universidade", "destination": "/gestao-empresa-universidade" },
     { "source": "/universidade/empresas", "destination": "/formacao-empresas" }

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#061524">
+  <title>Preview acadêmico | Universidade V&amp;C</title>
+  <link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/css/universidade.css">
+</head>
+<body class="course-body">
+  <a class="skip-link" href="#preview-result">Ir para a prévia</a>
+  <header class="course-header">
+    <a href="/universidade-vc" class="course-brand" aria-label="Universidade V&C — página inicial"><strong>V&amp;C</strong><span>Universidade</span></a>
+    <div class="course-header-context"><span>Governança acadêmica</span><strong>Preview sem efeitos acadêmicos</strong></div>
+    <a href="/entrar" class="course-back">Meus acessos</a>
+  </header>
+  <main class="course-shell preview-shell">
+    <aside class="course-rail" aria-label="Configuração da prévia">
+      <form id="preview-form" class="course-overview">
+        <p class="course-eyebrow">Modo seguro</p>
+        <h1>Ver conteúdo versionado</h1>
+        <p>Esta prévia não cria matrícula, progresso, tentativa, certificado ou evento analítico.</p>
+        <label>Curso e versão<select id="preview-version" required></select></label>
+        <label>Perspectiva<select id="preview-perspective" required>
+          <option value="student">Aluno</option>
+          <option value="teacher">Professor</option>
+          <option value="content_master">Conteúdo-mestre</option>
+        </select></label>
+        <button type="submit">Abrir prévia</button>
+        <p id="preview-status" class="course-status" role="status" aria-live="polite">Carregando versões autorizadas…</p>
+      </form>
+    </aside>
+    <section class="course-workspace">
+      <article id="preview-result" class="course-panel" tabindex="-1" aria-live="polite" aria-busy="true">
+        <h1>Preview acadêmico</h1><p>Escolha uma versão autorizada para visualizar a estrutura.</p>
+      </article>
+    </section>
+  </main>
+  <script src="/assets/js/universidade-content.js" defer></script>
+  <script src="/assets/js/universidade-preview.js" defer></script>
+</body>
+</html>
