@@ -22,7 +22,7 @@ Estados: not_started (ausência de instância), setup, active, paused, resumed, 
 
 Setup em seções; quick log com data/cenário/contexto/situação/ferramenta/resultado/aprendizado/indicadores; nenhum registro diário obrigatório. Cenários reais seguros, anonimizados, simulados, retrospectivos ou hipotéticos. Indicadores selecionados entre os do objetivo. Correção de log cria nova versão ligada à anterior. Quatro revisões semanais, liberadas nas fronteiras temporais; nenhuma oportunidade relevante admite reflexão opcional. Revisão concluída é imutável; correção durante revisão solicitada cria nova versão.
 
-Setup, revisões e reflexão reutilizam debounce 800ms, single-flight, flush e cache temporário do renderer PR3. Uma seção de edição ativa evita concorrência entre formulários; versão otimista impede sobrescrita entre telas. SessionStorage é temporário, isolado por usuário/ciclo/etapa; não é analytics nem persistência de preview. Quick logs usam envio explícito; não existe request por tecla.
+Setup, revisões e reflexão reutilizam debounce 800ms, single-flight, flush e cache temporário do renderer PR3. Uma seção de edição ativa evita concorrência entre formulários; versão otimista impede sobrescrita entre telas. SessionStorage é temporário, isolado por usuário/ciclo/etapa; não é analytics nem persistência de preview. Revisões semanais concluídas permanecem acessíveis para leitura; correções autorizadas geram nova versão. Quick logs usam envio explícito; não existe request por tecla.
 
 Labels, fieldsets, help/privacy hints, foco de erro, numeric/date inputs, alvos 48px e aria-live controlado. Formulários em cards/etapas, renderização móvel de 390px na prévia. Não há rankings, comparação ou culpa por ausência.
 
@@ -55,7 +55,7 @@ Learner v19; professor v12. Configurações IE30/E10/novo requisito continuam Dr
 
 ## Validação
 
-- 159 testes Node: 130 anteriores +29 novos, todos aprovados.
+- 160 testes Node: 130 anteriores +30 novos, todos aprovados.
 - check, lint, typecheck, secret scan e diff check aprovados.
 - SQL completo service_role/authenticated com BEGIN/ROLLBACK: preparação M7; start antes M9 recusado; início M9; pausa sem extensão; objetivo/log versionados; ausência diária; quatro revisões; nenhuma oportunidade; 3/1/1 aplicações; dia30/reflexão; E10 idempotente; 69/revisão; duas revisões incluídas; encaminhamento especial/autorização humana; ressubmissão imutável; 70/aprovação/gate satisfeitos.
 - Expiração em pausa no dia46 fecha incompleto e conserva entries.
@@ -63,7 +63,7 @@ Learner v19; professor v12. Configurações IE30/E10/novo requisito continuam Dr
 - M10 concluído antes de E10 no fluxo SQL; progressão sequencial canônica preservada.
 - SQL regressão PR3 E01→checkpoint→M2, foundation RLS, PR2 RLS e Liderança M1→M2 aprovados, rollback completo.
 - Vercel inicial READY, deployment dpl_BQ6nvrkwoavpWv88AmSCzjPtXikN, SHA 3ff2445123bae65ff874aa60e15bb4f4882d48cb; Actions run37500493114 success.
-- Browser: quick log hipotético preenchido, resumo/aviso/simulação e geometria390px sem overflow confirmados. Mensagem de conta indevida em preview identificada e corrigida pelo repasse do flag preview ao renderer PR3; nenhum dado fora de memória foi persistido.
+- Browser: setup em quatro seções e mensagens isoladas confirmados; rubrica humana simulada69→revision_requested e70→approved sem escrita, geometria390px sem overflow; quick log hipotético preenchido, resumo/aviso/simulação e geometria390px sem overflow confirmados. Mensagem de conta indevida em preview identificada e corrigida pelo repasse do flag preview ao renderer PR3; nenhum dado fora de memória foi persistido.
 - Timeout interno de navegador recuperado; preview administrativo carregou com sign-in requerido na sessão nova. Fixture técnica em tests/universidade-cycle-preview.html usa exatamente o renderer e manifesto canônicos em memória para validação sem autenticação/escrita. Resultado visual final no head/PR.
 
 ## Gaps PR5 e riscos
