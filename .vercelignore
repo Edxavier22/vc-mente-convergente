@@ -1,0 +1,8 @@
+supabase/
+scripts/
+.github/
+*.md
+tests/*.sql
+tests/*.test.mjs
+package.json
+package-lock.json

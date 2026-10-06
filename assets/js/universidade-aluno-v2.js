@@ -121,6 +121,8 @@ const COURSE_TOOLS={"lideranca-estrategica-aplicada":{2:radarTool,7:focoTool}};
 async function checkpoint(number,holder){
  try{
   const data=await call(`?module=${number}&view=checkpoint`);
+  if(data.sessionId){holder.replaceWith(VCAssessment.render(data,{onSubmit:answers=>call('?module='+number,{action:'checkpoint',session_id:data.sessionId,answers}),onRetry:()=>{const replacement=el('div');panel.querySelector('.assessment-cards')?.replaceWith(replacement);checkpoint(number,replacement);},onResult:grade=>{if(grade.passed)reload();}}));return;}
+
   const form=el("form");form.append(el("h2","Checkpoint V&C"),el("p",`Responda às cinco questões. São necessários ${data.minimum} acertos para avançar.`));
   data.questions.forEach((q,i)=>{const field=el("fieldset");field.append(el("legend",`${i+1}. ${q.prompt}`));const options=q.options||q.choices.map((text,index)=>({id:String(index),text}));options.forEach(option=>{const label=el("label"),input=el("input");input.type="radio";input.name=`q${i}`;input.value=option.id;label.append(input,document.createTextNode(option.text));field.append(label)});form.append(field)});
   const submit=el("button","Enviar checkpoint"),result=el("p","","course-status");submit.type="submit";result.setAttribute("role","status");form.append(submit,result);
@@ -138,6 +140,8 @@ async function assessment(){
  message("Avaliação final","Conferindo a conclusão dos módulos e preparando suas questões…");
  try{
   const data=await call("?view=final");
+  if(data.questions[0]?.options){panel.replaceChildren(VCAssessment.render(data,{onSubmit:answers=>call('',{action:'final',session_id:data.sessionId,answers}),onRetry:assessment}));panel.setAttribute('aria-busy','false');panel.focus();return;}
+
   const form=el("form");form.append(el("p","Avaliação final · 20 questões · quatro alternativas por questão","course-eyebrow"),el("h1","Avaliação final V&C"),el("p",`Aprovação a partir de ${data.minimum}%. Em caso de erro, você receberá temas para revisar, sem exposição do gabarito.`));
   data.questions.forEach((q,i)=>{const field=el("fieldset");field.append(el("legend",`${i+1}. ${q.prompt}`));q.choices.forEach((choice,j)=>{const label=el("label"),input=el("input");input.type="radio";input.name=`final${i}`;input.value=String(j);label.append(input,document.createTextNode(choice));field.append(label)});form.append(field)});
   const submit=el("button","Enviar avaliação"),result=el("p","","course-status");submit.type="submit";result.setAttribute("role","status");form.append(submit,result);

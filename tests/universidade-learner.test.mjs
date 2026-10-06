@@ -28,6 +28,7 @@ let contentReads = 0;
 let identity = {id: "u-1"};
 let isAdmin = false;
 let structuredMode = false;
+let assessmentRpcPayload=null;
 let structuredStatus = "published";
 let lessonProgress = [];
 let lessonWrites = 0;
@@ -38,6 +39,8 @@ globalThis.fetch = async (input, options = {}) => {
  if (url.pathname.includes("/vc-core-private-api/")) return Response.json({data: {accesses: allowed ? rightsProducts.map(product_id => ({product_id})) : []}});
  if(url.pathname.endsWith("/vc_university_application_cycle_versions"))return Response.json([]);
  if(url.pathname.endsWith("/vc_university_evidence_definitions")||url.pathname.endsWith("/vc_university_evidence_definition_versions"))return Response.json([]);
+ if(url.pathname.endsWith('/rpc/vc_university_assessment_begin')){assessmentRpcPayload=JSON.parse(options.body);return Response.json({sessionId:finalSessionId,minimum:assessmentRpcPayload.p_purpose==='final'?14:4,passPercent:70,questions:Array.from({length:assessmentRpcPayload.p_purpose==='final'?20:5},(_,i)=>({question_id:'q-'+i,prompt:'Fixture técnica',options:['a','b','c','d'].map((text,j)=>({id:'q-'+i+'-o-'+j,text}))}))});}
+ if(url.pathname.endsWith('/rpc/vc_university_assessment_submit')){assessmentRpcPayload=JSON.parse(options.body);return Response.json({score:4,total:5,scorePercent:80,passed:true,retryAllowed:true,feedback:[{questionId:'q-0',correct:true,message:'Princípio aplicado.'}],review:[]});}
  const secondCourse = url.searchParams.get("course_id") === "eq.inteligencia-emocional";
  if (url.pathname.endsWith("/vc_university_courses")) return Response.json(
   secondCourse ? [{course_id: "inteligencia-emocional", product_id: "P-022", title: "Inteligência Emocional", version: "1.0", modality: "online", hours_minutes: 1200, final_pass_percent: 70, certificate_requires_project_review: false}]
@@ -87,6 +90,7 @@ globalThis.fetch = async (input, options = {}) => {
   if (options.method === "POST") {databaseWrites++; return Response.json([{enrollment_id: "e-1"}]);}
   return Response.json(progress.map(item=>({...item,module_version_id:`mv-${item.module_no}`})));
  }
+ if(url.pathname.endsWith("/vc_university_questions")&&url.searchParams.has("editorial_id"))return Response.json([]);
  if (url.pathname.endsWith("/vc_university_questions")) return Response.json(
   Array.from({length: url.searchParams.get("purpose") === "eq.final" ? 30 : 5}, (_, i) => ({question_id: `q-${i}`,question_key:`qk-${i}`,question_version:1,prompt: "Qual decisão?", choices: ["A","B","C","D"],
    correct_index: 2,correct_option_id:`q-${i}-o-2`,correct_feedback:"Boa decisão.",review_concept: "Revisar diagnóstico", kind: url.searchParams.get("purpose") === "eq.final"
@@ -396,3 +400,7 @@ test("checkpoint estruturado rejeita índices numéricos legados", async () => {
  try {assert.equal((await handler(request("?module=1","POST",{action:"checkpoint",answers:Array(5).fill(2)}))).status,400);assert.equal(attemptWrites,previous)}
  finally {structuredMode=false;progress=[]}
 });
+
+test('checkpoint estruturado abre sessão sem gabarito e usa identidade resolvida',async()=>{structuredMode=true;progress=[];try{const r=await handler(request('?module=1&view=checkpoint'));assert.equal(r.status,200);const data=await r.json();assert.equal(data.questions.length,5);assert.equal(/correct_option|correct_index|is_correct/.test(JSON.stringify(data)),false);assert.equal(assessmentRpcPayload.p_actor,'u-1');assert.equal(assessmentRpcPayload.p_enrollment,'e-1');}finally{structuredMode=false;}});
+test('checkpoint estruturado envia opção porID sem aceitar nota ou matrícula do cliente',async()=>{structuredMode=true;progress=[];try{const r=await handler(request('?module=1','POST',{action:'checkpoint',session_id:finalSessionId,answers:Array.from({length:5},(_,i)=>({question_id:'q-'+i,selected_option_id:'q-'+i+'-o-2'})),score:5,enrollment_id:'other'}));assert.equal(r.status,200);assert.equal(assessmentRpcPayload.p_enrollment,'e-1');assert.equal('p_score' in assessmentRpcPayload,false);}finally{structuredMode=false;}});
+test('prova estruturada abre peloRPC sem consultar ciclo e certificado segue bloqueado',async()=>{structuredMode=true;try{const r=await handler(request('?view=final'));assert.equal(r.status,200);assert.equal((await r.json()).questions.length,20);assert.equal(assessmentRpcPayload.p_purpose,'final');const blocked=await handler(request('','POST',{action:'issue_certificate',learner_name:'Fixture Técnica'}));assert.equal(blocked.status,409);}finally{structuredMode=false;}});
