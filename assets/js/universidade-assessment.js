@@ -1,0 +1,33 @@
+(function(scope){
+ "use strict";
+ const el=(tag,text)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;return n;};
+ function shuffle(items,rng=()=>{const x=new Uint32Array(1);crypto.getRandomValues(x);return x[0]/4294967296;}){
+  const a=[...items];for(let i=a.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;
+ }
+ function publicQuestion(q){return {question_id:q.question_id,editorial_id:q.editorial_id,question_version:q.question_version,prompt:q.prompt,options:q.options.map(o=>({id:o.option_id||o.id,text:o.option_text||o.text}))};}
+ function simulate(bank,answers,percent){
+  if(answers.length!==bank.length)throw Error("answers_invalid");
+  let score=0;const feedback=bank.map((q,i)=>{const a=answers[i],o=q.options.find(o=>o.option_id===a.selected_option_id);if(a.question_id!==q.question_id||!o)throw Error("answers_invalid");const correct=o.option_id===q.correct_option_id;if(correct)score++;return {questionId:q.question_id,correct,message:correct?q.correct_feedback:o.feedback,concept:q.review_concept};});
+  return {score,total:bank.length,scorePercent:score*100/bank.length,passed:score*100>=bank.length*percent,feedback,review:[...new Set(feedback.filter(f=>!f.correct).map(f=>f.concept))],retryAllowed:true};
+ }
+ function render(data,options={}){
+  const root=el("section");root.className="assessment-cards";root.tabIndex=-1;
+  const answers=Array(data.questions.length).fill(null);let index=0;let busy=false;let finished=false;
+  const status=el("p");status.className="course-status";status.setAttribute("role","status");status.id="assessment-status-"+data.questions[0].question_id;
+  function show(){root.replaceChildren();root.append(el("p",options.preview?"PRÉVIA ISOLADA · sem tentativa acadêmica":"Avaliação acadêmica"),el("h2",data.questions.length===5?"Checkpoint V&C":"Prova final V&C"),el("p",`Critério: ${data.minimum}/${data.questions.length} respostas corretas. A nota descreve desempenho neste instrumento.`));
+   if(index===data.questions.length){const summary=el("ol");data.questions.forEach((q,i)=>{const row=el("li",`${i+1}. ${answers[i]?q.options.find(o=>o.id===answers[i])?.text:"Pendente"}`);const edit=el("button",`Revisar questão ${i+1}`);edit.type="button";edit.onclick=()=>{index=i;show();root.focus();};row.append(edit);summary.append(row);});root.append(summary);const send=el("button",options.preview?"Simular envio":"Enviar respostas");send.type="button";send.onclick=async()=>{if(busy||finished)return;const missing=answers.indexOf(null);if(missing>=0){index=missing;show();status.textContent="Selecione uma alternativa para esta questão.";root.querySelector("input")?.focus();return;}busy=true;send.disabled=true;status.textContent="Conferindo respostas…";try{const selected=data.questions.map((q,i)=>({question_id:q.question_id,selected_option_id:answers[i]}));const result=await options.onSubmit(selected);finished=true;root.replaceChildren(el("h2",result.passed?"Aprovado neste instrumento":"Revisão necessária"),el("p",`${result.score}/${result.total} · ${result.scorePercent}%`));const feedback=el("ol");for(const f of result.feedback||[])feedback.append(el("li",f.message));root.append(feedback);if(result.review?.length)root.append(el("p","Revise: "+result.review.join("; ")));status.textContent=options.preview?"Simulação concluída · nenhuma tentativa, requisito ou evento foi persistido.":result.guidance||"Resultado acadêmico registrado.";root.append(status);if(result.retryAllowed){const retry=el("button","Revisar e tentar novamente");retry.type="button";retry.onclick=options.onRetry;root.append(retry);}options.onResult?.(result);root.focus();}catch(error){status.textContent=error.message==="answers_invalid"?"Respostas inválidas; revise as alternativas.":error.message==="assessment_session_invalid"?"Sessão expirada. Abra uma nova tentativa; seu histórico foi preservado.":"Não foi possível enviar. Suas escolhas permanecem nesta tela para tentar novamente.";send.disabled=false;}finally{busy=false;}};root.append(send,status);return;}
+   const q=data.questions[index];root.append(el("p",`Questão ${index+1} de ${data.questions.length}`));const field=el("fieldset");field.append(el("legend",q.prompt));
+   q.options.forEach(o=>{const label=el("label"),input=el("input");input.type="radio";input.name="assessment-"+q.question_id;input.value=o.id;input.checked=answers[index]===o.id;input.required=true;input.setAttribute("aria-describedby","assessment-instruction-"+q.question_id+" "+status.id);input.onchange=()=>{answers[index]=o.id;status.textContent="Alternativa selecionada.";};label.append(input,document.createTextNode(o.text));field.append(label);});root.append(field);const help=el("p","Escolha uma melhor resposta. Você pode voltar e revisar antes de enviar.");help.id="assessment-instruction-"+q.question_id;root.append(help);
+   const nav=el("div");nav.className="assessment-navigation";const back=el("button","Anterior");back.type="button";back.disabled=index===0;back.onclick=()=>{index--;show();root.focus();};const next=el("button",index===data.questions.length-1?"Revisar respostas":"Próxima");next.type="button";next.onclick=()=>{if(!answers[index]){status.textContent="Selecione uma alternativa antes de continuar.";root.querySelector("input")?.focus();return;}index++;show();root.focus();};nav.append(back,next);root.append(nav,status);
+  }
+  show();return root;
+ }
+ function preview(bank,percent){
+  let current=bank;const host=el("div");
+  function start(){const visual=shuffle(current).map(q=>({...q,options:shuffle(q.options)}));const data={questions:visual.map(publicQuestion),minimum:Math.ceil(bank.length*percent/100)};
+   host.replaceChildren(render(data,{preview:true,onSubmit:async answers=>simulate(visual,answers,percent),onRetry:start}));}
+  start();return host;
+ }
+ function master(bank){const host=el("div");for(const q of bank){const d=el("details");d.append(el("summary",`${q.editorial_id} · ${q.competency?.code||q.competency_code} · ${q.difficulty} · v${q.question_version} · ${q.status}`),el("p",q.prompt));const list=el("ol");for(const o of q.options||[]){const li=el("li",o.option_text);if(o.option_id===q.correct_option_id)li.append(el("strong"," — Gabarito"));li.append(el("p",o.feedback));list.append(li);}d.append(list,el("p",q.review_concept));if(q.editorial_gap)d.append(el("p","Gap editorial: "+q.editorial_gap));for(const s of q.sources||[])d.append(el("p",`Fonte ${s.vc_university_sources?.editorial_classification}: ${s.vc_university_sources?.citation}`));host.append(d);}return host;}
+ scope.VCAssessment={render,preview,master,publicQuestion,shuffle,simulate};
+})(globalThis);

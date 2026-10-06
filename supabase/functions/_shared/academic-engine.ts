@@ -136,8 +136,8 @@ export function gradeStableCheckpoint(questions: StableQuestion[], answers: stri
     };
   });
   const score = details.filter(detail => detail.correct).length;
-  const scorePercent = Math.round(score * 10000 / questions.length) / 100;
-  return {score, total: questions.length, scorePercent, passed: scorePercent >= passPercent, details};
+  const scorePercent = score * 100 / questions.length;
+  return {score, total: questions.length, scorePercent, passed: score * 100 >= questions.length * passPercent, details};
 }
 
 export function checkpointSnapshot(questions: StableQuestion[]) {

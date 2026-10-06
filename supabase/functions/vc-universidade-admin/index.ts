@@ -1,3 +1,4 @@
+import {assessmentBank} from "../_shared/assessment-api.ts";
 const ROOT = Deno.env.get("SUPABASE_URL") ?? "https://ctzgsxxbyvruzmfqibnl.supabase.co";
 const KEY = Deno.env.get("SUPABASE_PUBLISHABLE_KEY") ?? Deno.env.get("SUPABASE_ANON_KEY") ?? "sb_publishable_rF60SyuGpNstim9MqFvqmQ_sSm78z1b";
 const SERVICE = Deno.env.get("SUPABASE_SECRET_KEY") ?? Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
@@ -100,6 +101,12 @@ Deno.serve(async request => {
       const version = url.searchParams.get("version") ?? course.version;
       if (version.length > 32 || !/^[A-Za-z0-9._-]+$/.test(version))
         return reply(400, {error: "invalid_version"}, origin);
+      const metadata=(await db("vc_university_course_versions","?select=content_model,status,title_snapshot&course_id=eq."+encodeURIComponent(courseId)+"&version=eq."+encodeURIComponent(version)+"&limit=1"))[0];
+      if(metadata?.content_model==="structured_blocks") {
+       const bank=await assessmentBank(db,courseId,version);
+       const modules=await db("vc_university_module_versions","?select=module_no,title,estimated_minutes,evidence_required,checkpoint_pass_count&course_id=eq."+encodeURIComponent(courseId)+"&course_version=eq."+encodeURIComponent(version)+"&order=module_no.asc");
+       return reply(200,{course:{...course,version,content:{id:courseId,version,contentModel:"structured_blocks",modules:modules.map((m:any)=>({number:m.module_no,title:m.title}))}},modules,checkpoints:bank.filter((q:any)=>q.purpose==="checkpoint"),final_exam:bank.filter((q:any)=>q.purpose==="final"),summary:{modules:modules.length,checkpoint_questions:bank.filter((q:any)=>q.purpose==="checkpoint").length,final_questions:bank.filter((q:any)=>q.purpose==="final").length},scope:{owner_id:owner.user.id,access:"owner_full_curriculum",includes_answer_keys:true}},origin);
+      }
       const [contentRows, modules, questions] = await Promise.all([
         db("vc_university_course_content",
           "?select=course_id,course_version,content,imported_at&course_id=eq." + encodeURIComponent(courseId) +

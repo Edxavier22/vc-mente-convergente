@@ -22,6 +22,7 @@ globalThis.fetch = async input => {
   if (url.pathname === "/auth/v1/user") return Response.json(identity);
   if (url.pathname.endsWith("/v1/admin/scope")) return Response.json({data: {platform_admin: platformAdmin}});
   databaseReads++;
+  if(url.pathname.endsWith("/vc_university_course_versions"))return Response.json([{content_model:"legacy_json"}]);
   if (url.pathname.endsWith("/vc_university_courses")) return Response.json([{
     course_id: "lideranca-estrategica-aplicada", title: "Liderança Estratégica Aplicada",
     version: "1.1", status: "published", hours_minutes: 2000
@@ -74,7 +75,7 @@ test("proprietário recebe aulas, provas e gabaritos completos", async () => {
   assert.equal(data.checkpoints[0].correct_index, 1);
   assert.equal(data.checkpoints[0].correct_choice, "B");
   assert.equal(data.final_exam[0].correct_choice, "C");
-  assert.equal(databaseReads, 4);
+  assert.equal(databaseReads, 5);
 });
 
 test("permissão de plataforma continua obrigatória para o proprietário", async () => {

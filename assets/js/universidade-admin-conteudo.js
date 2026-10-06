@@ -35,6 +35,7 @@ function metric(label,value,detail){const card=el("article",undefined,"vc-owner-
 function hours(minutes){const value=Number(minutes)||0;return Number.isInteger(value/60)?value/60+"h":(Math.round(value/6)/10)+"h"}
 function count(modules,key){return modules.reduce((total,module)=>total+(Array.isArray(module[key])?module[key].length:0),0)}
 function renderAudit(course){
+ if(course.content.contentModel==="structured_blocks"){audit.replaceChildren(el("p","Banco editorial versionado. As aulas oficiais serão importadas e validadas em etapa própria; esta tela permite conferir questões, gabaritos, feedback e gaps."));return;}
  const modules=course.content.modules||[];const workload=course.content.workload||{};
  const heading=el("div",undefined,"vc-owner-audit-heading");const copy=el("div");append(copy,el("p","AUDITORIA PEDAGÓGICA","vc-admin-kicker"),el("h2","Profundidade que pode ser conferida."));
  heading.append(copy,el("p","A qualidade não é medida apenas pelo volume de texto. Este painel confirma a combinação de estudo, casos, prática, evidências, avaliação e fontes que sustenta as 20 horas do percurso."));
@@ -75,6 +76,7 @@ function references(items){
  items.forEach(item=>{const row=el("li");append(row,el("strong",item.title));const detail=[item.authors,item.source,item.year].filter(Boolean).join(" · ");if(detail)row.append(el("span",detail));if(item.doi)row.append(el("span","DOI: "+item.doi));if(item.url){const link=el("a","Consultar fonte");link.href=item.url;link.target="_blank";link.rel="noopener noreferrer";row.append(link)}list.append(row)});section.append(list);return section
 }
 function questionCard(question,index){
+ if(question.editorial_id)return VCAssessment.master([question]);
  const card=el("article",undefined,"vc-owner-question");const head=el("div",undefined,"vc-owner-question-head");append(head,el("span",String(index+1).padStart(2,"0")),el("strong",question.kind));append(card,head,el("h3",question.prompt));
  const choices=el("ol",undefined,"vc-owner-choices");question.choices.forEach((choice,choiceIndex)=>{const item=el("li",choice,choiceIndex===question.correct_index?"is-correct":"");if(choiceIndex===question.correct_index)item.append(el("strong","Resposta correta"));choices.append(item)});card.append(choices);
  append(card,append(el("p",undefined,"vc-owner-review-concept"),el("strong","Conceito de revisão: "),document.createTextNode(question.review_concept||"Não informado.")));return card
