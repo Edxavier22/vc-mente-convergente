@@ -1,0 +1,930 @@
+{
+  "code": "IE30",
+  "title": "IE30",
+  "description": "IE30 é o ciclo aplicado de 30 dias do curso Inteligência Emocional Aplicada, no qual o aluno escolhe um comportamento-alvo, planeja respostas, realiza aplicações no cotidiano, registra evidências relevantes, revisa o processo e constrói seu próximo ciclo de desenvolvimento.",
+  "version": "1.0",
+  "duration_days": 30,
+  "window_days": 45,
+  "setup_after_module": 7,
+  "start_after_module": 9,
+  "goal_change_limit": 3,
+  "included_revisions": 2,
+  "revision_response_days": 14,
+  "final_evidence_key": "e10",
+  "required_applications": {
+    "PAUSA": 3,
+    "CLARO": 1,
+    "DECIDE": 1
+  },
+  "phases": [
+    {
+      "key": "observar",
+      "label": "OBSERVAR",
+      "start": 1,
+      "end": 7,
+      "objective": "Reconhecer contexto, sinais, resposta e consequência."
+    },
+    {
+      "key": "interromper",
+      "label": "INTERROMPER",
+      "start": 8,
+      "end": 14,
+      "objective": "Identificar oportunidades de PAUSA/alteração do automático."
+    },
+    {
+      "key": "substituir",
+      "label": "SUBSTITUIR",
+      "start": 15,
+      "end": 21,
+      "objective": "Experimentar resposta alternativa adequada."
+    },
+    {
+      "key": "consolidar",
+      "label": "CONSOLIDAR",
+      "start": 22,
+      "end": 30,
+      "objective": "Repetir, revisar e preparar próximo ciclo."
+    }
+  ],
+  "notes": [
+    "30 dias são uma janela pedagógica de aplicação e observação, sem promessa de formação de hábito ou transformação psicológica.",
+    "Sem obrigação diária. Ausências não zeram progresso.",
+    "Teste da Câmera é uma heurística educacional: descreva algo observável.",
+    "Pausa não altera a janela fixa de 45 dias.",
+    "Após 30 dias, finalize até o dia 45. Uma entrega no prazo mantém o fluxo de revisão humana; cada parecer abre 14 dias para resposta."
+  ],
+  "forms": {
+    "setup": {
+      "version": 1,
+      "privacy_notice": "Compartilhe apenas as informações necessárias para demonstrar sua aprendizagem. Não informe nomes completos, documentos, diagnósticos, dados médicos, informações íntimas de terceiros, dados empresariais confidenciais ou qualquer informação que possa causar exposição indevida. Quando necessário, altere nomes, detalhes ou utilize um cenário equivalente.",
+      "sections": [
+        {
+          "section_key": "alvo",
+          "label": "Preparação · não inicia o dia 1",
+          "repeatable": false,
+          "fields": [
+            {
+              "field_key": "comportamento_alvo",
+              "type": "textarea",
+              "label": "Comportamento-alvo principal · observável, específico, realista e sob sua influência",
+              "help_text": "Registre apenas informações necessárias e anonimizadas.",
+              "required": true,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            },
+            {
+              "field_key": "motivo",
+              "type": "textarea",
+              "label": "Motivo",
+              "help_text": "Registre apenas informações necessárias e anonimizadas.",
+              "required": true,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            },
+            {
+              "field_key": "contexto_inicial",
+              "type": "textarea",
+              "label": "Contexto inicial",
+              "help_text": "Registre apenas informações necessárias e anonimizadas.",
+              "required": true,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            }
+          ]
+        },
+        {
+          "section_key": "contextos",
+          "label": "Contextos e sinais · até três",
+          "repeatable": false,
+          "fields": [
+            {
+              "field_key": "contexto_1",
+              "type": "textarea",
+              "label": "Contexto 1",
+              "help_text": "Registre apenas informações necessárias e anonimizadas.",
+              "required": true,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            },
+            {
+              "field_key": "contexto_2",
+              "type": "textarea",
+              "label": "Contexto 2",
+              "help_text": "Registre apenas informações necessárias e anonimizadas.",
+              "required": false,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            },
+            {
+              "field_key": "contexto_3",
+              "type": "textarea",
+              "label": "Contexto 3",
+              "help_text": "Registre apenas informações necessárias e anonimizadas.",
+              "required": false,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            },
+            {
+              "field_key": "sinal_1",
+              "type": "textarea",
+              "label": "Sinal que costuma anteceder 1",
+              "help_text": "Registre apenas informações necessárias e anonimizadas.",
+              "required": true,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            },
+            {
+              "field_key": "sinal_2",
+              "type": "textarea",
+              "label": "Sinal que costuma anteceder 2",
+              "help_text": "Registre apenas informações necessárias e anonimizadas.",
+              "required": false,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            },
+            {
+              "field_key": "sinal_3",
+              "type": "textarea",
+              "label": "Sinal que costuma anteceder 3",
+              "help_text": "Registre apenas informações necessárias e anonimizadas.",
+              "required": false,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            }
+          ]
+        },
+        {
+          "section_key": "estrategias",
+          "label": "Estratégias e planos SE–ENTÃO · até três",
+          "repeatable": false,
+          "fields": [
+            {
+              "field_key": "estrategia_1",
+              "type": "textarea",
+              "label": "Estratégia 1",
+              "help_text": "Registre apenas informações necessárias e anonimizadas.",
+              "required": true,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            },
+            {
+              "field_key": "estrategia_2",
+              "type": "textarea",
+              "label": "Estratégia 2",
+              "help_text": "Registre apenas informações necessárias e anonimizadas.",
+              "required": false,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            },
+            {
+              "field_key": "estrategia_3",
+              "type": "textarea",
+              "label": "Estratégia 3",
+              "help_text": "Registre apenas informações necessárias e anonimizadas.",
+              "required": false,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            },
+            {
+              "field_key": "plano_se_entao_1",
+              "type": "textarea",
+              "label": "Plano SE–ENTÃO 1",
+              "help_text": "Registre apenas informações necessárias e anonimizadas.",
+              "required": true,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            },
+            {
+              "field_key": "plano_se_entao_2",
+              "type": "textarea",
+              "label": "Plano SE–ENTÃO 2",
+              "help_text": "Registre apenas informações necessárias e anonimizadas.",
+              "required": false,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            },
+            {
+              "field_key": "plano_se_entao_3",
+              "type": "textarea",
+              "label": "Plano SE–ENTÃO 3",
+              "help_text": "Registre apenas informações necessárias e anonimizadas.",
+              "required": false,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            }
+          ]
+        },
+        {
+          "section_key": "indicadores",
+          "label": "Indicadores de processo · um a três",
+          "repeatable": false,
+          "fields": [
+            {
+              "field_key": "indicador_1",
+              "type": "textarea",
+              "label": "Indicador de processo observável 1",
+              "help_text": "Registre apenas informações necessárias e anonimizadas.",
+              "required": true,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            },
+            {
+              "field_key": "indicador_2",
+              "type": "textarea",
+              "label": "Indicador de processo observável 2",
+              "help_text": "Registre apenas informações necessárias e anonimizadas.",
+              "required": false,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            },
+            {
+              "field_key": "indicador_3",
+              "type": "textarea",
+              "label": "Indicador de processo observável 3",
+              "help_text": "Registre apenas informações necessárias e anonimizadas.",
+              "required": false,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "log": {
+      "version": 1,
+      "privacy_notice": "Compartilhe apenas as informações necessárias para demonstrar sua aprendizagem. Não informe nomes completos, documentos, diagnósticos, dados médicos, informações íntimas de terceiros, dados empresariais confidenciais ou qualquer informação que possa causar exposição indevida. Quando necessário, altere nomes, detalhes ou utilize um cenário equivalente.",
+      "sections": [
+        {
+          "section_key": "registro",
+          "label": "Registro rápido · sem obrigação diária",
+          "repeatable": false,
+          "fields": [
+            {
+              "field_key": "data",
+              "type": "date",
+              "label": "Data",
+              "help_text": "Registre apenas informações necessárias e anonimizadas.",
+              "required": true,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            },
+            {
+              "field_key": "modo",
+              "type": "select",
+              "label": "Tipo de cenário",
+              "help_text": "Registre apenas informações necessárias e anonimizadas.",
+              "required": true,
+              "min": null,
+              "max": null,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              },
+              "options": [
+                {
+                  "value": "real_seguro",
+                  "label": "Real seguro"
+                },
+                {
+                  "value": "anonimizado",
+                  "label": "Anonimizado"
+                },
+                {
+                  "value": "simulado",
+                  "label": "Simulado"
+                },
+                {
+                  "value": "retrospectivo",
+                  "label": "Retrospectivo"
+                },
+                {
+                  "value": "hipotetico",
+                  "label": "Hipotético"
+                }
+              ]
+            },
+            {
+              "field_key": "contexto",
+              "type": "textarea",
+              "label": "Contexto",
+              "help_text": "Registre apenas informações necessárias e anonimizadas.",
+              "required": true,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            },
+            {
+              "field_key": "situacao_resumida",
+              "type": "textarea",
+              "label": "Situação resumida",
+              "help_text": "Registre apenas informações necessárias e anonimizadas.",
+              "required": true,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            },
+            {
+              "field_key": "ferramenta",
+              "type": "select",
+              "label": "Estratégia/ferramenta utilizada",
+              "help_text": "Registre apenas informações necessárias e anonimizadas.",
+              "required": true,
+              "min": null,
+              "max": null,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              },
+              "options": [
+                {
+                  "value": "MRA",
+                  "label": "MRA"
+                },
+                {
+                  "value": "RADAR",
+                  "label": "RADAR"
+                },
+                {
+                  "value": "CAMPO",
+                  "label": "CAMPO"
+                },
+                {
+                  "value": "PAUSA",
+                  "label": "PAUSA"
+                },
+                {
+                  "value": "PAINEL 5P V&C",
+                  "label": "PAINEL 5P V&C"
+                },
+                {
+                  "value": "FLEX",
+                  "label": "FLEX"
+                },
+                {
+                  "value": "FIR",
+                  "label": "FIR"
+                },
+                {
+                  "value": "REAL",
+                  "label": "REAL"
+                },
+                {
+                  "value": "CLARO",
+                  "label": "CLARO"
+                },
+                {
+                  "value": "ELOS",
+                  "label": "ELOS"
+                },
+                {
+                  "value": "3T",
+                  "label": "3T"
+                },
+                {
+                  "value": "DECIDE",
+                  "label": "DECIDE"
+                },
+                {
+                  "value": "outra",
+                  "label": "outra"
+                }
+              ]
+            },
+            {
+              "field_key": "resultado_percebido",
+              "type": "textarea",
+              "label": "Resultado percebido",
+              "help_text": "Registre apenas informações necessárias e anonimizadas.",
+              "required": true,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            },
+            {
+              "field_key": "aprendizado",
+              "type": "textarea",
+              "label": "Aprendizado",
+              "help_text": "Registre apenas informações necessárias e anonimizadas.",
+              "required": true,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            },
+            {
+              "field_key": "indicador_1",
+              "type": "textarea",
+              "label": "Indicador aplicável 1",
+              "help_text": "Registre apenas informações necessárias e anonimizadas.",
+              "required": true,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            },
+            {
+              "field_key": "indicador_2",
+              "type": "textarea",
+              "label": "Indicador aplicável 2",
+              "help_text": "Registre apenas informações necessárias e anonimizadas.",
+              "required": false,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            },
+            {
+              "field_key": "indicador_3",
+              "type": "textarea",
+              "label": "Indicador aplicável 3",
+              "help_text": "Registre apenas informações necessárias e anonimizadas.",
+              "required": false,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "weekly_review": {
+      "version": 1,
+      "privacy_notice": "Compartilhe apenas as informações necessárias para demonstrar sua aprendizagem. Não informe nomes completos, documentos, diagnósticos, dados médicos, informações íntimas de terceiros, dados empresariais confidenciais ou qualquer informação que possa causar exposição indevida. Quando necessário, altere nomes, detalhes ou utilize um cenário equivalente.",
+      "sections": [
+        {
+          "section_key": "semana",
+          "label": "Revisão semanal",
+          "repeatable": false,
+          "fields": [
+            {
+              "field_key": "oportunidade",
+              "type": "select",
+              "label": "Oportunidades nesta semana",
+              "help_text": "Registre apenas informações necessárias e anonimizadas.",
+              "required": true,
+              "min": null,
+              "max": null,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              },
+              "options": [
+                {
+                  "value": "relevante",
+                  "label": "Houve oportunidade relevante"
+                },
+                {
+                  "value": "nenhuma",
+                  "label": "Nenhuma oportunidade relevante nesta semana"
+                }
+              ]
+            },
+            {
+              "field_key": "o_que_percebi",
+              "type": "textarea",
+              "label": "O que percebi",
+              "help_text": "Se não houve oportunidade relevante, esta reflexão é opcional.",
+              "required": false,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            },
+            {
+              "field_key": "o_que_funcionou",
+              "type": "textarea",
+              "label": "O que funcionou",
+              "help_text": "Se não houve oportunidade relevante, esta reflexão é opcional.",
+              "required": false,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            },
+            {
+              "field_key": "o_que_nao_funcionou",
+              "type": "textarea",
+              "label": "O que nao funcionou",
+              "help_text": "Se não houve oportunidade relevante, esta reflexão é opcional.",
+              "required": false,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            },
+            {
+              "field_key": "o_que_dificultou",
+              "type": "textarea",
+              "label": "O que dificultou",
+              "help_text": "Se não houve oportunidade relevante, esta reflexão é opcional.",
+              "required": false,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            },
+            {
+              "field_key": "o_que_vou_ajustar",
+              "type": "textarea",
+              "label": "O que vou ajustar",
+              "help_text": "Se não houve oportunidade relevante, esta reflexão é opcional.",
+              "required": false,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            },
+            {
+              "field_key": "principal_aprendizado",
+              "type": "textarea",
+              "label": "Principal aprendizado",
+              "help_text": "Se não houve oportunidade relevante, esta reflexão é opcional.",
+              "required": false,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            },
+            {
+              "field_key": "proximo_foco",
+              "type": "textarea",
+              "label": "Proximo foco",
+              "help_text": "Se não houve oportunidade relevante, esta reflexão é opcional.",
+              "required": false,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "final_reflection": {
+      "version": 1,
+      "privacy_notice": "Compartilhe apenas as informações necessárias para demonstrar sua aprendizagem. Não informe nomes completos, documentos, diagnósticos, dados médicos, informações íntimas de terceiros, dados empresariais confidenciais ou qualquer informação que possa causar exposição indevida. Quando necessário, altere nomes, detalhes ou utilize um cenário equivalente.",
+      "sections": [
+        {
+          "section_key": "reflexao",
+          "label": "Reflexão final",
+          "repeatable": false,
+          "fields": [
+            {
+              "field_key": "percebi",
+              "type": "textarea",
+              "label": "O que passei a perceber que antes não percebia?",
+              "help_text": "Registre apenas informações necessárias e anonimizadas.",
+              "required": true,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            },
+            {
+              "field_key": "fiz_diferente",
+              "type": "textarea",
+              "label": "O que consegui fazer de modo diferente?",
+              "help_text": "Registre apenas informações necessárias e anonimizadas.",
+              "required": true,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            },
+            {
+              "field_key": "ainda_dificil",
+              "type": "textarea",
+              "label": "O que ainda é difícil?",
+              "help_text": "Registre apenas informações necessárias e anonimizadas.",
+              "required": true,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            },
+            {
+              "field_key": "estrategia_contextos",
+              "type": "textarea",
+              "label": "Qual estratégia funcionou melhor em quais contextos?",
+              "help_text": "Registre apenas informações necessárias e anonimizadas.",
+              "required": true,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            },
+            {
+              "field_key": "nao_funcionou",
+              "type": "textarea",
+              "label": "O que não funcionou?",
+              "help_text": "Registre apenas informações necessárias e anonimizadas.",
+              "required": true,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            },
+            {
+              "field_key": "aprendi",
+              "type": "textarea",
+              "label": "O que aprendi sobre minhas decisões/respostas?",
+              "help_text": "Registre apenas informações necessárias e anonimizadas.",
+              "required": true,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            },
+            {
+              "field_key": "continuar",
+              "type": "textarea",
+              "label": "Qual comportamento quero continuar desenvolvendo?",
+              "help_text": "Registre apenas informações necessárias e anonimizadas.",
+              "required": true,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            },
+            {
+              "field_key": "proximo_ciclo",
+              "type": "textarea",
+              "label": "Qual será meu próximo ciclo?",
+              "help_text": "Registre apenas informações necessárias e anonimizadas.",
+              "required": true,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            }
+          ]
+        },
+        {
+          "section_key": "mudancas",
+          "label": "O que mudou / o que não mudou",
+          "repeatable": false,
+          "fields": [
+            {
+              "field_key": "o_que_mudou",
+              "type": "textarea",
+              "label": "O que mudou",
+              "help_text": "Registre apenas informações necessárias e anonimizadas.",
+              "required": true,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            },
+            {
+              "field_key": "o_que_nao_mudou",
+              "type": "textarea",
+              "label": "O que nao mudou",
+              "help_text": "Registre apenas informações necessárias e anonimizadas.",
+              "required": true,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            },
+            {
+              "field_key": "o_que_ainda_nao_sei",
+              "type": "textarea",
+              "label": "O que ainda nao sei",
+              "help_text": "Registre apenas informações necessárias e anonimizadas.",
+              "required": true,
+              "min": 3,
+              "max": 1200,
+              "privacy_hint": "Cenário seguro, anonimizado, simulado, retrospectivo ou hipotético.",
+              "repeatable": false,
+              "validation_rules": {
+                "trim": true
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "rubric": {
+    "version": "ie30-1",
+    "pass_points": 70,
+    "criteria": [
+      {
+        "key": "padroes",
+        "label": "Padrões",
+        "max_points": 15,
+        "description": "Capacidade de reconhecer recorrências/contextos sem diagnóstico."
+      },
+      {
+        "key": "ferramentas",
+        "label": "Ferramentas",
+        "max_points": 20,
+        "description": "Uso coerente das ferramentas do curso."
+      },
+      {
+        "key": "reflexao",
+        "label": "Reflexão",
+        "max_points": 15,
+        "description": "Qualidade da análise sobre experiência e aprendizagem."
+      },
+      {
+        "key": "coerencia",
+        "label": "Coerência problema/estratégia",
+        "max_points": 15,
+        "description": "Relação entre problema escolhido e estratégias."
+      },
+      {
+        "key": "aplicabilidade",
+        "label": "Aplicabilidade",
+        "max_points": 20,
+        "description": "Demonstração de aplicação no cotidiano ou cenário legítimo."
+      },
+      {
+        "key": "indicadores",
+        "label": "Indicadores",
+        "max_points": 10,
+        "description": "Uso de indicadores de processo compatíveis com o objetivo."
+      },
+      {
+        "key": "clareza",
+        "label": "Clareza",
+        "max_points": 5,
+        "description": "Organização suficiente para compreensão."
+      }
+    ]
+  }
+}

@@ -1,4 +1,5 @@
 // @ts-nocheck -- arquivo legado em JavaScript/Deno; o motor compartilhado abaixo é tipado.
+import {cycleDefinitions,cycleRead,cycleWrite} from "../_shared/cycle-api.ts";
 import {evidenceDefinitions, evidenceRead, evidenceWrite} from "../_shared/evidence-api.ts";
 import {checkpointSnapshot, gradeStableCheckpoint, resolveModuleStates} from "../_shared/academic-engine.ts";
 
@@ -48,7 +49,7 @@ async function database(table, query = "", options = {}) {
  });
  if (!response.ok) {
   const failure=await response.json().catch(()=>({}));
-  const safe=["draft_version_conflict","submission_locked","idempotency_payload_conflict","previous_module_required","evidence_structure_invalid","evidence_context_denied","evidence_definition_unavailable","evidence_review_denied","review_revision_stale","review_state_conflict"].find(code=>failure.message?.includes(code));
+  const safe=["cycle_context_denied","cycle_definition_unavailable","cycle_setup_required","cycle_setup_ineligible","cycle_start_ineligible","cycle_locked","cycle_transition_denied","cycle_structure_invalid","cycle_entry_key_invalid","cycle_indicator_invalid","cycle_log_date_invalid","weekly_review_not_due","weekly_review_immutable","cycle_duration_pending","weekly_reviews_pending","final_reflection_pending","selected_logs_invalid","required_applications_pending","integrator_size_limit","pedagogical_review_required","goal_change_limit_reached","invalid_cycle_request","cycle_request_id_required","draft_version_conflict","submission_locked","idempotency_payload_conflict","previous_module_required","evidence_structure_invalid","evidence_context_denied","evidence_definition_unavailable","evidence_review_denied","review_revision_stale","review_state_conflict"].find(code=>failure.message?.includes(code));
   throw new Error(safe||("database_error:"+response.status));
  }
  const body = await response.text();
@@ -352,7 +353,8 @@ async function previewCourse(bearer, courseId, version, perspective) {
  const previewDependencies = dependencies.map(item => ({...item,status:"published"}));
  const states = resolveModuleStates(moduleVersions,[],previewDependencies,[],[]);
  const evidence = await evidenceDefinitions(database,courseId,version,true);
- return {preview:true,perspective,role:access.role,course,states,evidence,
+ const cycles=await cycleDefinitions(database,courseId,version,true);
+ return {preview:true,perspective,role:access.role,course,states,evidence,cycles,
   writes:{enrollment:false,progress:false,attempt:false,certificate:false,analytics:false}};
 }
 Deno.serve(async request => {
@@ -390,6 +392,9 @@ Deno.serve(async request => {
   const {course, progress, states, moduleVersions, requirements} = await courseAndProgress(
    courseId, enrollmentVersion, access.enrollment.enrollment_id);
   const input = request.method === "POST" ? await request.json().catch(() => null) : null;
+  if(url.searchParams.get("view")==="cycle" && request.method==="GET") return reply(200,await cycleRead(database,access.user.id,access.enrollment.enrollment_id),origin);
+  if(input?.action==="cycle") {const result=await cycleWrite(database,access.user.id,access.enrollment.enrollment_id,input);return reply(result.status||200,result,origin);}
+  if(course.contentModel!=="legacy_json" && (input?.action==="issue_certificate" || url.searchParams.get("view")==="completion" || input?.action==="final" || url.searchParams.get("view")==="final")) return reply(409,{error:"future_academic_gate_not_implemented"},origin);
   if (url.searchParams.get("view") === "completion" || input?.action === "issue_certificate") {
    const completion = await completionState(access, courseId, course, progress, states);
    if (request.method === "GET" || completion.certificate)
@@ -640,6 +645,7 @@ Deno.serve(async request => {
   }
   return reply(400, {error: "unknown_action"}, origin);
  } catch (error) {
+  if(error instanceof Error && (error.message.startsWith("cycle_") || ["draft_version_conflict","idempotency_payload_conflict","weekly_review_not_due","weekly_review_immutable","weekly_reviews_pending","final_reflection_pending","selected_logs_invalid","required_applications_pending","integrator_size_limit","pedagogical_review_required","goal_change_limit_reached"].includes(error.message)))return reply(409,{error:error.message},origin);
   console.error("University learner API failed", error instanceof Error ? error.message : "unknown");
   return reply(503, {error: "service_unavailable"}, origin);
  }
