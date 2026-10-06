@@ -36,6 +36,7 @@ globalThis.fetch = async (input, options = {}) => {
  if (url.pathname === "/auth/v1/user") return Response.json(identity);
  if (url.pathname.endsWith("/v1/admin/scope")) return Response.json({data: {platform_admin: isAdmin}});
  if (url.pathname.includes("/vc-core-private-api/")) return Response.json({data: {accesses: allowed ? rightsProducts.map(product_id => ({product_id})) : []}});
+ if(url.pathname.endsWith("/vc_university_application_cycle_versions"))return Response.json([]);
  if(url.pathname.endsWith("/vc_university_evidence_definitions")||url.pathname.endsWith("/vc_university_evidence_definition_versions"))return Response.json([]);
  const secondCourse = url.searchParams.get("course_id") === "eq.inteligencia-emocional";
  if (url.pathname.endsWith("/vc_university_courses")) return Response.json(

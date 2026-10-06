@@ -7,6 +7,7 @@ const menu=document.querySelector("#module-list");
 let catalog;
 let current=1;
 let evidenceEditor=null;
+let cycleEditor=null;
 const navigation=document.querySelector("#course-navigation");
 const navigationToggle=document.querySelector("#toggle-course-navigation");
 function el(tag,text,klass){const x=document.createElement(tag);if(text!==undefined)x.textContent=text;if(klass)x.className=klass;return x}
@@ -26,6 +27,7 @@ async function call(path="",body){
  const data=await r.json().catch(()=>({}));if(!r.ok)throw Error(data.error||"service_unavailable");return data
 }
 function update(){
+ if(catalog.contentModel!=="legacy_json"){const cycle=el("button","Abrir ciclo aplicado");cycle.type="button";cycle.onclick=async()=>{try{if(evidenceEditor){await evidenceEditor.flush();evidenceEditor.dispose();evidenceEditor=null}if(cycleEditor){await cycleEditor.flush();cycleEditor.dispose()}const data=await call("?view=cycle");cycleEditor=VCCycles.render(data,{storageKey:`vc_cycle_${JSON.parse(localStorage.getItem(SESSION)||"null")?.user?.id}_${data.definition?.version||catalog.version}`,write:(cycle_action,payload,expected_version,request_id,entry_key)=>call("",{action:"cycle",cycle_action,payload,expected_version,request_id,entry_key})});panel.replaceChildren(cycleEditor);panel.focus()}catch{message("Ciclo indisponível","Confira a publicação do curso e sua elegibilidade.")}};const existing=document.querySelector("#open-application-cycle");existing?.remove();cycle.id="open-application-cycle";menu.before(cycle)}
  const done=catalog.modules.filter(m=>m.completed).length;
  const submitted=catalog.modules.filter(m=>m.submitted).length;
  const percent=catalog.modules.length?Math.round(done/catalog.modules.length*100):0;
@@ -164,6 +166,7 @@ async function completion(){
  }catch{message("Conclusão indisponível","Não foi possível consultar os requisitos agora. Seu progresso permanece salvo.")}
 }
 async function openModule(number){
+ if(cycleEditor){try{await cycleEditor.flush()}catch{return}cycleEditor.dispose();cycleEditor=null}
  if(evidenceEditor){try{await evidenceEditor.flush()}catch{return}evidenceEditor.dispose();evidenceEditor=null}
  current=number;update();panel.setAttribute("aria-busy","true");message("Abrindo o módulo","Consultando sua matrícula e seu progresso…");
  try{

@@ -38,7 +38,7 @@ async function db(table: string, query = "", options: DbOptions = {}): Promise<a
  });
  if (!response.ok) {
   const failure=await response.json().catch(()=>({}));
-  const safe=["draft_version_conflict","submission_locked","idempotency_payload_conflict","previous_module_required","evidence_structure_invalid","evidence_context_denied","evidence_definition_unavailable","evidence_review_denied","review_revision_stale","review_state_conflict"].find(code=>failure.message?.includes(code));
+  const safe=["draft_version_conflict","submission_locked","idempotency_payload_conflict","previous_module_required","evidence_structure_invalid","evidence_context_denied","evidence_definition_unavailable","evidence_review_denied","review_revision_stale","review_state_conflict","mandatory_rubric_required","invalid_rubric_review","cycle_context_denied"].find(code=>failure.message?.includes(code));
   throw new Error(safe||("database_error:"+response.status));
  }
  const text = await response.text();
@@ -76,6 +76,10 @@ Deno.serve(async request => {
   const url = new URL(request.url);
   if (request.method === "POST") {
    const input = await request.json().catch(() => null);
+   if(["cycle_review","cycle_special_revision","cycle_begin_review"].includes(input?.action)) {
+    const review=await db("rpc/vc_university_cycle_review","",{method:"POST",body:JSON.stringify({p_actor:reviewer.user.id,p_submission:input.submission_id,p_revision:input.revision_id,p_points:input.points||{},p_feedback:input.structured_feedback||{},p_action:input.action==="cycle_special_revision"?"authorize_special_revision":input.action==="cycle_begin_review"?"begin_review":"evaluate"})});
+    return reply(200,{review},origin);
+   }
    if(input?.action==="evidence_review") {
     if(!/^[0-9a-f-]{36}$/i.test(input.submission_id||"") || !/^[0-9a-f-]{36}$/i.test(input.revision_id||"") || !["under_review","revision_requested","approved"].includes(input.decision) || typeof input.feedback!=="string" || input.feedback.trim().length<3 || input.feedback.length>4000) return reply(400,{error:"invalid_review"},origin);
     // No platform-admin bypass: the RPC checks actual teaching assignment, selection and exact revision.
@@ -164,7 +168,7 @@ Deno.serve(async request => {
    evidence, reviews, attempts: normalizedAttempts, students,
    course, scope: {platform_admin: reviewer.platformAdmin, cohort_count: cohortIds.length}}, origin);
  } catch (error) {
-  if(error instanceof Error && ["evidence_review_denied","review_revision_stale","review_state_conflict"].includes(error.message))return reply(error.message==="evidence_review_denied"?403:409,{error:error.message},origin);
+  if(error instanceof Error && ["evidence_review_denied","review_revision_stale","review_state_conflict","mandatory_rubric_required","invalid_rubric_review","cycle_context_denied"].includes(error.message))return reply(error.message==="evidence_review_denied"?403:409,{error:error.message},origin);
   console.error("University professor API failed", error instanceof Error ? error.message : "unknown");
   return reply(503, {error: "service_unavailable"}, origin);
  }
