@@ -24,6 +24,8 @@ begin
  select module_version_id into m5 from public.vc_university_module_versions where course_id='inteligencia-emocional-aplicada' and course_version='1.0' and module_no=5;
  perform set_config('pr3.a',a::text,true);perform set_config('pr3.b',b::text,true);perform set_config('pr3.teacher',teacher::text,true);perform set_config('pr3.b2b',business::text,true);
  execute 'set local role service_role';
+ caught:=false;begin update public.vc_university_evidence_definition_versions set status='draft' where course_id='inteligencia-emocional-aplicada';exception when others then caught:=sqlerrm='evidence_definition_version_immutable';end;if not caught then raise exception 'published_definition_reopened';end if;
+ caught:=false;begin delete from public.vc_university_evidence_definition_versions where course_id='inteligencia-emocional-aplicada';exception when others then caught:=sqlerrm='evidence_definition_version_immutable';end;if not caught then raise exception 'published_definition_deleted';end if;
  -- Exercise DB validation independently for every evidence and every repeat/range.
  for d in select dv.*,def.evidence_key from public.vc_university_evidence_definition_versions dv join public.vc_university_evidence_definitions def using(evidence_definition_id) where dv.course_id='inteligencia-emocional-aplicada' loop
  payload:='{}';

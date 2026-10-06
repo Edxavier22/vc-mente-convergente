@@ -32,7 +32,7 @@ Definições e requisitos de IE permanecem **draft**. Não foi publicado o curso
 
 Draft fica em `evidence_submissions.draft_data`, com versão otimista. Autosave usa debounce de 800 ms, requisições serializadas e flush antes da submissão/navegação. Estado de salvamento é anunciado sem repetição por tecla. Uma cópia temporária em sessionStorage, separada por usuário/definição e versão, protege atualização antes do debounce. Conflitos entre telas são recusados, sem sobrescrita silenciosa. Cache divergente é preservado como rascunho anterior legível, sem substituir a versão remota.
 
-Submissão é RPC transacional com lock, UUID idempotente e validação estrutural no banco. Cria revisão imutável com structured_data; mesma chave/payload devolve a revisão existente; mesma chave com outro payload é recusada. Resubmissão após revision_requested cria a próxima revisão. Professor envia o ID exato da revisão atual; revisão antiga é recusada. Reviews também são append-only.
+Submissão é RPC transacional com lock, UUID idempotente e validação estrutural no banco. Cria revisão imutável com structured_data; mesma chave/payload devolve a revisão existente; mesma chave com outro payload é recusada. Resubmissão após revision_requested cria a próxima revisão. Professor envia o ID exato da revisão atual; revisão antiga é recusada. Reviews também são append-only. Definição publicada permanece imutável: não pode voltar a draft nem ser excluída para contornar o versionamento.
 
 API resolve identidade, matrícula, curso/versão, módulo e definição no servidor. Escritas e RPCs são service-only. RLS concede leitura própria e leitura docente de revisões selecionadas em turma atribuída, somente sampled/human_required. Nem o proprietário recebe bypass. Draft textual não tem SELECT de navegador, inclusive para professor atribuído. B2B não integra essas tabelas nem recebe seus textos. `contains_sensitive_data` é preservado.
 
@@ -53,6 +53,7 @@ Aplicadas uma vez em `vc-core-homolog` (`ctzgsxxbyvruzmfqibnl`):
 - `20261006152951_universidade_evidence_validation_fix.sql`
 - `20261006153045_universidade_evidence_draft_audit.sql`
 - `20261006155239_universidade_evidence_service_scope.sql`
+- `20261006160317_universidade_evidence_definition_freeze.sql`
 
 Correções posteriores preservam o histórico aplicado e o papel service_role tem USAGE no namespace privado, sem concessão adicional de EXECUTE a alunos: alias do validador SQL e metadados mínimos exigidos pela auditoria. Não reaplicam migrations anteriores.
 
@@ -84,7 +85,7 @@ Aviso preexistente no Supabase: proteção contra senhas vazadas desativada. Nen
 
 ## Arquivos e continuidade
 
-Modelo/schema: manifesto JSON, cinco migrations e evidence-api.ts. Interface: universidade-evidence.js, aluno-v2, professor, preview, duas páginas e CSS. Motor compartilhado informa evidência entregue com base no requisito canônico. Quality gate: três arquivos de testes de evidência/docente/SQL, adaptação do mock anterior de learner, secret-scan e workflow.
+Modelo/schema: manifesto JSON, seis migrations e evidence-api.ts. Interface: universidade-evidence.js, aluno-v2, professor, preview, duas páginas e CSS. Motor compartilhado informa evidência entregue com base no requisito canônico. Quality gate: três arquivos de testes de evidência/docente/SQL, adaptação do mock anterior de learner, secret-scan e workflow.
 
 A conferência inicial de SQL encontrou e corrigiu alias ambíguo e audit metadata obrigatório; ambas as correções foram aplicadas como migrations adicionais, preservando o histórico remoto. Testes extras cobrem papel service_role, bypass de proprietário, recarga durante request de autosave e bytes UTF-8.
 
