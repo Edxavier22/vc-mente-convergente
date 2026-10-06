@@ -6,6 +6,7 @@ const panel=document.querySelector("#aula");
 const menu=document.querySelector("#module-list");
 let catalog;
 let current=1;
+let evidenceEditor=null;
 const navigation=document.querySelector("#course-navigation");
 const navigationToggle=document.querySelector("#toggle-course-navigation");
 function el(tag,text,klass){const x=document.createElement(tag);if(text!==undefined)x.textContent=text;if(klass)x.className=klass;return x}
@@ -163,6 +164,7 @@ async function completion(){
  }catch{message("Conclusão indisponível","Não foi possível consultar os requisitos agora. Seu progresso permanece salvo.")}
 }
 async function openModule(number){
+ if(evidenceEditor){try{await evidenceEditor.flush()}catch{return}evidenceEditor.dispose();evidenceEditor=null}
  current=number;update();panel.setAttribute("aria-busy","true");message("Abrindo o módulo","Consultando sua matrícula e seu progresso…");
  try{
   const {lesson,progress,requirements:moduleRequirements=[]}=await call(`?module=${number}`);
@@ -173,7 +175,7 @@ async function openModule(number){
    complete.onclick=async()=>{complete.disabled=true;try{await call(`?module=${number}`,{action:"content_complete"});await reload();status.textContent="Leitura registrada na sua conta."}catch{complete.disabled=false;status.textContent="Não foi possível concluir a leitura. Tente novamente."}};
    reading.append(complete,status);
    const evidenceRequired=moduleRequirements.some(item=>item.requirement_type==="evidence_completed" && item.required);
-   if(evidenceRequired){const label=el("label","Sua evidência"),area=el("textarea");area.maxLength=12000;area.value=progress?.evidence||"";label.append(area);const save=el("button","Entregar evidência");save.type="button";save.onclick=async()=>{save.disabled=true;try{await call(`?module=${number}`,{action:"evidence",evidence:area.value});await reload();status.textContent="Evidência registrada."}catch{status.textContent="Escreva ao menos 20 caracteres e tente novamente."}finally{save.disabled=false}};reading.append(label,save)}
+   if(evidenceRequired){const evidence=await call(`?module=${number}&view=evidence`);const editor=VCEvidence.render(evidence.definition,{submission:evidence.submission,storageKey:`vc_evidence_${JSON.parse(localStorage.getItem(SESSION)||"null")?.user?.id}_${evidence.definition.evidence_definition_version_id}`,save:(payload,expected_version)=>call(`?module=${number}`,{action:"evidence_draft",payload,expected_version}),submit:(payload,expected_version,request_id)=>call(`?module=${number}`,{action:"evidence_submit",payload,expected_version,request_id,privacy_confirmed:true}),onSubmitted:()=>reload()});evidenceEditor=editor;reading.append(editor);for(const review of evidence.reviews||[])reading.append(el("p",`Revisão docente · ${review.decision}: ${review.feedback}`))}
    const next=el("button","Abrir Checkpoint V&C");next.type="button";next.onclick=()=>{next.disabled=true;const holder=el("p","Carregando checkpoint…");reading.append(holder);checkpoint(number,holder)};reading.append(next);
    panel.replaceChildren(reading);panel.setAttribute("aria-busy","false");panel.focus();return;
   }

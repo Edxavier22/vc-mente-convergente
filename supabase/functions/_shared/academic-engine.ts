@@ -31,6 +31,7 @@ export type RequirementProgress = {
   requirement_id: string;
   status: AcademicStatus;
   satisfied_at?: string | null;
+  source_id?: string | null;
 };
 
 export type ModuleDependency = {
@@ -90,7 +91,7 @@ export function resolveModuleStates(
       title: module.title,
       unlocked,
       completed,
-      submitted: Boolean(row?.submitted_at),
+      submitted: Boolean(row?.submitted_at) || mandatory.some(requirement=>requirement.requirement_type==="evidence_completed" && requirementRows.some(p=>p.requirement_id===requirement.requirement_id && (p.source_id || satisfied.has(requirement.requirement_id)))),
       status,
       pendingRequirements: pending.length,
       nextRequirement: nextRequirement ? {
