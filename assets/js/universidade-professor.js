@@ -111,7 +111,7 @@ function renderAssessments(students){
 }
 
 function render(data){
- dashboardData=data;const students=buildStudents(data);const evidence=students.reduce((sum,student)=>sum+student.progress.length,0);summary.textContent=`${students.length} ${students.length===1?"aluno matriculado":"alunos matriculados"} · ${evidence} ${evidence===1?"evidência registrada":"evidências registradas"}`;
+ dashboardData=data;const courseName=document.querySelector(".teacher-identity strong");if(courseName&&data.course?.title)courseName.textContent=data.course.title;const students=buildStudents(data);const evidence=students.reduce((sum,student)=>sum+student.progress.length,0);summary.textContent=`${students.length} ${students.length===1?"aluno matriculado":"alunos matriculados"} · ${evidence} ${evidence===1?"evidência registrada":"evidências registradas"}`;
  panel.setAttribute("aria-busy","false");panel.replaceChildren(renderOverview(students),renderQueue(students),renderStudents(students),renderAssessments(students));panel.focus()
 }
 

@@ -16,7 +16,7 @@ export async function evidenceRead(db: Database,course: string,version: string,e
  return {definition,submission,revisions,reviews};
 }
 export async function evidenceWrite(db: Database,user: string,enrollment: string,module: string,input: any) {
- if(!['evidence_draft','evidence_submit'].includes(input?.action)||!Number.isInteger(input.expected_version)||input.expected_version<0||!input.payload||Array.isArray(input.payload)||typeof input.payload!=='object'||JSON.stringify(input.payload).length>65536)
+ if(!['evidence_draft','evidence_submit'].includes(input?.action)||!Number.isInteger(input.expected_version)||input.expected_version<0||!input.payload||Array.isArray(input.payload)||typeof input.payload!=='object'||new TextEncoder().encode(JSON.stringify(input.payload)).byteLength>65536)
  return {error:'invalid_evidence_request',status:400};
  if(input.action==='evidence_submit' && (!input.privacy_confirmed||! /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(input.request_id||'')))return {error:'privacy_and_request_id_required',status:400};
  try{return await db('rpc/vc_university_evidence_write','',{method:'POST',body:JSON.stringify({p_actor:user,p_enrollment:enrollment,p_module:module,p_action:input.action==='evidence_draft'?'draft':'submit',p_payload:input.payload,p_expected_version:input.expected_version,p_request_id:input.request_id||null})})}

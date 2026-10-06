@@ -44,7 +44,7 @@ function update(){
  const locked=catalog.modules.find(m=>!m.unlocked);
  if(locked)menu.append(el("p","Este módulo depende da conclusão acadêmica dos requisitos anteriores.","course-status"))
 }
-async function reload(){catalog=await call();update()}
+async function reload(){catalog=await call();for(const selector of [".course-header-context strong",".course-overview h1"]){const name=document.querySelector(selector);if(name&&catalog.title)name.textContent=catalog.title}if(catalog.title)document.title=`Área do aluno | ${catalog.title} — V&C`;update()}
 function steps(title,items,kind="guided-list"){const section=el("section");section.className="lesson-section";section.append(el("h2",title));const list=el("ol");list.className=kind;items.forEach(item=>list.append(el("li",item)));section.append(list);return section}
 function listSection(label,title,items,tone="key"){
  if(!Array.isArray(items)||!items.length)return null;

@@ -57,12 +57,11 @@ async function assertReviewer(bearer: string): Promise<Reviewer> {
  if (!user.email_confirmed_at) return {error: 403};
  const platformAdmin = user.id === OWNER_ID && user.email?.toLowerCase() === OWNER_EMAIL &&
   access?.platform_admin === true;
- if (platformAdmin) return {user, platformAdmin, cohortIds: [] as string[]};
  const assignments = await db("vc_university_teachers",
   "?select=cohort_id&user_id=eq." + user.id + "&limit=1000");
  const cohortIds = assignments.map((row: {cohort_id: string}) => row.cohort_id);
- if (!cohortIds.length) return {error: 403};
- return {user, platformAdmin: false, cohortIds};
+ if (!cohortIds.length && !platformAdmin) return {error: 403};
+ return {user, platformAdmin, cohortIds};
 }
 
 Deno.serve(async request => {
@@ -90,7 +89,7 @@ Deno.serve(async request => {
        !["approved", "revise"].includes(input.status) || typeof input.feedback !== "string" ||
        input.feedback.trim().length < 3 || input.feedback.length > 2000)
     return reply(400, {error: "invalid_review"}, origin);
-   const scopeFilter = reviewer.platformAdmin ? "" : "&cohort_id=in.(" + (reviewer.cohortIds ?? []).join(",") + ")";
+   const scopeFilter = reviewer.cohortIds?.length ? "&cohort_id=in.(" + reviewer.cohortIds.join(",") + ")" : "&cohort_id=is.null";
    const enrollments = await db("vc_university_enrollments",
     "?select=enrollment_id,cohort_id&course_id=eq." + encodeURIComponent(courseId) + "&user_id=eq." + input.user_id +
     "&status=eq.active" + scopeFilter + "&limit=1");
@@ -119,7 +118,7 @@ Deno.serve(async request => {
    const evidence=await db("rpc/vc_university_evidence_queue","",{method:"POST",body:JSON.stringify({p_actor:reviewer.user.id,p_course:courseId})});
    return reply(200,{evidence},origin);
   }
-  const scopeFilter = reviewer.platformAdmin ? "" : "&cohort_id=in.(" + (reviewer.cohortIds ?? []).join(",") + ")";
+  const scopeFilter = reviewer.cohortIds?.length ? "&cohort_id=in.(" + reviewer.cohortIds.join(",") + ")" : "&cohort_id=is.null";
   const [enrollments, modules, courseRows] = await Promise.all([
    db("vc_university_enrollments",
     "?select=enrollment_id,user_id,course_id,course_version,cohort_id,status,enrolled_at&course_id=eq." +
