@@ -147,4 +147,3 @@ Não há autorização implícita de publicação decorrente dessa importação.
 O SHA final e o link do Draft PR são informados na entrega e no histórico Git.
 **Não houve merge na main ou em qualquer PR anterior.**
 Não houve publicação acadêmica, mudança das 70 questões, matrícula comercial, checkout, certificado IE ou QR.
-
