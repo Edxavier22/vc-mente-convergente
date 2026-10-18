@@ -6,6 +6,7 @@ begin
  insert into auth.users(id,email,email_confirmed_at) values(teacher,'pr6-teacher-'||teacher||'@example.invalid',now()),(outsider,'pr6-outsider-'||outsider||'@example.invalid',now());
  insert into public.vc_university_cohorts(course_id,label,status) values('inteligencia-emocional-aplicada','PR6 rollback fixture','active') returning cohort_id into cohort;
  insert into public.vc_university_sources(title,citation,editorial_classification,status) values('PR6 source fixture','Fixture didática de governança','D','draft') returning source_id into src;
+ execute 'set local role service_role';
  perform public.vc_university_teacher_assignment(owner,cohort,teacher,'assign',false);
  if public.vc_university_editor_can(teacher,'inteligencia-emocional-aplicada') then raise exception 'teacher_gets_editor_implicitly';end if;
  caught:=false;begin perform public.vc_university_teacher_assignment(teacher,cohort,outsider,'assign',true);exception when others then caught:=sqlerrm='owner_required';end;if not caught then raise exception 'teacher_assigns_role';end if;

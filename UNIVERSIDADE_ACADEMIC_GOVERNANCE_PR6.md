@@ -64,9 +64,9 @@ Learner consulta apenas sua matrícula resolvida no servidor. Professor consulta
 
 ## Schema, funções e privacidade
 
-Migration aplicada uma vez em homologação: `20261018184102_universidade_academic_governance.sql` (nome do arquivo alinhado ao ledger remoto; arquivo inicial foi criado pela CLI).
+Migrations aplicadas uma vez em homologação: `20261018184102_universidade_academic_governance.sql` e `20261018185426_universidade_governance_identity_boundary.sql`. Os nomes dos arquivos estão alinhados ao ledger remoto. O arquivo inicial foi criado pela CLI; a correção adicional foi registrada pelo conector autenticado após o bloqueio de telemetria da CLI.
 
-Tabela de metadados nova: `vc_university_editorial_reviews`, com RLS habilitada e sem grants ao browser. Coluna nova em assignments: `can_edit_academic`, default false. As funções novas são SECURITY INVOKER, service-only, com search_path vazio. Endpoints verificam a identidade e repassam o ator resolvido, nunca o revisor arbitrário do payload.
+Tabela de metadados nova: `vc_university_editorial_reviews`, com RLS habilitada e sem grants ao browser. Coluna nova em assignments: `can_edit_academic`, default false. As funções públicas novas são SECURITY INVOKER, service-only, com search_path vazio. A verificação mínima de identidade usa uma função SECURITY DEFINER no schema privado, service-only, com search_path vazio e verificação de auth.uid quando presente; retorna apenas booleano e não concede SELECT em auth.users ao serviço nem ao browser. Endpoints verificam a identidade e repassam o ator resolvido, nunca o revisor arbitrário do payload.
 
 RPCs: governance_owner, editor_can, academic_materials, editorial_publish_guard, editorial_decide, teacher_operations, teacher_revision, certification_eligibility, teacher_assignment, governance_read e material_draft_save, todos com prefixo `vc_university_`.
 
@@ -91,9 +91,52 @@ Os testes de publicação técnica preparam metadados e removem gaps somente den
 
 A aba administrativa existente foi inspecionada e ainda exibe “Entre em Meus acessos antes de usar a prévia.” Não havia sessão autorizada utilizável. Não foram fabricadas credenciais nem declarados aprovados os testes autenticados de aluno/professor/admin de IE30/E10. Fixtures de API, SQL e UI são identificadas separadamente.
 
-Revisão browser/390 px e checks finais GitHub/Vercel são registrados na entrega após publicação da branch. Ainda é necessário QA com login real, sobretudo editor delegado, revisão E10, seleção de turmas e conteúdo-mestre autorizado. Não se presume aprovação editorial dos 70 itens.
+Revisão browser em contêiner de 390 px aprovada no preview Vercel: inventário editorial, lacuna, fontes, parecer simulado sem escrita, fila docente com revisão especial, consulta de requisitos separando prova e E10 e prévia de certificado sem código/QR/emissão. Nas três superfícies medidas, clientWidth=390 e scrollWidth=390; nenhum descendente ultrapassou o contêiner editorial. Não é teste em aparelho físico ou viewport integral de 390 px. GitHub Actions e Vercel passaram nos commits de implementação e correção da fixture; a entrega informa o estado do head final. Ainda é necessário QA com login real, sobretudo editor delegado, revisão E10, seleção de turmas e conteúdo-mestre autorizado. Não se presume aprovação editorial dos 70 itens.
 
 A CLI criou o arquivo da migration, mas uma tentativa de telemetria foi bloqueada pela revisão automática. Nenhum envio foi contornado; aplicação e verificações remotas foram feitas pelo conector autenticado Supabase.
+
+## Correções encontradas durante homologação
+
+1. A fixture visual tinha um parêntese extra: corrigido, com verificações sintáticas de todas as fixtures adicionadas ao quality gate. O código das APIs não foi afetado por esse erro.
+2. O teste explícito com SET LOCAL ROLE service_role encontrou ausência de SELECT em auth.users. A migration complementar criou a consulta booleana privada e substituiu apenas os quatro pontos de confirmação. Nenhum GRANT amplo foi concedido. Workflow e certificação foram repetidos nesse papel, com positivos e negativos aprovados.
+3. As fixtures respeitam a imutabilidade da conclusão de módulos; casos negativos usam matrícula incompleta em vez de apagar conclusão histórica. A amostragem de E03 pode acrescentar itens à fila e é tratada sem expectativa fixa de quantidade.
+
+A verificação pós-correção confirmou service_reads_auth_users=false, execução privada por anon/authenticated=false, consulta de governança com service_role aprovada, zero fixtures/editorial_records persistidos e 70 questões IE Draft/inativas.
+
+## Publicação e arquivos
+
+Draft PR: https://github.com/Edxavier22/vc-mente-convergente/pull/16
+
+O SHA final e os checks são informados na entrega; o relatório é versionado na própria branch. Arquivos alterados em relação à base aprovada:
+
+- `UNIVERSIDADE_ACADEMIC_GOVERNANCE_PR6.md`
+- `administracao-universidade.html`
+- `assets/css/universidade.css`
+- `assets/js/universidade-cycle.js`
+- `assets/js/universidade-governance-page.js`
+- `assets/js/universidade-governance.js`
+- `assets/js/universidade-preview.js`
+- `assets/js/universidade-professor.js`
+- `governanca-universidade.html`
+- `package.json`
+- `preview-universidade.html`
+- `professor-lideranca.html`
+- `scripts/universidade-governance-sql.mjs`
+- `supabase/functions/_shared/governance-api.ts`
+- `supabase/functions/vc-universidade-admin/index.ts`
+- `supabase/functions/vc-universidade-learner-v2/index.ts`
+- `supabase/functions/vc-universidade-professor/index.ts`
+- `supabase/migrations/20261018184102_universidade_academic_governance.sql`
+- `supabase/migrations/20261018185426_universidade_governance_identity_boundary.sql`
+- `tests/universidade-governance-api.test.mjs`
+- `tests/universidade-governance-preview.html`
+- `tests/universidade-governance-preview.js`
+- `tests/universidade-governance.test.mjs`
+- `tests/universidade-learner.test.mjs`
+- `tests/universidade-professor-evidence.test.mjs`
+- `tests/universidade_editorial_fixture.sql`
+- `tests/universidade_governance_certification_rls.sql`
+- `tests/universidade_governance_editorial_rls.sql`
 
 ## Confirmações
 

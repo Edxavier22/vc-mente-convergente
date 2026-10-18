@@ -11,6 +11,7 @@ begin
  select count(*) into before_cert from public.vc_university_certificates;
  select cohort_id into cohort from public.vc_university_enrollments where enrollment_id=enrollment;
  insert into auth.users(id,email,email_confirmed_at) values(teacher,'pr6-cert-teacher-'||teacher||'@example.invalid',now());
+ execute 'set local role service_role';
  perform public.vc_university_teacher_assignment(owner,cohort,teacher,'assign',false);
  result:=public.vc_university_certification_eligibility(actor,enrollment);
  if (result->>'eligible')::boolean or not(result->'gates'->>'final_assessment_passed')::boolean or (result->'gates'->>'final_project_approved')::boolean then raise exception 'exam_equals_project';end if;
