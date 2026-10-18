@@ -1,3 +1,4 @@
+import {governanceRequest, governanceErrors, certificationEligibility} from "../_shared/governance-api.ts";
 import {assessmentBank} from "../_shared/assessment-api.ts";
 const ROOT = Deno.env.get("SUPABASE_URL") ?? "https://ctzgsxxbyvruzmfqibnl.supabase.co";
 const KEY = Deno.env.get("SUPABASE_PUBLISHABLE_KEY") ?? Deno.env.get("SUPABASE_ANON_KEY") ?? "sb_publishable_rF60SyuGpNstim9MqFvqmQ_sSm78z1b";
@@ -50,6 +51,15 @@ async function assertOwner(bearer: string) {
   if (user.id !== OWNER_ID || user.email?.toLowerCase() !== OWNER_EMAIL || !user.email_confirmed_at || access?.platform_admin !== true) return { error: 403 };
   return { user };
 }
+async function assertAcademicEditor(bearer:string) {
+ const headers={apikey:KEY,authorization:bearer};
+ const response=await fetch(ROOT+"/auth/v1/user",{headers,signal:AbortSignal.timeout(8000)});
+ if(!response.ok)return {error:response.status===401?401:503};
+ const user=await response.json();if(!user.email_confirmed_at)return {error:403};
+ if(user.id===OWNER_ID)return assertOwner(bearer);
+ const assigned=await db("vc_university_teachers","?select=cohort_id&user_id=eq."+encodeURIComponent(user.id)+"&can_edit_academic=eq.true&limit=1");
+ return assigned.length?{user}:{error:403};
+}
 function human(value: string) {
   return ({ published: "Publicado", review: "Em revisão", draft: "Rascunho", archived: "Arquivado",
     active: "Ativo", open: "Aberta", closed: "Encerrada", completed: "Concluída",
@@ -87,9 +97,18 @@ Deno.serve(async request => {
   const bearer = request.headers.get("authorization") ?? "";
   if (!/^Bearer [A-Za-z0-9._-]{20,4096}$/.test(bearer)) return reply(401, { error: "sign_in_required" }, origin);
   try {
-    const owner = await assertOwner(bearer);
+    const incomingUrl=new URL(request.url);
+    const owner = incomingUrl.searchParams.get("view")==="governance" ? await assertAcademicEditor(bearer) : await assertOwner(bearer);
     if (owner.error) return reply(owner.error, { error: owner.error === 403 ? "owner_required" : owner.error === 401 ? "sign_in_required" : "service_unavailable" }, origin);
     const url = new URL(request.url);
+    if(url.searchParams.get("view")==="governance") {
+      if(request.method==="POST"&&!trusted(origin))return reply(403,{error:"origin_not_allowed"},origin);
+      const result=await governanceRequest(rpc,owner.user.id,request.method,request.method==="POST"?await request.json().catch(()=>null):null,url.searchParams.get("course"));
+      return reply(result.status||200,result,origin);
+    }
+    if(request.method==="GET"&&url.searchParams.get("view")==="eligibility") {
+      const result=await certificationEligibility(rpc,owner.user.id,url.searchParams.get("enrollment")||"");return reply(result.status||200,result,origin);
+    }
     if (request.method === "GET" && url.searchParams.get("view") === "curriculum") {
       const courseId = url.searchParams.get("course") ?? "lideranca-estrategica-aplicada";
       if (!validCourseId(courseId)) return reply(400, {error: "invalid_course"}, origin);
@@ -232,6 +251,8 @@ Deno.serve(async request => {
       ], scope: { owner_id: owner.user.id, privacy: "aggregated_only" }
     }, origin);
   } catch (error) {
+    const academicCode=governanceErrors.find(code=>String(error).includes(code));
+    if(academicCode)return reply(academicCode.endsWith('denied')||academicCode==='owner_required'?403:academicCode==='material_not_found'?404:409,{error:academicCode},origin);
     console.error("University admin API failed", error instanceof Error ? error.message : "unknown");
     return reply(503, { error: "service_unavailable" }, origin);
   }
