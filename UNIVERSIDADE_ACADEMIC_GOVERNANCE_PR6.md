@@ -70,13 +70,13 @@ Tabela de metadados nova: `vc_university_editorial_reviews`, com RLS habilitada 
 
 RPCs: governance_owner, editor_can, academic_materials, editorial_publish_guard, editorial_decide, teacher_operations, teacher_revision, certification_eligibility, teacher_assignment, governance_read e material_draft_save, todos com prefixo `vc_university_`.
 
-Edge Functions implantadas: learner **v21**, admin **v10**, professor **v13**, todas ACTIVE. verify_jwt preservado: learner/professor false com autenticação própria, admin true. Novo compartilhado `governance-api.ts`.
+Edge Functions implantadas: learner **v21**, admin **v10**, professor **v14**, todas ACTIVE. verify_jwt preservado: learner/professor false com autenticação própria, admin true. Novo compartilhado `governance-api.ts`.
 
 Audit logs não recebem structured_data, quick logs ou respostas privadas. Empresas continuam sem acesso a essas superfícies; fluxo B2B não foi ampliado. Advisors mantêm o aviso Auth preexistente de leaked-password protection e INFO de tabelas service-only sem políticas. A tabela editorial também é service-only, sem grants a anon/authenticated: não representa acesso público.
 
 ## Testes e evidências
 
-- `npm run check`: **219/219** (189 anteriores + 30 novos), zero skips/falhas.
+- `npm run check`: **221/221** (189 anteriores + 32 novos), zero skips/falhas.
 - Lint/sintaxe, Deno typecheck, secret scan e diff check aprovados.
 - Sete suites SQL reversíveis aprovadas: editorial; avaliação + certificação; evidências PR3; ciclo PR4; fundação RLS; progressão RLS; Liderança M1→M2.
 - Workflow: estado, fonte/gap, conflito de revisão, edição invalidando aprovação, publicação não revisada, delegação/revogação e negativa de acesso ao mestre.

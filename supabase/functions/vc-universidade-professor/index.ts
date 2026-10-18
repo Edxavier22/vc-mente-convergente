@@ -132,8 +132,10 @@ Deno.serve(async request => {
   const courseId = url.searchParams.get("course") ?? DEFAULT_COURSE_ID;
   if (!validCourseId(courseId)) return reply(400, {error: "invalid_course"}, origin);
   if(url.searchParams.get("view")==="evidence") {
+   const cohort=url.searchParams.get("cohort");
+   if(cohort&&!reviewer.cohortIds?.includes(cohort))return reply(403,{error:"teacher_scope_required"},origin);
    const evidence=await db("rpc/vc_university_evidence_queue","",{method:"POST",body:JSON.stringify({p_actor:reviewer.user.id,p_course:courseId})});
-   return reply(200,{evidence},origin);
+   return reply(200,{evidence:cohort?evidence.filter((row:any)=>row.cohort_id===cohort):evidence},origin);
   }
   const selectedCohort=url.searchParams.get("cohort");
   if(selectedCohort&&!reviewer.cohortIds?.includes(selectedCohort))return reply(403,{error:"teacher_scope_required"},origin);
