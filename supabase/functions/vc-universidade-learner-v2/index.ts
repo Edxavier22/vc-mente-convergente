@@ -1,4 +1,5 @@
 // @ts-nocheck -- arquivo legado em JavaScript/Deno; o motor compartilhado abaixo é tipado.
+import {certificationEligibility} from "../_shared/governance-api.ts";
 import {assessmentBegin,assessmentSubmit,assessmentBank} from "../_shared/assessment-api.ts";
 import {cycleDefinitions,cycleRead,cycleWrite} from "../_shared/cycle-api.ts";
 import {evidenceDefinitions, evidenceRead, evidenceWrite} from "../_shared/evidence-api.ts";
@@ -311,34 +312,37 @@ async function previewAuthorization(bearer, courseId, perspective) {
  const user = await identity.json();
  if (!user?.id) return {error: 401};
  const scope = await core("/functions/v1/vc-core-private-api/v1/admin/scope", bearer);
- const admin = scope.ok && (await scope.json())?.data?.platform_admin === true;
+ const admin = scope.ok && (await scope.json())?.data?.platform_admin === true && user.id === "70aa4d75-bbb9-4839-aad8-670b7654664d" && user.email?.toLowerCase() === "vcmenteconvergente@gmail.com" && !!user.email_confirmed_at;
  if (admin) return {user, role: "owner"};
- if (perspective === "content_master") return {error: 403};
  const assignments = await database("vc_university_teachers",
-  "?select=cohort_id&user_id=eq." + user.id);
+  "?select=cohort_id,can_edit_academic&user_id=eq." + user.id);
  if (!assignments.length) return {error: 403};
  const cohortIds = assignments.map(item => item.cohort_id).join(",");
  const cohorts = await database("vc_university_cohorts",
   "?select=cohort_id,course_id&cohort_id=in.(" + cohortIds + ")&course_id=eq." + encodeURIComponent(courseId));
- return cohorts.length ? {user,role: "teacher"} : {error: 403};
+ const editor=assignments.some(a=>a.can_edit_academic&&cohorts.some(c=>c.cohort_id===a.cohort_id));
+ if(perspective==="content_master"&&!editor)return {error:403};
+ return cohorts.length ? {user,role:editor?"editor":"teacher"} : {error:403};
 }
 async function previewCatalog(bearer) {
  const identity = await core("/auth/v1/user", bearer);
  if (!identity.ok) return {error: 401};
  const user = await identity.json();
  const scope = await core("/functions/v1/vc-core-private-api/v1/admin/scope", bearer);
- const admin = scope.ok && (await scope.json())?.data?.platform_admin === true;
+ const admin = scope.ok && (await scope.json())?.data?.platform_admin === true && user.id === "70aa4d75-bbb9-4839-aad8-670b7654664d" && user.email?.toLowerCase() === "vcmenteconvergente@gmail.com" && !!user.email_confirmed_at;
  let courseIds = null;
+ let delegatedEditor=false;
  if (!admin) {
-  const assignments = await database("vc_university_teachers", "?select=cohort_id&user_id=eq." + user.id);
+  const assignments = await database("vc_university_teachers", "?select=cohort_id,can_edit_academic&user_id=eq." + user.id);
   if (!assignments.length) return {error: 403};
+  delegatedEditor=assignments.some(a=>a.can_edit_academic);
   const cohorts = await database("vc_university_cohorts", "?select=course_id&cohort_id=in.(" +
    assignments.map(item => item.cohort_id).join(",") + ")");
   courseIds = [...new Set(cohorts.map(item => item.course_id))];
  }
  const query = "?select=course_id,version,title_snapshot,subtitle_snapshot,content_model,status&order=course_id.asc,version.desc" +
   (courseIds ? "&course_id=in.(" + courseIds.map(encodeURIComponent).join(",") + ")" : "");
- return {user, role: admin ? "owner" : "teacher", versions: await database("vc_university_course_versions",query)};
+ return {user, role: admin ? "owner" : delegatedEditor?"editor":"teacher", versions: await database("vc_university_course_versions",query)};
 }
 async function previewCourse(bearer, courseId, version, perspective) {
  const access = await previewAuthorization(bearer,courseId,perspective);
@@ -356,6 +360,7 @@ async function previewCourse(bearer, courseId, version, perspective) {
  const evidence = await evidenceDefinitions(database,courseId,version,true);
  const cycles=await cycleDefinitions(database,courseId,version,true);
  return {preview:true,perspective,role:access.role,course,states,evidence,cycles,assessments:await assessmentBank(database,courseId,version),
+  certificatePreview:{simulation:true,title:course.title,version:course.version,hours:course.hours,issuanceEnabled:false,gates:["Dez módulos e requisitos obrigatórios","Checkpoints aprovados","E01–E09 suficientes","Prova final aprovada","E10 aprovada humanamente"],publicCode:null,qr:null},
   writes:{enrollment:false,progress:false,attempt:false,certificate:false,analytics:false}};
 }
 Deno.serve(async request => {
@@ -387,6 +392,9 @@ Deno.serve(async request => {
   }
   const access = await context(bearer, courseId);
   if (access.error) return reply(access.error, {error: access.code ?? "access_denied"}, origin);
+  if(request.method==="GET"&&url.searchParams.get("view")==="eligibility") {
+   const result=await certificationEligibility((name,body)=>database("rpc/"+name,"",{method:"POST",body:JSON.stringify(body)}),access.user.id,access.enrollment.enrollment_id);return reply(result.status||200,result,origin);
+  }
   const enrollmentVersion = access.enrollment.course_version;
   if (typeof enrollmentVersion !== "string" || !enrollmentVersion)
    throw new Error("enrollment_version_unavailable");

@@ -385,13 +385,13 @@ test("curso estruturado entrega blocos e registra início/conclusão das aulas",
 });
 
 test("draft estruturado não é entregue a aluno e preview não grava aulas", async () => {
- structuredMode=true;structuredStatus="draft";isAdmin=true;lessonWrites=0;eventWrites=[];
+ structuredMode=true;structuredStatus="draft";isAdmin=true;lessonWrites=0;eventWrites=[];const previousIdentity=identity;identity={id:"70aa4d75-bbb9-4839-aad8-670b7654664d",email:"vcmenteconvergente@gmail.com",email_confirmed_at:"2026-10-01"};
  try {
   assert.equal((await handler(request("?module=1"))).status,503);
   const preview=await handler(request("?course=lideranca-estrategica-aplicada&version=1.0&preview=content_master"));
   assert.equal(preview.status,200);assert.equal((await preview.json()).course.modules[0].lessons[0].title,"Fixture técnica");
   assert.equal(lessonWrites,0);assert.equal(eventWrites.length,0);
- } finally {structuredMode=false;structuredStatus="published";isAdmin=false}
+ } finally {structuredMode=false;structuredStatus="published";isAdmin=false;identity=previousIdentity}
 });
 
 test("checkpoint estruturado rejeita índices numéricos legados", async () => {

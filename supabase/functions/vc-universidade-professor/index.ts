@@ -1,3 +1,4 @@
+import {certificationEligibility} from "../_shared/governance-api.ts";
 const ROOT = Deno.env.get("SUPABASE_URL") ?? "https://ctzgsxxbyvruzmfqibnl.supabase.co";
 const KEY = Deno.env.get("SUPABASE_ANON_KEY") ?? "sb_publishable_rF60SyuGpNstim9MqFvqmQ_sSm78z1b";
 const SERVICE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
@@ -38,7 +39,7 @@ async function db(table: string, query = "", options: DbOptions = {}): Promise<a
  });
  if (!response.ok) {
   const failure=await response.json().catch(()=>({}));
-  const safe=["draft_version_conflict","submission_locked","idempotency_payload_conflict","previous_module_required","evidence_structure_invalid","evidence_context_denied","evidence_definition_unavailable","evidence_review_denied","review_revision_stale","review_state_conflict","mandatory_rubric_required","invalid_rubric_review","cycle_context_denied"].find(code=>failure.message?.includes(code));
+  const safe=["draft_version_conflict","submission_locked","idempotency_payload_conflict","previous_module_required","evidence_structure_invalid","evidence_context_denied","evidence_definition_unavailable","evidence_review_denied","review_revision_stale","review_state_conflict","mandatory_rubric_required","invalid_rubric_review","cycle_context_denied","teacher_scope_required","academic_scope_denied"].find(code=>failure.message?.includes(code));
   throw new Error(safe||("database_error:"+response.status));
  }
  const text = await response.text();
@@ -93,7 +94,9 @@ Deno.serve(async request => {
        !["approved", "revise"].includes(input.status) || typeof input.feedback !== "string" ||
        input.feedback.trim().length < 3 || input.feedback.length > 2000)
     return reply(400, {error: "invalid_review"}, origin);
-   const scopeFilter = reviewer.cohortIds?.length ? "&cohort_id=in.(" + reviewer.cohortIds.join(",") + ")" : "&cohort_id=is.null";
+   const selectedCohort=url.searchParams.get("cohort");
+  if(selectedCohort&&!reviewer.cohortIds?.includes(selectedCohort))return reply(403,{error:"teacher_scope_required"},origin);
+  const scopeFilter = selectedCohort ? "&cohort_id=eq."+selectedCohort : reviewer.cohortIds?.length ? "&cohort_id=in.(" + reviewer.cohortIds.join(",") + ")" : "&cohort_id=is.null";
    const enrollments = await db("vc_university_enrollments",
     "?select=enrollment_id,cohort_id&course_id=eq." + encodeURIComponent(courseId) + "&user_id=eq." + input.user_id +
     "&status=eq.active" + scopeFilter + "&limit=1");
@@ -116,13 +119,27 @@ Deno.serve(async request => {
    return reply(200, {review: saved[0]}, origin);
   }
 
+  const rpc=(name:string,payload:Record<string,unknown>)=>db("rpc/"+name,"",{method:"POST",body:JSON.stringify(payload)});
+  if(url.searchParams.get("view")==="operations") {
+   const cohort=url.searchParams.get("cohort");if(cohort&&!/^[0-9a-f-]{36}$/i.test(cohort))return reply(400,{error:"invalid_cohort"},origin);
+   return reply(200,await rpc("vc_university_teacher_operations",{p_actor:reviewer.user.id,p_cohort:cohort}),origin);
+  }
+  if(url.searchParams.get("view")==="revision") {
+   const submission=url.searchParams.get("submission"),revision=url.searchParams.get("revision");if(!/^[0-9a-f-]{36}$/i.test(submission||"")||!/^[0-9a-f-]{36}$/i.test(revision||""))return reply(400,{error:"invalid_revision"},origin);
+   return reply(200,await rpc("vc_university_teacher_revision",{p_actor:reviewer.user.id,p_submission:submission,p_revision:revision}),origin);
+  }
+  if(url.searchParams.get("view")==="eligibility") {const result=await certificationEligibility(rpc,reviewer.user.id,url.searchParams.get("enrollment")||"");return reply(result.status||200,result,origin);}
   const courseId = url.searchParams.get("course") ?? DEFAULT_COURSE_ID;
   if (!validCourseId(courseId)) return reply(400, {error: "invalid_course"}, origin);
   if(url.searchParams.get("view")==="evidence") {
+   const cohort=url.searchParams.get("cohort");
+   if(cohort&&!reviewer.cohortIds?.includes(cohort))return reply(403,{error:"teacher_scope_required"},origin);
    const evidence=await db("rpc/vc_university_evidence_queue","",{method:"POST",body:JSON.stringify({p_actor:reviewer.user.id,p_course:courseId})});
-   return reply(200,{evidence},origin);
+   return reply(200,{evidence:cohort?evidence.filter((row:any)=>row.cohort_id===cohort):evidence},origin);
   }
-  const scopeFilter = reviewer.cohortIds?.length ? "&cohort_id=in.(" + reviewer.cohortIds.join(",") + ")" : "&cohort_id=is.null";
+  const selectedCohort=url.searchParams.get("cohort");
+  if(selectedCohort&&!reviewer.cohortIds?.includes(selectedCohort))return reply(403,{error:"teacher_scope_required"},origin);
+  const scopeFilter = selectedCohort ? "&cohort_id=eq."+selectedCohort : reviewer.cohortIds?.length ? "&cohort_id=in.(" + reviewer.cohortIds.join(",") + ")" : "&cohort_id=is.null";
   const [enrollments, modules, courseRows] = await Promise.all([
    db("vc_university_enrollments",
     "?select=enrollment_id,user_id,course_id,course_version,cohort_id,status,enrolled_at&course_id=eq." +
@@ -168,7 +185,7 @@ Deno.serve(async request => {
    evidence, reviews, attempts: normalizedAttempts, students,
    course, scope: {platform_admin: reviewer.platformAdmin, cohort_count: cohortIds.length}}, origin);
  } catch (error) {
-  if(error instanceof Error && ["evidence_review_denied","review_revision_stale","review_state_conflict","mandatory_rubric_required","invalid_rubric_review","cycle_context_denied"].includes(error.message))return reply(error.message==="evidence_review_denied"?403:409,{error:error.message},origin);
+  if(error instanceof Error && ["evidence_review_denied","review_revision_stale","review_state_conflict","mandatory_rubric_required","invalid_rubric_review","cycle_context_denied","teacher_scope_required","academic_scope_denied"].includes(error.message))return reply(["evidence_review_denied","teacher_scope_required","academic_scope_denied"].includes(error.message)?403:409,{error:error.message},origin);
   console.error("University professor API failed", error instanceof Error ? error.message : "unknown");
   return reply(503, {error: "service_unavailable"}, origin);
  }

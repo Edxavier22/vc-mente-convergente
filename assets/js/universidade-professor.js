@@ -5,6 +5,8 @@ const panel=document.querySelector("#professor-panel");
 const summary=document.querySelector("#professor-summary");
 const refresh=document.querySelector("#refresh-professor");
 let dashboardData=null;
+let selectedCourse=new URL(location.href).searchParams.get("course")||null,selectedCohort="",operationData=null;
+const filters=node("div");filters.id="teacher-filters";summary.before(filters);
 
 function node(tag,text,klass){const element=document.createElement(tag);if(text!==undefined)element.textContent=text;if(klass)element.className=klass;return element}
 function formatDate(value){if(!value)return "—";return new Intl.DateTimeFormat("pt-BR",{day:"2-digit",month:"short",year:"numeric"}).format(new Date(value))}
@@ -20,9 +22,9 @@ async function token(){
  const next=await response.json();localStorage.setItem(SESSION,JSON.stringify({access_token:next.access_token,refresh_token:next.refresh_token,expires_at:Math.floor(Date.now()/1000)+Number(next.expires_in||3600),user:next.user}));return next.access_token
 }
 
-async function request(method="GET",payload,view){
+async function request(method="GET",payload,view,extra={}){
  const access=await token();if(!access)throw new Error("sign_in_required");
- const target=new URL(ROOT+"/functions/v1/vc-universidade-professor");const courseId=new URL(location.href).searchParams.get("course");if(courseId)target.searchParams.set("course",courseId);if(view)target.searchParams.set("view",view);
+ const target=new URL(ROOT+"/functions/v1/vc-universidade-professor");const courseId=selectedCourse;if(courseId)target.searchParams.set("course",courseId);if(view)target.searchParams.set("view",view);if(selectedCohort)target.searchParams.set("cohort",selectedCohort);for(const [key,value] of Object.entries(extra))target.searchParams.set(key,value);
  const response=await fetch(target,{method,headers:{apikey:KEY,authorization:"Bearer "+access,"content-type":"application/json"},body:payload?JSON.stringify(payload):undefined,cache:"no-store"});
  const data=await response.json().catch(()=>({}));
  if(response.status===401)throw new Error("sign_in_required");
@@ -119,15 +121,34 @@ function render(data){
 function renderCanonicalEvidence(rows){
  const section=node("section",undefined,"teacher-section");section.append(node("h2","Evidências estruturadas · revisão docente"),node("p","Somente entregas selecionadas de turmas atribuídas. O parecer se refere à revisão indicada."));
  if(!rows.length)section.append(node("p","Nenhuma evidência autorizada para revisão nesta turma."));
- rows.sort((a,b)=>(["submitted","resubmitted","under_review"].includes(b.status)?1:0)-(["submitted","resubmitted","under_review"].includes(a.status)?1:0));
- for(const row of rows){if(row.definition.validation_policy.rubric_required){section.append(VCCycles.renderReview(row,{submit:(item,points,structured_feedback)=>request("POST",{action:"cycle_review",submission_id:item.submission_id,revision_id:item.evidence_revision_id,points,structured_feedback}),begin:item=>request("POST",{action:"cycle_begin_review",submission_id:item.submission_id,revision_id:item.evidence_revision_id}),special:item=>request("POST",{action:"cycle_special_revision",submission_id:item.submission_id,revision_id:item.evidence_revision_id}),reload:load}));continue}const card=node("article",undefined,"evidence-review-card");card.append(node("h3",`M${row.module_no} · ${row.definition.title} · revisão ${row.current_revision}`),node("p",`Estado: ${row.status} · ${row.definition.validation_mode}`));
+
+ for(const row of rows){if(row.definition.validation_policy.rubric_required){section.append(VCCycles.renderReview(row,{submit:(item,points,structured_feedback)=>request("POST",{action:"cycle_review",submission_id:item.submission_id,revision_id:item.evidence_revision_id,points,structured_feedback}),begin:item=>request("POST",{action:"cycle_begin_review",submission_id:item.submission_id,revision_id:item.evidence_revision_id}),special:item=>request("POST",{action:"cycle_special_revision",submission_id:item.submission_id,revision_id:item.evidence_revision_id}),reload:load,history:async(item,revision)=>request("GET",undefined,"revision",{submission:item.submission_id,revision})}));continue}const card=node("article",undefined,"evidence-review-card");card.append(node("h3",`M${row.module_no} · ${row.definition.title} · revisão ${row.current_revision}`),node("p",`Estado: ${row.status} · ${row.definition.validation_mode}`));
  const answers=node("dl",undefined,"evidence-answers");for(const s of row.definition.form_schema.sections){const entries=s.repeatable?row.structured_data[s.section_key]:[row.structured_data];entries.forEach((entry,i)=>{answers.append(node("dt",s.label+(s.repeatable?` · ${i+1}`:"")));for(const f of s.fields)answers.append(node("dt",f.label),node("dd",String(entry[f.field_key]??"")))})}card.append(answers);
  if(["submitted","resubmitted","under_review"].includes(row.status)){const form=node("form"),select=node("select"),feedback=node("textarea"),submit=node("button","Registrar parecer"),status=node("p");select.id="decision-"+row.submission_id;feedback.id="feedback-"+row.submission_id;const decisionLabel=node("label","Decisão"),feedbackLabel=node("label","Parecer acadêmico (sem dados sensíveis)");decisionLabel.htmlFor=select.id;feedbackLabel.htmlFor=feedback.id;for(const [value,label] of [["under_review","Em revisão"],["revision_requested","Solicitar revisão"],["approved","Aprovar"]]){const option=node("option",label);option.value=value;select.append(option)}feedback.required=true;feedback.minLength=3;feedback.maxLength=4000;feedback.rows=5;status.setAttribute("role","status");submit.type="submit";form.append(decisionLabel,select,feedbackLabel,feedback,submit,status);form.onsubmit=async event=>{event.preventDefault();submit.disabled=true;try{await request("POST",{action:"evidence_review",submission_id:row.submission_id,revision_id:row.evidence_revision_id,decision:select.value,feedback:feedback.value});status.textContent="Parecer registrado para esta revisão.";await load()}catch{status.textContent="Não foi possível registrar. Atualize para conferir a revisão atual.";submit.disabled=false}};card.append(form)}section.append(card)}return section
 }
 
+function renderFilters(data,courses){
+ filters.replaceChildren();const course=node("select"),cohort=node("select");course.id="teacher-course";cohort.id="teacher-cohort";
+ for(const [id,title] of courses){const option=node("option",title);option.value=id;option.selected=id===selectedCourse;course.append(option)}
+ const all=node("option","Todas as minhas turmas neste curso");all.value="";cohort.append(all);
+ for(const c of data.cohorts.filter(c=>c.course_id===selectedCourse)){const option=node("option",c.label);option.value=c.cohort_id;option.selected=c.cohort_id===selectedCohort;cohort.append(option)}
+ const labelCourse=node("label","Curso atribuído"),labelCohort=node("label","Turma atribuída");labelCourse.htmlFor=course.id;labelCohort.htmlFor=cohort.id;labelCourse.append(course);labelCohort.append(cohort);filters.append(labelCourse,labelCohort);
+ course.onchange=()=>{selectedCourse=course.value;selectedCohort="";load()};cohort.onchange=()=>{selectedCohort=cohort.value;load()};
+ const preview=node("a","Preview acadêmico");preview.href="/preview-universidade";filters.append(preview);
+ if(data.cohorts.some(c=>c.can_edit_academic)){const governance=node("a","Revisão editorial autorizada");governance.href="/governanca-universidade";filters.append(governance)}
+}
 async function load(){
  refresh.disabled=true;panel.setAttribute("aria-busy","true");panel.replaceChildren();const loading=node("div",undefined,"teacher-loading");loading.append(node("span"),node("h2","Atualizando o painel"),node("p","Consolidando a trilha acadêmica da turma."));panel.append(loading);
- try{render(await request());const structured=await request("GET",undefined,"evidence");panel.append(renderCanonicalEvidence(structured.evidence||[]))}catch(error){panel.setAttribute("aria-busy","false");const missingSession=error.message==="sign_in_required";const denied=error.message==="teacher_scope_required";const state=node("div",undefined,"teacher-error");state.append(node("p","ACESSO AO PAINEL","teacher-kicker"),node("h1",missingSession?"Sessão necessária":denied?"Acesso de professor não encontrado":"Painel temporariamente indisponível"),node("p",missingSession?"Entre em Meus Acessos para abrir o painel.":denied?"Sua conta não possui turma atribuída neste curso.":"Não foi possível consultar os dados acadêmicos. Atualize a página e tente novamente."));const link=node("a","Ir para Meus Acessos","teacher-primary");link.href="/entrar";state.append(link);panel.replaceChildren(state)}finally{refresh.disabled=false}
+ try{
+ const operations=await request("GET",undefined,"operations");operationData=operations;
+ const courses=[...new Map(operations.cohorts.map(c=>[c.course_id,c.course_title])).entries()];
+ if(!selectedCourse||!courses.some(([id])=>id===selectedCourse))selectedCourse=courses[0]?.[0]||null;
+ renderFilters(operations,courses);
+ const scoped={...operations,students:operations.students.filter(s=>s.course_id===selectedCourse&&(!selectedCohort||s.cohort_id===selectedCohort)),queue:operations.queue.filter(q=>q.course_id===selectedCourse&&(!selectedCohort||q.cohort_id===selectedCohort))};
+ if(selectedCourse==='lideranca-estrategica-aplicada')render(await request());
+ else {panel.setAttribute("aria-busy","false");summary.textContent=`${scoped.students.length} matrícula(s) · somente turmas atribuídas`;panel.replaceChildren(VCGovernance.teacherOverview(scoped,enrollment=>request("GET",undefined,"eligibility",{enrollment})));}
+ const structured=await request("GET",undefined,"evidence");const rows=(structured.evidence||[]).filter(row=>!selectedCohort||row.cohort_id===selectedCohort);const priority=new Map(scoped.queue.map((row,index)=>[row.submission_id,index]));rows.sort((a,b)=>(priority.get(a.submission_id)??9999)-(priority.get(b.submission_id)??9999));panel.append(renderCanonicalEvidence(rows));
+ }catch(error){panel.setAttribute("aria-busy","false");const missingSession=error.message==="sign_in_required";const denied=error.message==="teacher_scope_required";const state=node("div",undefined,"teacher-error");state.append(node("p","ACESSO AO PAINEL","teacher-kicker"),node("h1",missingSession?"Sessão necessária":denied?"Acesso de professor não encontrado":"Painel temporariamente indisponível"),node("p",missingSession?"Entre em Meus Acessos para abrir o painel.":denied?"Sua conta não possui turma atribuída neste curso.":"Não foi possível consultar os dados acadêmicos. Atualize a página e tente novamente."));const link=node("a","Ir para Meus Acessos","teacher-primary");link.href="/entrar";state.append(link);panel.replaceChildren(state)}finally{refresh.disabled=false}
 }
 
 refresh.addEventListener("click",load);
