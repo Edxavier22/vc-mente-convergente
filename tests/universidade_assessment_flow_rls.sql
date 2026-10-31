@@ -18,7 +18,8 @@ begin
  update public.vc_university_module_requirements set status='published' where course_id='inteligencia-emocional-aplicada';
  update public.vc_university_module_dependencies set status='published' where course_id='inteligencia-emocional-aplicada';
  update public.vc_university_application_cycle_versions set status='published' where course_id='inteligencia-emocional-aplicada';
- update public.vc_university_questions set status='published',active=true where course_id='inteligencia-emocional-aplicada';
+ -- Exercise the original 70-item contract. Later editorial proposals remain inactive Draft.
+ update public.vc_university_questions set status='published',active=true where course_id='inteligencia-emocional-aplicada' and question_version=1;
  insert into public.vc_university_cohorts(course_id,label,status) values('inteligencia-emocional-aplicada','PR5 rollback fixture','active') returning cohort_id into cohort;
  insert into public.vc_university_enrollments(cohort_id,course_id,user_id,course_version) values(cohort,'inteligencia-emocional-aplicada',a,'1.0') returning enrollment_id into e;
  perform set_config('pr5.e',e::text,true);

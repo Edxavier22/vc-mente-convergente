@@ -1,149 +1,148 @@
-# PR 7 — Auditoria do currículo oficial IE
+# PR #17 — Integração Draft do currículo IE — 31/10/2026
 
-**Veredito: BLOQUEADO para importação integral e homologação editorial.**
-A auditoria e as regressões foram concluídas. Não foi localizado o texto aprovado das dez aulas.
-Este Draft PR registra a evidência reproduzível e os impedimentos; não representa a entrega do curso completo.
+**Resultado:** 50 aulas e 50 blocos importados fielmente como Draft. Integração técnica concluída em homologação; aprovação acadêmica, publicação e homologação autenticada permanecem pendentes.
 
-## Continuidade
+Branch preservada: `feat/ie-course-official-curriculum`.
+Base histórica PR #16: `1bed0825438554c9403f82e05d00f9fb735a9778`.
+Head encontrado na retomada: `cb3c80573ac3044efdb74147b95ffd1a48976391`, PR aberto, Draft, sem merge e sem mudanças recentes.
+Não houve reconstrução ou branch/PR duplicado. Este relatório atualiza o diagnóstico de 18/10; o snapshot antigo `audits/ie-official-curriculum-source-audit.v1.json` permanece como registro histórico, não inventário atual.
 
-Branch `feat/ie-course-official-curriculum`, criada exclusivamente de
-`1bed0825438554c9403f82e05d00f9fb735a9778`, head aprovado do PR #16.
-A busca remota não encontrou branch ou PR equivalente antes da criação.
-PR #16 confirmado aberto, Draft, sem merge e no SHA informado.
-Base do novo PR: `feat/ie-course-academic-governance`.
-Nenhum arquivo da implementação dos PRs #11–#16 foi alterado.
+## Fonte e integridade
 
-## Fontes efetivamente localizadas
+O ZIP recuperado da Library e o ZIP anexado pelo usuário são idênticos:
+`UNIVERSIDADE_VC_CONSOLIDADO_ACADEMICO_PR17_2026-10-31.zip`.
 
-Foram pesquisados o Git versionado, os registros acadêmicos canônicos em homologação e os arquivos disponíveis na Library, por título e conteúdo.
-Consultas incluíram o nome/subtítulo do curso, Especificação Mestre, Manual do Professor, Caderno do Aluno e PENTA/3R/FARO/CPTR/CALMA.
-A ausência nestas buscas significa **não localizado neste acesso**, não prova de inexistência em outros ambientes.
+- SHA-256 ZIP: `5a67583fa4a7fa3102c41e54d99f342b1647bb4aa272990d3b4f32342a176867`.
+- SHA-256 aulas.json: `305350cf8c0da29af19272dee1a553f2f3b0ca1feb3e6c18c7fbdaebade58d15`.
+- SHA-256 proposta de questões: `7ddcc928046bdfe5241d357c879d5eaa307133042d6603dbc19c8ace080ab34b`.
+- 60 arquivos; **50/50 Markdown** com hashes/tamanhos conferidos contra CSV, JSON e staging; UTF-8 válido.
+- **37.732 palavras**, cinco aulas por módulo, zero aulas integralmente duplicadas por hash.
+- **50/50 títulos** extraídos do próprio Markdown.
+- 44 ocorrências bibliográficas, 37 URLs como fornecidas e 36 após normalização.
+- O staging foi lido como dados, nunca executado.
+- Alertas automáticos vazios não equivalem a aprovação.
 
-| Material conferido | Uso comprovado | Limite |
+O CSV tem cinco module_title vazios no M1; no M2 esse campo contém títulos de aula. O staging também contém códigos e títulos truncados, como IE-M03-A05 terminando em “E”. O importador preserva os módulos canônicos e extrai os títulos completos do Markdown.
+Manual do Professor IE, Caderno do Aluno IE e histórico completo de aprovação da Especificação Mestre não vieram como documentos independentes; não foram declarados importados.
+
+## Inventário e integração
+
+Curso versão **1.0**, módulos/aulas/blocos **Draft**, revisão de aula/bloco 1. Um bloco study por aula preserva seu Markdown integral, sem resumo, corte ou texto substituto.
+O mapeamento completo de IDs, títulos e hashes está em `audits/ie-curriculum-import-mapping.v1.json`.
+
+| Módulo | Aulas / blocos | Evidência existente | Checkpoint |
+|---|---:|---|---|
+| M1 — Emoções: Entender Antes de Controlar | 5 / 5 | E01 Mapa da Reação Automática | 5 itens |
+| M2 — Autoconsciência: Perceber Antes de Mudar | 5 / 5 | E02 RADAR 72H | 5 itens |
+| M3 — Gatilhos, Padrões e Contexto | 5 / 5 | E03 Mapa de Padrões | 5 itens |
+| M4 — PAUSA: O Espaço Entre Impulso e Resposta | 5 / 5 | E04 Aplicação PAUSA | 5 itens |
+| M5 — Regulação Emocional | 5 / 5 | E05 Repertório de Regulação | 5 itens |
+| M6 — Fatos, Histórias e Interpretações | 5 / 5 | E06 Dossiê FIR–REAL | 5 itens |
+| M7 — Comunicação Emocionalmente Inteligente | 5 / 5 | E07 Conversa CLARO | 5 itens |
+| M8 — Inteligência Emocional nos Relacionamentos | 5 / 5 | E08 Mapa ELOS | 5 itens |
+| M9 — Decisões sob Emoção | 5 / 5 | E09 Decisão Estruturada | 5 itens |
+| M10 — Integração e Desenvolvimento | 5 / 5 | E10 Projeto Integrador IE30 | 5 itens |
+
+Foram preservados matrícula fixada à versão, dependências, direitos, requisitos, banco e definições/rubricas existentes.
+IE30 mantém **30 dias, janela 45 dias, setup após M7, início após M9 e E10 humana**. Prova após M10 não aprova E10.
+A autoavaliação de 28 itens/sete domínios permanece no texto de M10-A2, sem score clínico ou psicométrico implementado.
+
+Os 120 minutos por módulo foram distribuídos tecnicamente em 24 minutos por aula: 1.200 minutos globais. A carga real de estudo/prática aguarda homologação.
+Os **21 requisitos** existentes foram preservados: dez checkpoints, nove evidências, prova e E10. Não há requisito content_completed catalogado em IE; a equipe acadêmica deve decidir sobre um gate formal de leitura antes de publicar. Não foi inventada política obrigatória nova.
+
+## Importador e persistência
+
+`scripts/universidade-curriculum-import.mjs` valida o manifesto fixado por hash e emite SQL com o texto como JSON, sem conectar ao banco.
+O texto completo e as propostas com gabaritos não foram incluídos nos arquivos estáticos/repositório público: ficam no catálogo protegido. Para reproduzir, é necessário o pacote fonte.
+
+Exemplo:
+
+```sh
+node scripts/universidade-curriculum-import.mjs --source /caminho/pacote-extraido --mapping /caminho/relatorio.json --sql /caminho/privado/dry-run.sql
+```
+
+O SQL termina em **ROLLBACK por padrão**. A opção explícita `--commit` emite o SQL de persistência, executável somente por conexão autorizada.
+Hashes divergentes, alertas, caminhos inválidos, títulos ausentes, seções docentes detectadas e delimitadores SQL perigosos interrompem a geração.
+
+A transação exige owner confirmado, curso/módulos Draft e lock; usa IDs estáveis/chaves canônicas, recusa conflito ou revisão posterior e não sobrescreve material publicado.
+Insere fonte editorial/source_links e decisões Draft com gaps. O audit log registra IDs, hashes, estados e contagens, sem narrativas/respostas privadas.
+A ordem das cinco aulas por módulo é determinística.
+
+Executado: dry-run/rollback; dupla importação na mesma transação, sem duplicação; consulta confirmando zero aulas após rollback; importação efetiva; consulta confirmando **50 aulas/50 blocos** e os 50 hashes novamente no Postgres.
+Nenhuma tabela paralela, migration de schema ou nova política de acesso foi criada.
+
+## Ferramentas e questões
+
+| Ferramenta | Fonte recuperada | Definição localizada |
 |---|---|---|
-| `Texto colado.txt`, 747 linhas, comando PR2 | Metadados oficiais, 20h, títulos M1–M10 e estrutura canônica | Seção 23 registra que o conteúdo profundo ainda precisava ser fornecido ao executor |
-| `Texto colado(1).txt`, 797 linhas, comando PR3 | Campos e regras E01–E09, privacidade e ferramentas citadas | Não contém aulas completas ou manual IE |
-| `Texto colado(3).txt`, 717 linhas, comando PR5 | Temas M1–M10, competências e avaliações 50+20 | Não fornece as definições das cinco ferramentas nem as aulas |
-| `Markdown.md colado`, 291 linhas | Arquitetura multicursos e projeto de Liderança | Não é especificação pedagógica IE; RADAR de Liderança não foi transplantado para IE |
-| `content/evidence/ie-e01-e09.v1.json` | Nove definições estruturadas existentes | Não é substituto do texto de aula |
-| `content/cycles/ie30.v1.json` | IE30 v1.0, formulários e rubrica existentes | Não é Manual do Professor ou Caderno do Aluno |
-| `supabase/seed-data/ie-assessment-bank.v1.json` | 70 itens existentes e seus gaps | Questões não foram usadas para gerar aulas retroativamente |
-| Relatórios e migrations PR1–PR6 | Histórico, esquema, limites e workflow editorial | São registros técnicos, não originais pedagógicos |
+| PENTA | IE-M02-A01 | Percepção corporal, Emoção, Narrativa, Tendência, Ação |
+| 3R | IE-M04-A03 | Responder, Retardar, Redirecionar |
+| FARO | IE-M07-A04 | Fato, Afetação, Requisito, Oportunidade de resposta |
+| CPTR | IE-M08-A03 | Coerência, Previsibilidade, Transparência, Reparação |
+| CALMA | IE-M10-A01 | Captar, Acolher, Ler, Modular, Agir |
 
-Os quatro registros de comando/arquitetura foram lidos integralmente, sem depender apenas de snippets.
-Resultados com títulos de manuais e cadernos de Liderança foram identificados como outro curso.
-A apostila FIE de terceiro apareceu na busca, mas não foi adotada como fonte oficial V&C nem como autorização para redefinir ferramentas.
+Localizar definições resolve o acesso à fonte, não homologa academicamente os itens.
+A proposta originou seis revisões **v2 Draft/inativas**, com question_key/editorial_id preservados e novos question_id/option_id:
+IE-M01-Q03, IE-M02-Q05, IE-M04-Q05, IE-M07-Q03, IE-M08-Q04 e IE-M10-Q01.
 
-**Não localizados:** Especificação Mestre integral IE com versão/aprovação; texto integral aprovado dos dez módulos; Manual do Professor IE; Caderno do Aluno IE; roteiros/instruções oficiais completos das ferramentas; bibliografia aprovada das aulas; distribuição detalhada de carga horária por aula/atividade.
-Nenhuma pesquisa pública foi usada para substituir esses originais proprietários.
+O banco mantém **70 identidades lógicas (50+20), agora 76 versões físicas**: 70 v1 + seis v2.
+As 70 versões originais e alternativas ficaram intactas; os cinco gaps históricos não foram apagados.
+Não houve aprovação editorial das candidatas. A proposta não fornece feedback por alternativa: feedback/correct_feedback ficaram nulos, com gaps explícitos para competência, dificuldade, rubrica e feedback. A publicação está bloqueada.
+O preview seleciona uma revisão por instrumento; o conteúdo-mestre conserva o histórico completo.
+A fixture SQL anterior publica somente question_version=1 dentro de rollback, para continuar testando o contrato histórico dos 70 itens.
 
-## Inventário por módulo
+## Editorial, fontes e ressalvas
 
-Consulta executada por `scripts/universidade-curriculum-audit.sql`, em transação somente leitura com rollback.
-Snapshot de metadados em `audits/ie-official-curriculum-source-audit.v1.json`.
-Esse JSON é relatório de auditoria; o runtime não o lê e ele não constitui conteúdo paralelo.
+Uma fonte editorial **D/Draft** identifica o pacote e se vincula às aulas/candidatas. D classifica o pacote didático, não valida as alegações científicas ou sua bibliografia.
+Aulas, blocos e candidatas possuem revisões Draft com gaps; **zero approved_for_publication/published**.
 
-| Módulo oficial | Evidência canônica existente | Checkpoint existente | Aulas / blocos |
-|---|---|---|---|
-| M1 — Emoções: Entender Antes de Controlar | E01 Mapa da Reação Automática | IE-M01-Q01–Q05 | 0 / 0 |
-| M2 — Autoconsciência: Perceber Antes de Mudar | E02 RADAR 72H | IE-M02-Q01–Q05 | 0 / 0 |
-| M3 — Gatilhos, Padrões e Contexto | E03 Mapa de Padrões | IE-M03-Q01–Q05 | 0 / 0 |
-| M4 — PAUSA: O Espaço Entre Impulso e Resposta | E04 Aplicação PAUSA | IE-M04-Q01–Q05 | 0 / 0 |
-| M5 — Regulação Emocional | E05 Repertório de Regulação | IE-M05-Q01–Q05 | 0 / 0 |
-| M6 — Fatos, Histórias e Interpretações | E06 Dossiê FIR–REAL | IE-M06-Q01–Q05 | 0 / 0 |
-| M7 — Comunicação Emocionalmente Inteligente | E07 Conversa CLARO | IE-M07-Q01–Q05 | 0 / 0 |
-| M8 — Inteligência Emocional nos Relacionamentos | E08 Mapa ELOS | IE-M08-Q01–Q05 | 0 / 0 |
-| M9 — Decisões sob Emoção | E09 Decisão Estruturada | IE-M09-Q01–Q05 | 0 / 0 |
-| M10 — Integração e Desenvolvimento | E10 Projeto Integrador IE30 | IE-M10-Q01–Q05 | 0 / 0 |
+A verificação das **36 URLs normalizadas** encontrou 24 páginas com metadados acessíveis, nove desafios de acesso, uma falha de recuperação/403 e duas respostas insuficientes. Não se contornaram desafios.
+Acessibilidade não comprova sustentação científica. Autoria/obra, atribuição e classificação E/C/D/H/P por alegação ainda exigem revisão acadêmica.
+Links originais permanecem no texto; somente o relatório público retira tracking/identificador de sessão e guarda hash da URL original.
 
-Todos os módulos estão Draft na versão 1.0. Cada um tem 120 minutos estimados: distribuição técnica inicial das 20h, ainda sem validação detalhada das atividades.
-As dez definições de evidência estão Draft, revisão 1.
-IE30 permanece v1.0; E10 mantém sua revisão humana e independência da prova.
-As 50 questões de checkpoint e 20 finais permanecem Draft/inativas, versão 1.
-Existem 21 requisitos e nove dependências, preservados.
+Achados documentados em `audits/ie-curriculum-editorial-findings.v1.json`:
 
-## Completude editorial comprovada
+- Quatro grupos de parágrafos de pelo menos 18 palavras repetidos em três ou mais aulas, incluindo critério genérico em 35 aulas e atividade/critério genérico em 15.
+- IE-M10-A05 orienta avançar ao “próximo módulo”, embora encerre os dez módulos.
+- A abertura “AGORA COMEÇA O IE30” de M10-A03 precisa ser confrontada com o início operacional após M9.
+- Carga horária, terminologia, exemplos/oficinas, bibliografia e as doze etapas pedagógicas de cada módulo ainda precisam de homologação humana.
+- As seis candidatas precisam de feedback e parecer.
 
-- Metadados dos módulos: **10/10**.
-- Módulos oficiais integralmente importados: **0/10**.
-- Aulas/blocos IE no catálogo canônico: **0/0**, contagens absolutas; não significa completude.
-- Elementos pedagógicos comprovados no conteúdo importado: **0/120** (12 por módulo). Não se exige que cada elemento vire exatamente um bloco.
-- Ferramentas com versões canônicas cadastradas: **0**.
-- Cinco gaps prioritários resolvidos: **0/5**.
-- Fontes canônicas relacionadas: duas Draft, classificadas **D** e **H**. Nenhuma bibliografia empírica/consolidada aprovada das aulas foi localizada.
-- Conteúdo pedagógico novo importado nesta PR: **zero**.
+Os originais foram preservados. **50/50 aulas importadas não significa 120/120 etapas homologadas**, nem aprovação científica/comercial.
 
-Abertura, objetivos, fundamentação, tradução prática, instruções, demonstrações/casos, oficina, aplicação cotidiana, orientação da evidência, checkpoint contextualizado, síntese/reflexão e ponte seguinte precisam ser confrontados com o original de cada módulo.
-A existência de formulário e questões não comprova esses elementos da aula.
+## Interface e privacidade
 
-## Ferramentas e bloqueios
+O renderer compartilhado apresenta Markdown com títulos, ênfase, citações, listas, tabelas, links seguros e navegação por aula. Usa nós DOM de texto, sem interpretar HTML/script; URLs executáveis são bloqueadas. Há foco visível e tratamento de textos/links/tabelas em largura pequena.
 
-| Questão | Ferramenta | Parecer para continuidade |
-|---|---|---|
-| IE-M02-Q05 | PENTA | Faltam composição, sequência e instruções oficiais; item atual avalia princípio de autoconsciência |
-| IE-M04-Q05 | 3R | Falta composição oficial; não expandir a sigla por inferência |
-| IE-M07-Q03 | FARO | Faltam passos oficiais; verificação de compreensão não comprova a ferramenta completa |
-| IE-M08-Q04 | CPTR | Falta composição oficial; campos de confiança da E08 não autorizam inferir a sigla |
-| IE-M10-Q01 | CALMA | Faltam passos oficiais; escolha contextual não comprova instruções da ferramenta |
+Foi corrigido um vazamento na resposta do preview anterior: student recebia correct_option_id/feedback, embora o frontend ocultasse o gabarito.
+Agora a API entrega somente enunciados/opções/identificação necessária, remove blocos rubric da perspectiva de aluno e corrige a simulação no servidor após o envio.
+A ação isolada preview_assessment exige owner/professor atribuído antes de consultar dados. Recusa versões stale, módulo/item/opção alheios e respostas duplicadas/incompletas. Só faz leituras; não gera matrícula, sessão, tentativa, evidência, nota persistente, evento de conclusão ou certificado.
+Professor autorizado e editor mantêm o material necessário ao papel; alunos reais não recebem Draft.
 
-Os gaps canônicos das cinco questões permanecem intactos e bloqueiam sua aprovação no workflow existente.
-Não foram criados materiais dependentes sem fonte nem decisões de aprovação editorial.
-O registro desta auditoria não cria um novo bloqueio técnico para todos os módulos: a importação permanece impedida pela falta dos originais; o endpoint IE de publicação continua desabilitado pelo PR6.
+## Testes e ambiente
 
-MRA, RADAR, CAMPO, PAUSA, PAINEL 5P V&C, FLEX, FIR, REAL, CLARO, ELOS, 3T e DECIDE aparecem nos contratos de evidência/avaliação.
-Esses contratos sustentam seus formulários existentes, mas não autorizam reconstruir as instruções completas da aula.
-Nenhuma ferramenta própria foi classificada como instrumento científico validado; não houve bibliografia, citação, diagnóstico ou promessa terapêutica novos.
+- **247/247 testes**, incluindo os 221 anteriores e os 189 históricos; 26 testes novos de importação, tamper, Markdown/XSS, navegação, versões, limiares e endpoints de preview com autorização positiva/negativa.
+- Check, lint, typecheck, secret scan e diff check aprovados.
+- Oito suites SQL com rollback: curriculum_draft_rls; editorial; certification/assessment; evidence; cycle; foundation; progression; leadership.
+- Exercitados 3/5→retry 4/5, 13/20→retry 14/20, E01–E09, IE30/E10, snapshots, idempotência, elegibilidade, RLS e bloqueio de publicação não revisada.
+- Zero fixtures residuais PR3–PR6, zero matrículas/sessões/certificados IE e zero aprovações editoriais. Os registros Draft reais da importação são intencionais.
+- Hashes SQL antes/depois idênticos: questões v1 `f63ea8b2e0faf4159cb528d8ee148fd0`; alternativas v1 `68b6e1548bd4fbe20bb1221639ac9be7`; conteúdo de Liderança `7bdd220da6c79968983230afca18ab23`.
 
-## Arquitetura e integração preservadas
+O projeto vc-core-homolog estava INACTIVE e foi reativado no mesmo banco; depois ACTIVE_HEALTHY.
+O bundle remoto learner v21 foi comparado arquivo a arquivo com o head anterior, sem drift.
+Learner-v2 **v22 ACTIVE** contém a correção de preview; verify_jwt=false/autenticação própria preservados. Admin v10 e professor v14 não foram reimplantados.
+**Nenhuma migration criada/aplicada/reaplicada**: a importação é seed DML transacional. Ledger permanece em `20261018185426`.
+Liderança, direitos, pagamentos e certificados existentes não foram alterados.
 
-Curso → versão → módulo → aula → bloco continua sendo o único percurso de conteúdo.
-Matrículas fixadas à versão, dependências, requisitos, checkpoints, evidências, histórico e direitos não foram alterados.
-O renderer compartilhado e o preview por perspectiva já existem; não há necessidade de criar tabelas, outro motor ou aulas vazias para preparar a importação.
-O workflow draft → in_review → approved_for_publication → published → archived continua no PR6, com fingerprint, fonte, parecer, autor, gaps e histórico.
-As fontes D/H existentes não foram promovidas a verificadas.
-O alinhamento entre **aula** e evidência/checkpoint, progressão didática, duplicações, terminologia, referências, clareza e acessibilidade do texto integral permanece inconclusivo até localizar os originais.
+## Browser, autenticação e entrega
 
-## Testes e regressões executados
+Revisão da nova fixture técnica no deployment: a registrar após publicação do código.
+A fixture `tests/universidade-curriculum-preview.html` contém somente texto hipotético, sem aulas/questões oficiais ou API acadêmica.
+Homologação autenticada real de aluno/professor/owner e mobile integral não pode ser declarada com base em fixtures HTTP/SQL.
 
-- `npm run check`: **221/221** aprovados, incluindo os 189 anteriores e as regressões PR6.
-- `npm run lint`, `npm run typecheck`: aprovados.
-- `npm run secret-scan`: aprovado, 173 arquivos após os novos artefatos de auditoria.
-- `git diff --check`: aprovado.
-- Sete suítes SQL: editorial, certification (inclui assessment), evidence, cycle, foundation, progression e leadership; executadas pelo runner existente, todas sem erro e com BEGIN/ROLLBACK.
-- Cobertura existente exercitada: workflow, publicação sem revisão, CAS, escopo docente, RLS, isolamento A/B, snapshots, 3/5→4/5, 13/20→14/20, prova independente do IE30, E10 humana, elegibilidade sem emissão e progressão.
-- Pós-testes: zero usuários fixtures PR3–PR6, zero turmas rollback PR3–PR6, zero fontes de fixture PR6, zero registros editoriais residuais, zero certificados IE.
-- A consulta inicial de limpeza usou incorretamente course_id na tabela de certificados; foi corrigida para a relação por enrollment_id, e a consulta corrigida confirmou zero. Nenhuma escrita decorreu desse erro.
+Arquivos alterados: renderer/CSS; avaliação/preview frontend; learner/assessment-api; package.json; fixture SQL do banco v1; este relatório.
+Arquivos novos: importador/template SQL; mapeamento; achados editoriais; auditoria de acesso bibliográfico; testes unitários/HTTP/SQL e fixture visual.
+O SHA final, checks e link do PR são apresentados na entrega e no histórico Git.
 
-Não foram adicionados testes que pretendam validar conteúdo ausente.
-
-## Navegador, mobile e autenticação
-
-A tela real de governança na implantação do PR6 informa: **“Entre em Meus acessos para usar a governança acadêmica.”**
-Nenhuma sessão autorizada estava acessível. Homologação real aluno/professor/owner de IE30/E10 e preview permanece **pendente**; nenhum teste técnico foi declarado autenticação aprovada.
-
-A fixture pública existente mostra explicitamente “Fixtures técnicas hipotéticas” e “sem API acadêmica”.
-O contêiner `governance-fixture` mede clientWidth=390 e scrollWidth=390; screenshot inspecionado sem overflow interno.
-Isso é regressão da fixture técnica em contêiner de 390 px, não viewport móvel integral, aparelho real ou validação das dez aulas oficiais.
-A prévia mobile do currículo IE está **bloqueada por ausência de aulas e de sessão autorizada**.
-Preview sem persistência segue coberto pelas regressões existentes; não foi exercitado como fluxo autenticado real nesta etapa.
-
-## Migrations, funções e arquivos
-
-**Nenhuma migration criada/aplicada/reaplicada. Nenhuma Edge Function alterada ou reimplantada.**
-Versões remotas ACTIVE confirmadas: learner-v2 v21, admin v10, professor v14.
-Liderança v1.1, seus conteúdos e certificados permanecem intactos.
-
-Arquivos acrescentados:
-1. `UNIVERSIDADE_OFFICIAL_CURRICULUM_PR7.md`: este relatório.
-2. `audits/ie-official-curriculum-source-audit.v1.json`: snapshot editorial/contagens, sem respostas ou narrativas de alunos.
-3. `scripts/universidade-curriculum-audit.sql`: consulta somente leitura reproduzível.
-
-## Condições para retomar esta mesma branch
-
-Disponibilizar os originais aprovados com identificação de versão, autoria e aprovação; confrontar as doze etapas por módulo; localizar as instruções das ferramentas; resolver as cinco dependências editoriais; validar bibliografia e carga horária; então importar fielmente em aulas/blocos Draft e fontes/vínculos canônicos.
-Depois, revisar o alinhamento com evidências/questões sem alterá-las automaticamente e executar preview autorizado de aluno/professor/editor, inclusive viewport móvel.
-Não há autorização implícita de publicação decorrente dessa importação.
-
-O SHA final e o link do Draft PR são informados na entrega e no histórico Git.
-**Não houve merge na main ou em qualquer PR anterior.**
-Não houve publicação acadêmica, mudança das 70 questões, matrícula comercial, checkout, certificado IE ou QR.
+**Gate seguinte:** homologar academicamente aulas, seis revisões, feedback, referências/classificações, carga horária e ajustes documentados; executar fluxo autenticado e mobile integral. Retomar esta mesma branch.
+**Não houve merge, publicação acadêmica, checkout, matrícula comercial, certificado IE ou QR.**

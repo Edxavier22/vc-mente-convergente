@@ -1,0 +1,53 @@
+{
+  "date": "2026-10-31",
+  "status": "academic_review_required",
+  "automated_package_alerts": 0,
+  "automatic_alert_absence_is_approval": false,
+  "findings": [
+    {
+      "id": "CSV-MODULE-TITLE",
+      "scope": "manifestos/inventario_50_aulas.csv",
+      "detail": "Cinco module_title vazios em M1; em M2 o campo contém títulos de aula. O importador usa módulos canônicos e títulos extraídos dos Markdown."
+    },
+    {
+      "id": "STAGING-TITLE",
+      "scope": "STAGING_NAO_EXECUTAVEL.json",
+      "detail": "Alguns títulos são códigos ou estão truncados (IE-M03-A05 termina em E). O staging não é executado; o título completo é extraído da aula original."
+    },
+    {
+      "id": "REPEATED-CLOSING",
+      "scope": "M01–M10",
+      "detail": "Quatro grupos de parágrafos de pelo menos 18 palavras se repetem em três ou mais aulas. Incluem critério genérico em 35 aulas e exercício/critério genérico em 15. Texto preservado; avaliar especificidade didática."
+    },
+    {
+      "id": "NEXT-MODULE-AFTER-M10",
+      "scope": "IE-M10-A05, seção Continuidade",
+      "detail": "O encerramento repete orientação de avançar ao próximo módulo; M10 encerra os dez módulos. Revisar a ponte sem modificar automaticamente o original."
+    },
+    {
+      "id": "BIBLIOGRAPHY",
+      "scope": "44 referências extraídas",
+      "detail": "Links preservados; autoria, obra, classificação E/C/D/H/P por afirmação, acesso e sustentação científica ainda exigem homologação."
+    },
+    {
+      "id": "HOURS",
+      "scope": "50 aulas",
+      "detail": "24 minutos por aula é distribuição técnica dos 1200 minutos existentes, não validação da carga de estudo e prática."
+    },
+    {
+      "id": "QUESTION-REVISION",
+      "scope": "IE-M01-Q03, IE-M02-Q05, IE-M04-Q05, IE-M07-Q03, IE-M08-Q04, IE-M10-Q01",
+      "detail": "Versões 2 são propostas Draft/inativas. Competência, dificuldade, rubrica e feedback específico por alternativa ainda não homologados."
+    },
+    {
+      "id": "CONTENT-REQUIREMENT",
+      "scope": "requisitos canônicos existentes",
+      "detail": "Foram preservados 21 requisitos: 10 checkpoints, 9 evidências, prova e E10. Não há requisito content_completed catalogado para IE. Antes da publicação, a equipe acadêmica precisa confirmar se a leitura deve constituir gate formal; não foi criada política nova sem aprovação."
+    },
+    {
+      "id": "IE30-OPENING",
+      "scope": "IE-M10-A03, seção 24",
+      "detail": "A abertura AGORA COMEÇA O IE30 precisa ser conferida com o início operacional após M9; o motor 30/45/M7/M9 foi preservado."
+    }
+  ]
+}

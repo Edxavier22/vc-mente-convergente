@@ -1,0 +1,228 @@
+{
+  "date": "2026-10-31",
+  "scope": "Accessibility and page metadata only, not scientific validation",
+  "counts": {
+    "access_challenge": 9,
+    "page_metadata_accessible": 24,
+    "retrieval_failed": 1,
+    "insufficient_content": 2
+  },
+  "entries": [
+    {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13006558/",
+      "title": "Checking your browser - reCAPTCHA",
+      "status": "access_challenge",
+      "scientific_claim_validation": "pending"
+    },
+    {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13269579/",
+      "title": "Affect Labeling and Reappraisal as an Emotion Regulation Strategy - PMC",
+      "status": "page_metadata_accessible",
+      "scientific_claim_validation": "pending"
+    },
+    {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13340324/",
+      "title": "Communicating empathy sympathy and compassion in healthcare consultations: a systematic review of applied linguistic research - PMC",
+      "status": "page_metadata_accessible",
+      "scientific_claim_validation": "pending"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/40907885/",
+      "title": "Disentangling Sleep's Role in Emotion processing - PubMed",
+      "status": "page_metadata_accessible",
+      "scientific_claim_validation": "pending"
+    },
+    {
+      "url": "https://iris.who.int/bitstream/handle/10665/331901/9789240011670-eng.pdf",
+      "title": "Internal Error ()",
+      "status": "retrieval_failed",
+      "scientific_claim_validation": "pending"
+    },
+    {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/8193556/",
+      "title": "Checking your browser - reCAPTCHA",
+      "status": "access_challenge",
+      "scientific_claim_validation": "pending"
+    },
+    {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10247655/",
+      "title": "Assessing Emotion Polyregulation in Daily Life: Who Uses It, When Is It Used, and How Effective Is It? - PMC",
+      "status": "page_metadata_accessible",
+      "scientific_claim_validation": "pending"
+    },
+    {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11486788/",
+      "title": "Emotion Regulation Flexibility in Adolescents: A Systematic Review from Conceptualization to Methodology - PMC",
+      "status": "page_metadata_accessible",
+      "scientific_claim_validation": "pending"
+    },
+    {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12189852/",
+      "title": "Examining the Effects of Sleep Deprivation on Decision-Making: A Scoping Review - PMC",
+      "status": "page_metadata_accessible",
+      "scientific_claim_validation": "pending"
+    },
+    {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12312699/",
+      "title": "Emotion suppression and acute physiological responses to stress in healthy populations: a quantitative review of experimental and correlational investigations - PMC",
+      "status": "page_metadata_accessible",
+      "scientific_claim_validation": "pending"
+    },
+    {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2891543/",
+      "title": "Creating Good Relationships: Responsiveness, Relationship Quality, and Interpersonal Goals - PMC",
+      "status": "page_metadata_accessible",
+      "scientific_claim_validation": "pending"
+    },
+    {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3014221/",
+      "title": "Exploring the Basis for Gender Differences in the Demand-Withdraw Pattern - PMC",
+      "status": "page_metadata_accessible",
+      "scientific_claim_validation": "pending"
+    },
+    {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3218801/",
+      "title": "Demand-Withdraw Patterns in Marital Conflict in the Home - PMC",
+      "status": "page_metadata_accessible",
+      "scientific_claim_validation": "pending"
+    },
+    {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3499914/",
+      "title": "Emotion Regulation and Emotion Work: Two Sides of the Same Coin? - PMC",
+      "status": "page_metadata_accessible",
+      "scientific_claim_validation": "pending"
+    },
+    {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3887268/",
+      "title": "Checking your browser - reCAPTCHA",
+      "status": "access_challenge",
+      "scientific_claim_validation": "pending"
+    },
+    {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4204511/",
+      "title": "Checking your browser - reCAPTCHA",
+      "status": "access_challenge",
+      "scientific_claim_validation": "pending"
+    },
+    {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4370584/",
+      "title": "The Neural Correlates of Emotion Regulation by Implementation Intentions - PMC",
+      "status": "page_metadata_accessible",
+      "scientific_claim_validation": "pending"
+    },
+    {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4500900/",
+      "title": "Checking your browser - reCAPTCHA",
+      "status": "access_challenge",
+      "scientific_claim_validation": "pending"
+    },
+    {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4593729/",
+      "title": "Physiological Linkage in Couples and its Implications for Individual and Interpersonal Functioning: A Literature Review - PMC",
+      "status": "page_metadata_accessible",
+      "scientific_claim_validation": "pending"
+    },
+    {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6367256",
+      "title": "Checking your browser - reCAPTCHA",
+      "status": "access_challenge",
+      "scientific_claim_validation": "pending"
+    },
+    {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7011517/",
+      "title": "A systematic review exploring the content and outcomes of interventions to improve psychological safety, speaking up and voice behaviour - PMC",
+      "status": "page_metadata_accessible",
+      "scientific_claim_validation": "pending"
+    },
+    {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7170595/",
+      "title": "Effect of face-to-face verbal feedback compared with no or alternative feedback on the objective workplace task performance of health professionals: a systematic review and meta-analysis - PMC",
+      "status": "page_metadata_accessible",
+      "scientific_claim_validation": "pending"
+    },
+    {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7615164/",
+      "title": "Checking your browser - reCAPTCHA",
+      "status": "access_challenge",
+      "scientific_claim_validation": "pending"
+    },
+    {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7780233/",
+      "title": "Checking your browser - reCAPTCHA",
+      "status": "access_challenge",
+      "scientific_claim_validation": "pending"
+    },
+    {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8149892/",
+      "title": "A Meta-Analysis of the Effects of Mental Contrasting With Implementation Intentions on Goal Attainment - PMC",
+      "status": "page_metadata_accessible",
+      "scientific_claim_validation": "pending"
+    },
+    {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8377228/",
+      "title": "Checking your browser - reCAPTCHA",
+      "status": "access_challenge",
+      "scientific_claim_validation": "pending"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/26151184/",
+      "title": "pubmed.ncbi.nlm.nih.gov",
+      "status": "insufficient_content",
+      "scientific_claim_validation": "pending"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/26479070/",
+      "title": "Does monitoring goal progress promote goal attainment? A meta-analysis of the experimental evidence - PubMed",
+      "status": "page_metadata_accessible",
+      "scientific_claim_validation": "pending"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/30110576/",
+      "title": "pubmed.ncbi.nlm.nih.gov",
+      "status": "insufficient_content",
+      "scientific_claim_validation": "pending"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/38127505/",
+      "title": "Sleep loss and emotion: A systematic review and meta-analysis of over 50 years of experimental research - PubMed",
+      "status": "page_metadata_accessible",
+      "scientific_claim_validation": "pending"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/40816203/",
+      "title": "Emotional granularity in health and psychopathology: A scoping review - PubMed",
+      "status": "page_metadata_accessible",
+      "scientific_claim_validation": "pending"
+    },
+    {
+      "url": "https://tdr.who.int/home/our-work/global-engagement/9789240003927",
+      "title": "Doing What Matters in Times of Stress",
+      "status": "page_metadata_accessible",
+      "scientific_claim_validation": "pending"
+    },
+    {
+      "url": "https://www.annualreviews.org/content/journals/10.1146/annurev-psych-010213-115043",
+      "title": "Emotion and Decision Making | Annual Reviews",
+      "status": "page_metadata_accessible",
+      "scientific_claim_validation": "pending"
+    },
+    {
+      "url": "https://www.annualreviews.org/content/journals/10.1146/annurev.psych.49.1.259",
+      "title": "BIASES IN THE INTERPRETATION AND USE OF RESEARCH RESULTS | Annual Reviews",
+      "status": "page_metadata_accessible",
+      "scientific_claim_validation": "pending"
+    },
+    {
+      "url": "https://www.annualreviews.org/content/journals/10.1146/annurev.psych.50.1.191",
+      "title": "EMOTION | Annual Reviews",
+      "status": "page_metadata_accessible",
+      "scientific_claim_validation": "pending"
+    },
+    {
+      "url": "https://www.emro.who.int/mhps/dealing_with_stress.html",
+      "title": "Mental health and psychosocial support platform - dealing with stress",
+      "status": "page_metadata_accessible",
+      "scientific_claim_validation": "pending"
+    }
+  ]
+}
