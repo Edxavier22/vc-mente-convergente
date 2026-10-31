@@ -136,13 +136,17 @@ Liderança, direitos, pagamentos e certificados existentes não foram alterados.
 
 ## Browser, autenticação e entrega
 
-Revisão da nova fixture técnica no deployment: a registrar após publicação do código.
+**NÃO TESTADO:** a revisão visual de 390 px/desktop no novo deployment e o fluxo autenticado real. A Vercel redirecionou a prévia para login; o navegador não tinha sessão autorizada disponível. Uma tentativa local da fixture encontrou ERR_CONNECTION_REFUSED, pois este navegador não alcançou o servidor local. Não foram desativadas proteções, criadas credenciais ou gerados bypasses. O servidor local de teste foi encerrado.
+
+Os testes automatizados de DOM/Markdown, navegação e CSS não são apresentados como screenshot ou homologação mobile real. O teste visual de 18/10 era de uma fixture anterior e não homologa estas 50 aulas.
 A fixture `tests/universidade-curriculum-preview.html` contém somente texto hipotético, sem aulas/questões oficiais ou API acadêmica.
 Homologação autenticada real de aluno/professor/owner e mobile integral não pode ser declarada com base em fixtures HTTP/SQL.
 
 Arquivos alterados: renderer/CSS; avaliação/preview frontend; learner/assessment-api; package.json; fixture SQL do banco v1; este relatório.
 Arquivos novos: importador/template SQL; mapeamento; achados editoriais; auditoria de acesso bibliográfico; testes unitários/HTTP/SQL e fixture visual.
-O SHA final, checks e link do PR são apresentados na entrega e no histórico Git.
+GitHub Actions run 41237299341 passou e a Vercel ficou READY no commit de implementação 1a0aa1758645fa77279025203c19dc192e989283. O SHA final após este registro documental, os checks e o link do PR são apresentados na entrega e no histórico Git.
+
+Veredito: integração técnica em Draft concluída com ressalvas; publicação/homologação acadêmica e QA autenticado/visual permanecem bloqueados pelos gates documentados.
 
 **Gate seguinte:** homologar academicamente aulas, seis revisões, feedback, referências/classificações, carga horária e ajustes documentados; executar fluxo autenticado e mobile integral. Retomar esta mesma branch.
 **Não houve merge, publicação acadêmica, checkout, matrícula comercial, certificado IE ou QR.**
