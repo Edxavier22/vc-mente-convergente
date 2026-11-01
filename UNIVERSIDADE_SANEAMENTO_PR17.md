@@ -1,5 +1,7 @@
 # PR #17 — Saneamento prospectivo — 01/11/2026
 
+> Continuidade: parecer Rev2 e candidatas não persistidas documentados em [UNIVERSIDADE_REVISAO_EDITORIAL_PR17_REV3.md](UNIVERSIDADE_REVISAO_EDITORIAL_PR17_REV3.md).
+
 **Veredito: saneamento técnico concluído com ressalvas; homologação acadêmica final BLOQUEADA.** PR permanece Draft. Nenhum merge, publicação acadêmica, matrícula comercial ou certificado IE foi autorizado ou realizado.
 
 ## Continuidade e fontes
