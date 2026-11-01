@@ -1,5 +1,7 @@
 # PR #17 — Retorno do parecer Rev2 e candidatas Rev3 — 01/11/2026
 
+> Continuidade: correção de numeração funcional e candidatas F01 em [UNIVERSIDADE_CORRECAO_F01_PR17.md](UNIVERSIDADE_CORRECAO_F01_PR17.md).
+
 **Resultado: pacote concreto de correções preparado; importação e homologação final BLOQUEADAS por aceite acadêmico, piloto e autenticação.** As candidatas não substituem conteúdo persistido. Não houve merge, publicação, ativação de questões, matrícula comercial ou certificado IE.
 
 ## Continuidade e limite de escrita
