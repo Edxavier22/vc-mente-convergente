@@ -1,5 +1,12 @@
 export type AcademicStatus = "not_started" | "in_progress" | "requirements_pending" | "completed";
 
+// Call after filtering by role-visible statuses. A newer Draft must not replace a published revision for a learner.
+export function latestLessonVersions<T extends {lesson_id: string; revision: number}>(rows:T[]):T[]{
+ const selected=new Map<string,T>();
+ for(const row of rows){const old=selected.get(row.lesson_id);if(!old||row.revision>old.revision)selected.set(row.lesson_id,row);}
+ return [...selected.values()];
+}
+
 export type ModuleVersion = {
   module_version_id: string;
   module_no: number;

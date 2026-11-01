@@ -1,0 +1,291 @@
+{
+  "audit_version": 1,
+  "audited_at": "2026-10-18",
+  "base_sha": "1bed0825438554c9403f82e05d00f9fb735a9778",
+  "branch": "feat/ie-course-official-curriculum",
+  "purpose": "Audit metadata only; not a curriculum source or alternate content store.",
+  "verdict": "blocked_missing_approved_sources",
+  "imported_this_pr": {
+    "lessons": 0,
+    "blocks": 0,
+    "tools": 0,
+    "question_changes": 0
+  },
+  "completeness": {
+    "module_metadata": {
+      "present": 10,
+      "expected": 10
+    },
+    "official_modules_imported": {
+      "present": 0,
+      "expected": 10
+    },
+    "approved_pedagogical_elements_verified": {
+      "present": 0,
+      "expected": 120
+    },
+    "note": "The 120 elements mean 12 pedagogical requirements per module, not a required number of database blocks."
+  },
+  "missing_sources": [
+    "IE master specification with approval/version/provenance",
+    "Full approved text of modules M1–M10",
+    "IE professor manual and student notebook",
+    "Approved V&C tool instructions and scripts",
+    "Approved academic bibliography supporting module claims",
+    "Per-lesson and activity hour allocation"
+  ],
+  "reviewed_source_records": [
+    {
+      "name": "Texto colado.txt",
+      "lines": 747,
+      "scope": "PR2 command; section 23 explicitly says deep module content must still be supplied",
+      "usable_for_full_lesson_import": false
+    },
+    {
+      "name": "Texto colado(1).txt",
+      "lines": 797,
+      "scope": "PR3 command, E01–E09 fields and privacy rules",
+      "usable_for_full_lesson_import": false
+    },
+    {
+      "name": "Texto colado(3).txt",
+      "lines": 717,
+      "scope": "PR5 command, themes M1–M10 and assessment constraints",
+      "usable_for_full_lesson_import": false
+    },
+    {
+      "name": "Markdown.md colado",
+      "lines": 291,
+      "scope": "University architecture and Leadership pedagogy; not IE module source",
+      "usable_for_full_lesson_import": false
+    }
+  ],
+  "canonical_inventory": {
+    "modules": [
+      {
+        "title": "Emoções: Entender Antes de Controlar",
+        "status": "draft",
+        "module_no": 1,
+        "content_blocks": 0,
+        "course_version": "1.0",
+        "lesson_versions": 0,
+        "checkpoint_items": 5,
+        "estimated_minutes": 120
+      },
+      {
+        "title": "Autoconsciência: Perceber Antes de Mudar",
+        "status": "draft",
+        "module_no": 2,
+        "content_blocks": 0,
+        "course_version": "1.0",
+        "lesson_versions": 0,
+        "checkpoint_items": 5,
+        "estimated_minutes": 120
+      },
+      {
+        "title": "Gatilhos, Padrões e Contexto",
+        "status": "draft",
+        "module_no": 3,
+        "content_blocks": 0,
+        "course_version": "1.0",
+        "lesson_versions": 0,
+        "checkpoint_items": 5,
+        "estimated_minutes": 120
+      },
+      {
+        "title": "PAUSA: O Espaço Entre Impulso e Resposta",
+        "status": "draft",
+        "module_no": 4,
+        "content_blocks": 0,
+        "course_version": "1.0",
+        "lesson_versions": 0,
+        "checkpoint_items": 5,
+        "estimated_minutes": 120
+      },
+      {
+        "title": "Regulação Emocional",
+        "status": "draft",
+        "module_no": 5,
+        "content_blocks": 0,
+        "course_version": "1.0",
+        "lesson_versions": 0,
+        "checkpoint_items": 5,
+        "estimated_minutes": 120
+      },
+      {
+        "title": "Fatos, Histórias e Interpretações",
+        "status": "draft",
+        "module_no": 6,
+        "content_blocks": 0,
+        "course_version": "1.0",
+        "lesson_versions": 0,
+        "checkpoint_items": 5,
+        "estimated_minutes": 120
+      },
+      {
+        "title": "Comunicação Emocionalmente Inteligente",
+        "status": "draft",
+        "module_no": 7,
+        "content_blocks": 0,
+        "course_version": "1.0",
+        "lesson_versions": 0,
+        "checkpoint_items": 5,
+        "estimated_minutes": 120
+      },
+      {
+        "title": "Inteligência Emocional nos Relacionamentos",
+        "status": "draft",
+        "module_no": 8,
+        "content_blocks": 0,
+        "course_version": "1.0",
+        "lesson_versions": 0,
+        "checkpoint_items": 5,
+        "estimated_minutes": 120
+      },
+      {
+        "title": "Decisões sob Emoção",
+        "status": "draft",
+        "module_no": 9,
+        "content_blocks": 0,
+        "course_version": "1.0",
+        "lesson_versions": 0,
+        "checkpoint_items": 5,
+        "estimated_minutes": 120
+      },
+      {
+        "title": "Integração e Desenvolvimento",
+        "status": "draft",
+        "module_no": 10,
+        "content_blocks": 0,
+        "course_version": "1.0",
+        "lesson_versions": 0,
+        "checkpoint_items": 5,
+        "estimated_minutes": 120
+      }
+    ],
+    "sources": [
+      {
+        "title": "Arquitetura acadêmica V&C — banco IE PR5",
+        "status": "draft",
+        "classification": "D"
+      },
+      {
+        "title": "Heurísticas educacionais V&C — banco IE PR5",
+        "status": "draft",
+        "classification": "H"
+      }
+    ],
+    "course_id": "inteligencia-emocional-aplicada",
+    "inventory": {
+      "cycle": 1,
+      "course": 1,
+      "module": 10,
+      "source": 2,
+      "evidence": 10,
+      "question": 70,
+      "dependency": 9,
+      "requirement": 21
+    },
+    "question_gaps": [
+      {
+        "gap": "Composição/instruções oficiais de PENTA não fornecidas; item avalia apenas o princípio de autoconsciência.",
+        "status": "draft",
+        "version": 1,
+        "editorial_id": "IE-M02-Q05"
+      },
+      {
+        "gap": "Composição oficial de 3R não fornecida; não se inventou expansão.",
+        "status": "draft",
+        "version": 1,
+        "editorial_id": "IE-M04-Q05"
+      },
+      {
+        "gap": "Passos oficiais de FARO não fornecidos; item cobre verificação de compreensão.",
+        "status": "draft",
+        "version": 1,
+        "editorial_id": "IE-M07-Q03"
+      },
+      {
+        "gap": "Composição oficial de CPTR não fornecida; item cobre reparação sem inventar passos.",
+        "status": "draft",
+        "version": 1,
+        "editorial_id": "IE-M08-Q04"
+      },
+      {
+        "gap": "Passos oficiais de CALMA não fornecidos; integração avalia escolha contextual.",
+        "status": "draft",
+        "version": 1,
+        "editorial_id": "IE-M10-Q01"
+      }
+    ],
+    "question_status": [
+      {
+        "count": 50,
+        "status": "draft",
+        "purpose": "checkpoint",
+        "any_active": false,
+        "question_version": 1
+      },
+      {
+        "count": 20,
+        "status": "draft",
+        "purpose": "final",
+        "any_active": false,
+        "question_version": 1
+      }
+    ],
+    "evidence_definitions": [
+      {
+        "title": "Aplicação PAUSA",
+        "status": "draft",
+        "revision": "1"
+      },
+      {
+        "title": "Conversa CLARO",
+        "status": "draft",
+        "revision": "1"
+      },
+      {
+        "title": "Decisão Estruturada",
+        "status": "draft",
+        "revision": "1"
+      },
+      {
+        "title": "Dossiê FIR–REAL",
+        "status": "draft",
+        "revision": "1"
+      },
+      {
+        "title": "Mapa da Reação Automática",
+        "status": "draft",
+        "revision": "1"
+      },
+      {
+        "title": "Mapa de Padrões",
+        "status": "draft",
+        "revision": "1"
+      },
+      {
+        "title": "Mapa ELOS",
+        "status": "draft",
+        "revision": "1"
+      },
+      {
+        "title": "Projeto Integrador IE30",
+        "status": "draft",
+        "revision": "1"
+      },
+      {
+        "title": "RADAR 72H",
+        "status": "draft",
+        "revision": "1"
+      },
+      {
+        "title": "Repertório de Regulação",
+        "status": "draft",
+        "revision": "1"
+      }
+    ]
+  },
+  "next_step": "Supply approved originals and resolve editorial gaps before canonical draft import; do not publish."
+}

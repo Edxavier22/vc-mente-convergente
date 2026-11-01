@@ -6,6 +6,7 @@
  }
  function publicQuestion(q){return {question_id:q.question_id,editorial_id:q.editorial_id,question_version:q.question_version,prompt:q.prompt,options:q.options.map(o=>({id:o.option_id||o.id,text:o.option_text||o.text}))};}
  function simulate(bank,answers,percent){
+  if(bank.some(q=>!q.correct_option_id))throw Error('preview_grading_requires_server');
   if(answers.length!==bank.length)throw Error("answers_invalid");
   let score=0;const feedback=bank.map((q,i)=>{const a=answers[i],o=q.options.find(o=>o.option_id===a.selected_option_id);if(a.question_id!==q.question_id||!o)throw Error("answers_invalid");const correct=o.option_id===q.correct_option_id;if(correct)score++;return {questionId:q.question_id,correct,message:correct?q.correct_feedback:o.feedback,concept:q.review_concept};});
   return {score,total:bank.length,scorePercent:score*100/bank.length,passed:score*100>=bank.length*percent,feedback,review:[...new Set(feedback.filter(f=>!f.correct).map(f=>f.concept))],retryAllowed:true};
@@ -22,12 +23,13 @@
   }
   show();return root;
  }
- function preview(bank,percent){
+ function preview(bank,percent,options={}){
   let current=bank;const host=el("div");
   function start(){const visual=shuffle(current).map(q=>({...q,options:shuffle(q.options)}));const data={questions:visual.map(publicQuestion),minimum:Math.ceil(bank.length*percent/100)};
-   host.replaceChildren(render(data,{preview:true,onSubmit:async answers=>simulate(visual,answers,percent),onRetry:start}));}
+   host.replaceChildren(render(data,{preview:true,onSubmit:options.onSubmit|| (async answers=>simulate(visual,answers,percent)),onRetry:start}));}
   start();return host;
  }
  function master(bank){const host=el("div");for(const q of bank){const d=el("details");d.append(el("summary",`${q.editorial_id} · ${q.competency?.code||q.competency_code} · ${q.difficulty} · v${q.question_version} · ${q.status}`),el("p",q.prompt));const list=el("ol");for(const o of q.options||[]){const li=el("li",o.option_text);if(o.option_id===q.correct_option_id)li.append(el("strong"," — Gabarito"));li.append(el("p",o.feedback));list.append(li);}d.append(list,el("p",q.review_concept));if(q.editorial_gap)d.append(el("p","Gap editorial: "+q.editorial_gap));for(const s of q.sources||[])d.append(el("p",`Fonte ${s.vc_university_sources?.editorial_classification}: ${s.vc_university_sources?.citation}`));host.append(d);}return host;}
- scope.VCAssessment={render,preview,master,publicQuestion,shuffle,simulate};
+ function latest(bank){const selected=new Map();for(const q of bank.filter(q=>q.status!=='archived')){const key=q.editorial_id||q.question_id;if(!selected.has(key)||selected.get(key).question_version<q.question_version)selected.set(key,q);}return [...selected.values()];}
+ scope.VCAssessment={render,preview,master,publicQuestion,shuffle,simulate,latest};
 })(globalThis);

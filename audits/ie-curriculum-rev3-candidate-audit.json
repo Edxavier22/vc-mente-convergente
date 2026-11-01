@@ -1,0 +1,754 @@
+{
+  "date": "2026-11-01",
+  "head_audited": "3892fc87c992b9073d3674cb4e1281e80b335bd0",
+  "received_package_sha256": "e064c3173c2745a3206572fb344ff097c42e92102e55546886f1663dcc571fec",
+  "received_proposals_verified": 8,
+  "lesson_candidates": [
+    {
+      "code": "IE-M01-A01",
+      "parent_revision": 2,
+      "parent_sha256": "c9ace0a66f647e5cb781702d522b5d5ee30ecd54a00d155821a0cb25bf3232d9",
+      "received_proposal_sha256": null,
+      "candidate_sha256": "8a31c16077a2a72bee0e12d63d96c7f9aaba300fc0ef07bd6d731beecbb83191",
+      "bytes": 5018,
+      "changes": [
+        "cabeçalho canônico de módulo/aula",
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M01-A02",
+      "parent_revision": 2,
+      "parent_sha256": "8098a98c275507a47bec13184bdc0036d8ad6ca778bb2c7687a7b1520def1268",
+      "received_proposal_sha256": null,
+      "candidate_sha256": "c322941a6468c0fb7066bf92d7c1837e1ab250c3954bd9463d05f2a55ac5b050",
+      "bytes": 3925,
+      "changes": [
+        "cabeçalho canônico de módulo/aula",
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M01-A03",
+      "parent_revision": 2,
+      "parent_sha256": "0b2ffb0b7ce319f0124b65a36d4b7c923b301fcd29e4e918c96e417a05930e0d",
+      "received_proposal_sha256": null,
+      "candidate_sha256": "1c01aba9c194a2a69a14bbb61c6c44032ff56264bcc4ba0e7104be0ea5266ff7",
+      "bytes": 5411,
+      "changes": [
+        "cabeçalho canônico de módulo/aula",
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M01-A04",
+      "parent_revision": 2,
+      "parent_sha256": "69463b3929c5aad907496d027592cbe096e92b6007d7a38d94398de0270fb36a",
+      "received_proposal_sha256": null,
+      "candidate_sha256": "76755d635e6d30d471799c03ea741301c8988605748453d3a034572cde99fed2",
+      "bytes": 4938,
+      "changes": [
+        "cabeçalho canônico de módulo/aula",
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M01-A05",
+      "parent_revision": 2,
+      "parent_sha256": "c8be18d39135446fe330123548590f19809f05b31281645b34ced80a1d4e3521",
+      "received_proposal_sha256": null,
+      "candidate_sha256": "e99f196a171d0b7b5f23e8d70c2bf48636e941ecc764872778b83f207f4eaf3f",
+      "bytes": 2593,
+      "changes": [
+        "cabeçalho canônico de módulo/aula",
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M02-A01",
+      "parent_revision": 2,
+      "parent_sha256": "1bb913bb5da292a173beb4bdae40ad54c3be8dbd1a49f46d463434fe279892d5",
+      "received_proposal_sha256": null,
+      "candidate_sha256": "237b73865cddf5277f65dbe470abc8000d71e06ff2cbdb82ca061d5124d2ab5d",
+      "bytes": 5319,
+      "changes": [
+        "cabeçalho canônico de módulo/aula",
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M02-A02",
+      "parent_revision": 2,
+      "parent_sha256": "237934e3de671d1c3630a800c352ce3d7185a611edd9a0ba705a457112a0317b",
+      "received_proposal_sha256": "ced74c28e7e926d212dda788e3bcde2723db57dd89f3fb2d550adae7dec23b9e",
+      "candidate_sha256": "4113cc5ded02c4f075ead6c9c3de6a0b5b0c49b9bbf8057ed9ea3e1a4baa263e",
+      "bytes": 5561,
+      "changes": [
+        "proposta recebida conferida por hash",
+        "correção contextual de voz/promocional",
+        "correção contextual de voz/promocional",
+        "cabeçalho canônico de módulo/aula",
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M02-A03",
+      "parent_revision": 2,
+      "parent_sha256": "32d6fac7979d0886f212aa9ec33fa35c0b61d28b05b583ed82f479359f4a0cbf",
+      "received_proposal_sha256": null,
+      "candidate_sha256": "f23f738d7df2fa9283eec9138a8914e7bd6afbece3e02886fdcc2675906c8b15",
+      "bytes": 3762,
+      "changes": [
+        "cabeçalho canônico de módulo/aula",
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M02-A04",
+      "parent_revision": 2,
+      "parent_sha256": "a2ab550c34ff7147e49c4a447a78a2d9e3130fc2a8815b30ff67dff4ee192691",
+      "received_proposal_sha256": null,
+      "candidate_sha256": "818510b226bcaca9ed2409f08f47c4bb22688beb15ecd2dc1fc8998f6ef55b09",
+      "bytes": 3865,
+      "changes": [
+        "cabeçalho canônico de módulo/aula",
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M02-A05",
+      "parent_revision": 2,
+      "parent_sha256": "47f8c61734884fca6e1cb338cdc48dc3bcc128272b9153f6d09345db7766a49c",
+      "received_proposal_sha256": "2e37a4ee6ff9b89dbb7d80ca2f916580d6c67f4f52625868bf45e255d3a0bb8f",
+      "candidate_sha256": "f50a890b66c3f8ffe15ce5d006355059567e8495fdfd4a948102bfad2ee872ac",
+      "bytes": 5013,
+      "changes": [
+        "proposta recebida conferida por hash",
+        "correção contextual de voz/promocional",
+        "cabeçalho canônico de módulo/aula",
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M03-A01",
+      "parent_revision": 2,
+      "parent_sha256": "94b6ddcdc25c2069d632709044d977332e5a36166f68af1afbc8b9c82e90c8f9",
+      "received_proposal_sha256": null,
+      "candidate_sha256": "934c6746b0db75f70f4e3b6ab01da09b9098527a7edc250b8413d098519c139d",
+      "bytes": 5735,
+      "changes": [
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M03-A02",
+      "parent_revision": 2,
+      "parent_sha256": "e11e666d10242b9cd89492d09f7b8071fb35443e16b2430daf6d13e8838ee45b",
+      "received_proposal_sha256": null,
+      "candidate_sha256": "ae3114e9d5e90968030a2902cba1c2b5a171f95924c098c13513e6c0e669ae75",
+      "bytes": 5081,
+      "changes": [
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M03-A03",
+      "parent_revision": 2,
+      "parent_sha256": "02034291f34af167da53ba382d1a7a08946c648dde2444eb02d930530ab20a85",
+      "received_proposal_sha256": null,
+      "candidate_sha256": "0331d5bb4a536a5c3a0ccecf5c92da91d6d3d84d0520f3a58184570206910882",
+      "bytes": 6192,
+      "changes": [
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M03-A04",
+      "parent_revision": 2,
+      "parent_sha256": "fff35ee2f1c6bd4076b56747f07c831aea3d23e03ffbb879ef6d78c37f9dafb4",
+      "received_proposal_sha256": null,
+      "candidate_sha256": "119588dd31eaa5bb544e809ceaf8261dd172ce0e6a79f3f18a1581a87a9d10c4",
+      "bytes": 6949,
+      "changes": [
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M03-A05",
+      "parent_revision": 2,
+      "parent_sha256": "ecc35bc1d1e1249a9373878ef7dafde3b3dfa27e70fd66fba2471b3b10e3d01c",
+      "received_proposal_sha256": null,
+      "candidate_sha256": "f92f8d098a639e97aa166b067626ac2b0040d205e762386a9fdeb11f3abfeea1",
+      "bytes": 4452,
+      "changes": [
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M04-A01",
+      "parent_revision": 2,
+      "parent_sha256": "b19685c761dadea70e2155b6ae4fe72c5209a3d9e3938350c42c231d91815f8e",
+      "received_proposal_sha256": null,
+      "candidate_sha256": "67336380edae313719c47345c1e9851f4e36bd46cbaaf5eb7e47a816c33e5dca",
+      "bytes": 4999,
+      "changes": [
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M04-A02",
+      "parent_revision": 2,
+      "parent_sha256": "60a42a28aee300a45d9ba856e9111f36c9e7e4facf1692a7a13e0c5b3d1fce49",
+      "received_proposal_sha256": null,
+      "candidate_sha256": "d860b128993dfcbb6fbcfbb565bb9f237979860ba46979438522e0e3d1dfb96e",
+      "bytes": 4848,
+      "changes": [
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M04-A03",
+      "parent_revision": 2,
+      "parent_sha256": "c9a40b6f7129867ae3e3d5316a6f13b810527f9cff7aa89cf7b8b8bfe0238c5d",
+      "received_proposal_sha256": null,
+      "candidate_sha256": "7fec590e2340d5e1e3012840c957cefa77ce43b0d36188eebcbb5a69acb5f007",
+      "bytes": 5703,
+      "changes": [
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M04-A04",
+      "parent_revision": 2,
+      "parent_sha256": "312df116a64c3e452d533b970dec398883cd10d792cc7690a1b191a3b981a170",
+      "received_proposal_sha256": "44367f3b57d8d9d756f83afeb4860d009417d89b2526ca64e1bb195f40ec5d78",
+      "candidate_sha256": "5f47766f80c635d57eec4a60303ca2d95ad861b8ec09454cca83e18f0f678648",
+      "bytes": 6607,
+      "changes": [
+        "proposta recebida conferida por hash",
+        "correção contextual de voz/promocional",
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M04-A05",
+      "parent_revision": 2,
+      "parent_sha256": "f11b5c873642557947cf35d40038d1e049b09279f6ab929385a6d17448d50c63",
+      "received_proposal_sha256": null,
+      "candidate_sha256": "c33c3617c822786a79a909af6b60e0ddf06adaf26d17a19733c82051d23c4cb1",
+      "bytes": 5237,
+      "changes": [
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M05-A01",
+      "parent_revision": 2,
+      "parent_sha256": "52230748cc355663d321164e2bc1865635364aca60a9c985de824520398ddbd3",
+      "received_proposal_sha256": null,
+      "candidate_sha256": "4ebe3a22f400c2ceb1d9aee425a159f2cfbfc6162aa7b025b3b6a1acb640b8fd",
+      "bytes": 7394,
+      "changes": [
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M05-A02",
+      "parent_revision": 2,
+      "parent_sha256": "f5e20524dc9bad9cd19befc61aac746455229c72ed7667978ec396b14600aadb",
+      "received_proposal_sha256": null,
+      "candidate_sha256": "aa72d5a77fac9852a769bc077754470d9322177c905a06260d6f5b76d6cfd7ed",
+      "bytes": 6195,
+      "changes": [
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M05-A03",
+      "parent_revision": 2,
+      "parent_sha256": "643985e97f72d3a10582a54f33fee4420b48684c1aa792341d58f93d38675f26",
+      "received_proposal_sha256": null,
+      "candidate_sha256": "b1b449655a4bb512e4fd0d240dac3a0f1974c0d46f0c251fbfdd50e71a0c55b6",
+      "bytes": 6379,
+      "changes": [
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M05-A04",
+      "parent_revision": 2,
+      "parent_sha256": "c6fa1089b81314ff6bdae2371b8834cdabc267e563178cbec0b859b129d238b1",
+      "received_proposal_sha256": null,
+      "candidate_sha256": "0a121f94fd35e0e577772ed181456bf9f51154e1131f368042284a69489ba1ac",
+      "bytes": 6930,
+      "changes": [
+        "correção contextual de voz/promocional",
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M05-A05",
+      "parent_revision": 2,
+      "parent_sha256": "91916defbb697e8940e35c8ff1950aafc1a2abb1ef5c18cb21105525835b89ff",
+      "received_proposal_sha256": null,
+      "candidate_sha256": "86698a9ee95823c155e76352de68add15921be6cff2f09cb1bf90e71eefb09ce",
+      "bytes": 5753,
+      "changes": [
+        "correção contextual de voz/promocional",
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M06-A01",
+      "parent_revision": 2,
+      "parent_sha256": "0136c6c588cd44e9f5f681f69bbde6da557231543ccd584fab588df2355e4fa2",
+      "received_proposal_sha256": null,
+      "candidate_sha256": "c3decc4114b410b9584380feb02d38aaa85606899ece6d834bdb1f96948d9a43",
+      "bytes": 5836,
+      "changes": [
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M06-A02",
+      "parent_revision": 2,
+      "parent_sha256": "9d93ba59a7e0c4ecd2947fa1bd73fd1847fd850e13274e644b2b71d489e2cddc",
+      "received_proposal_sha256": null,
+      "candidate_sha256": "cd2c401d8edbed1a6b3544a4af7e2505501c867fcf6fddad5beff5488c3fe06b",
+      "bytes": 7574,
+      "changes": [
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M06-A03",
+      "parent_revision": 2,
+      "parent_sha256": "647b977d5f8616edcf1f6e7e3dc601f03e53f9b18b77721d862772b269a61c73",
+      "received_proposal_sha256": null,
+      "candidate_sha256": "6536dd426b331d30a4d6ad78b65279898fe36c76cba33391c1c6c537f2204603",
+      "bytes": 6424,
+      "changes": [
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M06-A04",
+      "parent_revision": 2,
+      "parent_sha256": "07097eb7f1008f17aee169ed70a8e91bbd23f69d7a311c2cefd60d1d2ac62e0d",
+      "received_proposal_sha256": null,
+      "candidate_sha256": "17d19d081fae853fd694e2d779b2abd29b050bf501fb314ee2bab7d0c1fe6a99",
+      "bytes": 6998,
+      "changes": [
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M06-A05",
+      "parent_revision": 2,
+      "parent_sha256": "d24c90b63c18823719bb68581a7bc96811c9062c55f855dce6bfb2f11573e464",
+      "received_proposal_sha256": null,
+      "candidate_sha256": "0989700bf8bd616966d87bad96217d17e7d3231688096ecf79801fb74f6eeed8",
+      "bytes": 3893,
+      "changes": [
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M07-A01",
+      "parent_revision": 2,
+      "parent_sha256": "2e9fb9ae459cca8f2e8f5b8ed3636d79792e3e79bb2199d39900f0bbdbebf876",
+      "received_proposal_sha256": "3a3419625c4f4e13922e6c4ee60e13fbc11cc679beea79868974356161187455",
+      "candidate_sha256": "9207b2c130349994838e948d12cc920664f0240b9f2e1003bd5611ec28af64fb",
+      "bytes": 6525,
+      "changes": [
+        "proposta recebida conferida por hash",
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M07-A02",
+      "parent_revision": 2,
+      "parent_sha256": "93dccaf178a4ec91e45f5ebf38a95ff5fa3b767314c35cac474f35e1be1d454d",
+      "received_proposal_sha256": null,
+      "candidate_sha256": "0c2ff3cb88d11729ec1e8b5fe046c74001b780ae092c9c431a88eef677da47b2",
+      "bytes": 6320,
+      "changes": [
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M07-A03",
+      "parent_revision": 2,
+      "parent_sha256": "093150317f9eac2332b110308d0e30fce76b6f4f82f6fc3d21fb7fadd136acf4",
+      "received_proposal_sha256": null,
+      "candidate_sha256": "5837376cd0bec348b70b1eab4ad9a72cad5e883de9b1f6d302814165d05606c4",
+      "bytes": 6798,
+      "changes": [
+        "correção contextual de voz/promocional",
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M07-A04",
+      "parent_revision": 2,
+      "parent_sha256": "e70f734317c9f6e704de3617e58d36cb0333165e6e9abdf43d886d98aea18196",
+      "received_proposal_sha256": "98ddd6f5c6add7b31b7fac15631f9d227ab29a511a9add37defd5e76365b09c2",
+      "candidate_sha256": "c49bf5348223414a71cb2c5fb56c17232059bd83038ea1417967ab3b2fb3453b",
+      "bytes": 7926,
+      "changes": [
+        "proposta recebida conferida por hash",
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M07-A05",
+      "parent_revision": 2,
+      "parent_sha256": "a8f06d7dff92182c3c0fdd859ad08685d76bb86e5af5bf318912a70e9ba4620f",
+      "received_proposal_sha256": null,
+      "candidate_sha256": "bc945b067058dca5f99728fee456151e7505bd5791c24226dc9096232ad5f5e1",
+      "bytes": 6972,
+      "changes": [
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M08-A01",
+      "parent_revision": 2,
+      "parent_sha256": "dfa8ab64e65ad12e113b6837c5dd189310ce5407cc7f4cf5def9980e1b38923f",
+      "received_proposal_sha256": null,
+      "candidate_sha256": "1a889d1161243e1fee89376a93a13894f4b0a30379e2580fe31177787f492e77",
+      "bytes": 8398,
+      "changes": [
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M08-A02",
+      "parent_revision": 2,
+      "parent_sha256": "a3a505b8bfe930ca02dfaeb837a6ade9d6b9c44c29650d91c5fb3235332a4ce1",
+      "received_proposal_sha256": null,
+      "candidate_sha256": "85e7ea45f764f7d3538cf849ba5ab863333d3ab921436da365e3110c70f0fb95",
+      "bytes": 6973,
+      "changes": [
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M08-A03",
+      "parent_revision": 2,
+      "parent_sha256": "a43776dcf092d93f56a89782bc8868460c696ef076947863acf769a466ea8584",
+      "received_proposal_sha256": null,
+      "candidate_sha256": "b4c2fc9a958cfdf78ae95bef55c3a48023fd9c00ca13bc2dab55d01cedcb1bd8",
+      "bytes": 8064,
+      "changes": [
+        "correção contextual de voz/promocional",
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M08-A04",
+      "parent_revision": 2,
+      "parent_sha256": "83af0b1a80d14840a3e94a2ad04ffd35a92d090b4587f3f5ce9dedf3b6aa32bc",
+      "received_proposal_sha256": null,
+      "candidate_sha256": "1f9559c9fc831bc7c43896b02e41a2eb674bef5542205e2b36a5ff718d6038b4",
+      "bytes": 5093,
+      "changes": [
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M08-A05",
+      "parent_revision": 2,
+      "parent_sha256": "b70b54ba06d7c8ead474debf1f3a0b23f04e06946c3f7c70a4b8a1e354a53078",
+      "received_proposal_sha256": null,
+      "candidate_sha256": "9641681af9ea11480c53ffc8949e2b72044c8efcd1639c097b2ae034f4011000",
+      "bytes": 4447,
+      "changes": [
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M09-A01",
+      "parent_revision": 2,
+      "parent_sha256": "25789f76aff1a8c1f49e10e6b4dc1b92deb06d40c7561cf973ff63f8d4c022a6",
+      "received_proposal_sha256": null,
+      "candidate_sha256": "393458e1a0b6c35f92bb2cd9e444d5eb5cfd9648ff62b958930c1268024e68ca",
+      "bytes": 9610,
+      "changes": [
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M09-A02",
+      "parent_revision": 2,
+      "parent_sha256": "4fc99ff4ada4d8143c629a332117067d44e84b0e5bdf05f1cfc4b281f240f997",
+      "received_proposal_sha256": null,
+      "candidate_sha256": "09c89059cb1e64284fd862e3da2da574f5d02c49ec8996ec6d673cce1812fac7",
+      "bytes": 6880,
+      "changes": [
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M09-A03",
+      "parent_revision": 2,
+      "parent_sha256": "a6dc8596f49d80b7b53b0eeea34d92c4bf3ddaa61e03a2302c2ded94c8201f62",
+      "received_proposal_sha256": null,
+      "candidate_sha256": "0e4fb44e781eb60343d0951c7ac9e8cdabf5d4315a2284985587b954da779dcc",
+      "bytes": 8380,
+      "changes": [
+        "correção contextual de voz/promocional",
+        "correção contextual de voz/promocional",
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M09-A04",
+      "parent_revision": 2,
+      "parent_sha256": "ca0a56ea497503ebcdde39f78b11877b0685dea652c4e4deb8337421eae68acf",
+      "received_proposal_sha256": null,
+      "candidate_sha256": "aed32c2e5041a62e5dd4e486c900451e5752db6fa22ee6cf3b940e964bd8dd0a",
+      "bytes": 5001,
+      "changes": [
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M09-A05",
+      "parent_revision": 2,
+      "parent_sha256": "5bf42bdfd651b0785a3bf03da8da71b030b65af8ff0a8c8f79766e8f0ec08900",
+      "received_proposal_sha256": "bb5e2ebe4d617af0b4d1ca66275c3094446bde6409a46c71943c491c687f37b4",
+      "candidate_sha256": "3a518333d18039beaee2f8391dfee9604cef35a765853b0512935d6163d8cde7",
+      "bytes": 8362,
+      "changes": [
+        "proposta recebida conferida por hash",
+        "mapeamento do caso fictício aos 21 campos canônicos, sem envio",
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M10-A01",
+      "parent_revision": 2,
+      "parent_sha256": "07021e2907cf83d39dc8aa3d31205b9c15811ae9cb07a593a9c2028e55e5d2c0",
+      "received_proposal_sha256": "4168d9614a5b76e6be61acd33647d0aa1c8b5ddd8b19559e00e6afe600606588",
+      "candidate_sha256": "5413ed7096d3bb370257702ff3cff595ea9efb2c8bc1d655923dfad37c5a9f88",
+      "bytes": 6942,
+      "changes": [
+        "proposta recebida conferida por hash",
+        "correção contextual de voz/promocional",
+        "correção contextual de voz/promocional",
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M10-A02",
+      "parent_revision": 2,
+      "parent_sha256": "49ada6812990b8d8c9dfcab8730a1b0b693f1e47425e5c2989b599307f30e016",
+      "received_proposal_sha256": null,
+      "candidate_sha256": "c2e7fe6ed1a9f637203824babdfaed22153688606f57426cc4aa0a7bc9356486",
+      "bytes": 5557,
+      "changes": [
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M10-A03",
+      "parent_revision": 2,
+      "parent_sha256": "96364a9d039d7dd9d4664c21bcdecf31168a5d5c6c01a87d5b7a9b60834c0a7c",
+      "received_proposal_sha256": "f4976b5ca77096933f4227eb269e51e0495c062550f6771145ffde4bb2207970",
+      "candidate_sha256": "7ba502299077d700cd3899cef79587c672f266a5850f042dd65800e12006d6e0",
+      "bytes": 10081,
+      "changes": [
+        "proposta recebida conferida por hash",
+        "correção contextual de voz/promocional",
+        "cabeçalho canônico de módulo/aula",
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M10-A04",
+      "parent_revision": 2,
+      "parent_sha256": "608bbedb6bd89883936ea81302242ded0b0a711409d2afd26d300f703e57e5ab",
+      "received_proposal_sha256": null,
+      "candidate_sha256": "59058cb726d7e99836864880750423a9ef335ebc5dc7093ff570c32b35ec4806",
+      "bytes": 5663,
+      "changes": [
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    },
+    {
+      "code": "IE-M10-A05",
+      "parent_revision": 2,
+      "parent_sha256": "3952687bd7983c3d7d193a37b333d2a25af9cee5b3883a577b9bc3d30eaecd39",
+      "received_proposal_sha256": null,
+      "candidate_sha256": "6de141c75806b800418e9e455e1a1b0fb9dfbea831da7eef84fc7478f11e400d",
+      "bytes": 10222,
+      "changes": [
+        "hierarquia de seção >= H3 e remoção de numeração herdada apenas em títulos"
+      ],
+      "persisted": false,
+      "academic_approval": false,
+      "status": "candidate_pending_explicit_acceptance"
+    }
+  ],
+  "private_question_candidates": 5,
+  "question_v2_preserved": 6,
+  "formal_lesson_v3_created": 0,
+  "formal_question_v3_created": 0,
+  "source_correspondence_partial": 20,
+  "source_correspondence_pending": 46,
+  "reference_records": 13,
+  "rights_records": 37,
+  "planned_candidate_minutes": 1125,
+  "measured_minutes": null,
+  "human_pilot_participants": 0,
+  "authenticated_browser": "NOT_TESTED_VERCEL_LOGIN",
+  "academic_approval": false
+}

@@ -1,9 +1,9 @@
 // @ts-nocheck -- arquivo legado em JavaScript/Deno; o motor compartilhado abaixo é tipado.
 import {certificationEligibility} from "../_shared/governance-api.ts";
-import {assessmentBegin,assessmentSubmit,assessmentBank} from "../_shared/assessment-api.ts";
+import {assessmentBegin,assessmentSubmit,assessmentBank,assessmentPreviewBank,assessmentPreviewGrade} from "../_shared/assessment-api.ts";
 import {cycleDefinitions,cycleRead,cycleWrite} from "../_shared/cycle-api.ts";
 import {evidenceDefinitions, evidenceRead, evidenceWrite} from "../_shared/evidence-api.ts";
-import {checkpointSnapshot, gradeStableCheckpoint, resolveModuleStates} from "../_shared/academic-engine.ts";
+import {checkpointSnapshot, gradeStableCheckpoint, resolveModuleStates, latestLessonVersions} from "../_shared/academic-engine.ts";
 
 // Private academic API. Versioned lesson content is read server-side from restricted tables.
 // The static site must not contain answer keys or service credentials.
@@ -118,9 +118,10 @@ async function structuredCourse(courseId, version, metadata, preview = false) {
   "&status=" + editorialStatus + "&order=module_no.asc");
  const modules = [];
  for (const module of moduleVersions) {
-  const lessonVersions = await database("vc_university_lesson_versions",
+  const lessonRevisions = await database("vc_university_lesson_versions",
    "?select=lesson_version_id,lesson_id,revision,title,learning_objectives,estimated_minutes,status" +
-   "&module_version_id=eq." + module.module_version_id + "&status=" + editorialStatus + "&order=created_at.asc");
+   "&module_version_id=eq." + module.module_version_id + "&status=" + editorialStatus + "&order=created_at.asc&limit=1000");
+  const lessonVersions=latestLessonVersions(lessonRevisions);
   const lessons = [];
   for (const lesson of lessonVersions) {
    const blocks = await database("vc_university_content_blocks",
@@ -359,7 +360,11 @@ async function previewCourse(bearer, courseId, version, perspective) {
  const states = resolveModuleStates(moduleVersions,[],previewDependencies,[],[]);
  const evidence = await evidenceDefinitions(database,courseId,version,true);
  const cycles=await cycleDefinitions(database,courseId,version,true);
- return {preview:true,perspective,role:access.role,course,states,evidence,cycles,assessments:await assessmentBank(database,courseId,version),
+ if(perspective==='student')for(const module of course.modules){
+  delete module.rubric;
+  for(const lesson of module.lessons||[])lesson.blocks=(lesson.blocks||[]).filter(block=>block.block_type!=='rubric');
+ }
+ return {preview:true,perspective,role:access.role,course,states,evidence,cycles,assessments:assessmentPreviewBank(await assessmentBank(database,courseId,version),perspective),
   certificatePreview:{simulation:true,title:course.title,version:course.version,hours:course.hours,issuanceEnabled:false,gates:["Dez módulos e requisitos obrigatórios","Checkpoints aprovados","E01–E09 suficientes","Prova final aprovada","E10 aprovada humanamente"],publicCode:null,qr:null},
   writes:{enrollment:false,progress:false,attempt:false,certificate:false,analytics:false}};
 }
@@ -381,12 +386,19 @@ Deno.serve(async request => {
   }
   const perspective = url.searchParams.get("preview");
   if (perspective) {
-   if (request.method !== "GET") return reply(405,{error:"preview_read_only"},origin);
    if (!["student","teacher","content_master"].includes(perspective))
     return reply(400,{error:"invalid_preview_perspective"},origin);
    const version = url.searchParams.get("version");
    if (!version || !/^[A-Za-z0-9][A-Za-z0-9._-]{0,31}$/.test(version))
     return reply(400,{error:"invalid_version"},origin);
+   if(request.method==='POST'){
+    const input=await request.json().catch(()=>null);
+    if(input?.action!=='preview_assessment')return reply(405,{error:'preview_read_only'},origin);
+    const access=await previewAuthorization(bearer,courseId,perspective);
+    if(access.error)return reply(access.error,{error:'access_denied'},origin);
+    try{return reply(200,assessmentPreviewGrade(await assessmentBank(database,courseId,version),input),origin);}
+    catch{return reply(400,{error:'answers_invalid'},origin);}
+   }
    const preview = await previewCourse(bearer,courseId,version,perspective);
    return preview.error ? reply(preview.error,{error:"access_denied"},origin) : reply(200,preview,origin);
   }

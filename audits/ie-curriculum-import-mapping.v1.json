@@ -1,0 +1,1408 @@
+{
+  "package_sha256": "5a67583fa4a7fa3102c41e54d99f342b1647bb4aa272990d3b4f32342a176867",
+  "course_id": "inteligencia-emocional-aplicada",
+  "course_version": "1.0",
+  "source_id": "bdf644dd-3029-52e6-a68d-463165c71ddb",
+  "lessons": [
+    {
+      "code": "IE-M01-A01",
+      "key": "ie-m01-a01",
+      "module_no": 1,
+      "lesson_no": 1,
+      "title": "A mesma situação, experiências diferentes",
+      "lesson_id": "979d8bc1-53d9-5834-a3bc-b4c7462776de",
+      "lesson_version_id": "27a8e55a-2d18-5313-ad50-0d1275501109",
+      "content_block_id": "5f8cb899-3a8c-53e0-aa76-1bb83f71e60c",
+      "estimated_minutes": 24,
+      "source_sha256": "d6c6a18ff2facd1df36eb93c2e8d19e35e378814f7eaef80a09cbd06f65bb6fc",
+      "source_bytes": 4472,
+      "words": 586,
+      "headings": 12,
+      "evidence_mentions": [],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M01-A02",
+      "key": "ie-m01-a02",
+      "module_no": 1,
+      "lesson_no": 2,
+      "title": "O Modelo da Experiência Emocional V&C",
+      "lesson_id": "abc6ae17-44e4-5606-a962-01d36a7c9f70",
+      "lesson_version_id": "8fbbbbc2-77fe-5512-aaca-2b0f7db8e0ef",
+      "content_block_id": "5e21c93a-84b5-5dfb-aa32-019adcb13d4b",
+      "estimated_minutes": 24,
+      "source_sha256": "991a8fbd74aa0b54cfc611c82d6d4478beb5e58aa91c8e446d6c8dbd0b6e8619",
+      "source_bytes": 3329,
+      "words": 447,
+      "headings": 27,
+      "evidence_mentions": [],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M01-A03",
+      "key": "ie-m01-a03",
+      "module_no": 1,
+      "lesson_no": 3,
+      "title": "Sentir não é agir",
+      "lesson_id": "a72e13ac-6b06-5fc8-a7c5-6c4c48478835",
+      "lesson_version_id": "1f35c864-1693-5296-a2ed-21d6f33d78be",
+      "content_block_id": "6a1ef0bb-96db-54e9-a4d9-963db4f67301",
+      "estimated_minutes": 24,
+      "source_sha256": "cb11a87bc6211a6bbb757228fb331b94f378a3c228123ab1cd9c11cfc2773c90",
+      "source_bytes": 4920,
+      "words": 657,
+      "headings": 19,
+      "evidence_mentions": [],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M01-A04",
+      "key": "ie-m01-a04",
+      "module_no": 1,
+      "lesson_no": 4,
+      "title": "Mapa da Reação Automática e oficina prática",
+      "lesson_id": "1e4440e8-2669-5e72-aa43-7e8fc2f3bfdb",
+      "lesson_version_id": "593629c9-b1c6-595c-a4e2-81371af85586",
+      "content_block_id": "8bdbf916-c00d-5ac3-ad29-083b572db568",
+      "estimated_minutes": 24,
+      "source_sha256": "d7468790857af4985f490938190f768aab1828e4ac66804ef936921ddb2c81c0",
+      "source_bytes": 4406,
+      "words": 630,
+      "headings": 18,
+      "evidence_mentions": [],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M01-A05",
+      "key": "ie-m01-a05",
+      "module_no": 1,
+      "lesson_no": 5,
+      "title": "Síntese e preparação da evidência E01",
+      "lesson_id": "92265bf0-132f-594c-a3ef-d1946bc6889d",
+      "lesson_version_id": "ae91d36f-ec59-50f8-af11-ca93d46ee422",
+      "content_block_id": "3cea69d7-d6e0-5da3-a1f8-89e7c5f3b22f",
+      "estimated_minutes": 24,
+      "source_sha256": "31de9b028ffe494e45ba4b44da55e54750da68664db2ba90a009f1453af5e119",
+      "source_bytes": 2014,
+      "words": 310,
+      "headings": 4,
+      "evidence_mentions": [
+        "E01"
+      ],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M02-A01",
+      "key": "ie-m02-a01",
+      "module_no": 2,
+      "lesson_no": 1,
+      "title": "Autoconsciência e os cinco canais PENTA",
+      "lesson_id": "9bd312d0-3fac-5c00-a8a2-a1ff17cacc86",
+      "lesson_version_id": "0a2a9c65-6c36-5b0d-a248-53f80e79cd55",
+      "content_block_id": "a8d659a4-6ed6-5a27-a45c-b2b7962fb4eb",
+      "estimated_minutes": 24,
+      "source_sha256": "33360c73bd46d9e51cbbc3fe72c3a222123919e8ca868d234f14797c3647bb38",
+      "source_bytes": 4781,
+      "words": 651,
+      "headings": 19,
+      "evidence_mentions": [],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M02-A02",
+      "key": "ie-m02-a02",
+      "module_no": 2,
+      "lesson_no": 2,
+      "title": "Precisão emocional e vocabulário",
+      "lesson_id": "5e60c84a-54e6-59da-af61-cd7fd1e39e00",
+      "lesson_version_id": "a47a8dcb-e7ed-5c81-a647-5a25371a52f1",
+      "content_block_id": "0cb00b03-110f-5c3a-ace0-0abe06d3314f",
+      "estimated_minutes": 24,
+      "source_sha256": "838bb9459c5acf39f6d937c50678bf3007196c479c0af91e1bc2350268d2d635",
+      "source_bytes": 4894,
+      "words": 636,
+      "headings": 21,
+      "evidence_mentions": [],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M02-A03",
+      "key": "ie-m02-a03",
+      "module_no": 2,
+      "lesson_no": 3,
+      "title": "Intensidade, limites e tendências",
+      "lesson_id": "84be97b2-c098-5ac3-a98e-cb8afa880865",
+      "lesson_version_id": "2750a1e8-1d7f-5a8d-ad1c-655ef590669a",
+      "content_block_id": "5bfebcaf-3041-5167-aa23-be3b88ea975d",
+      "estimated_minutes": 24,
+      "source_sha256": "e2f31658f59d592bc30e9e2567f6bde7f3d447dbdcbd7fde8ff3c8d370efdf0c",
+      "source_bytes": 3245,
+      "words": 455,
+      "headings": 17,
+      "evidence_mentions": [],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M02-A04",
+      "key": "ie-m02-a04",
+      "module_no": 2,
+      "lesson_no": 4,
+      "title": "RADAR 72H: observar a experiência",
+      "lesson_id": "fb01df70-e5d0-56f5-a106-90e079dde094",
+      "lesson_version_id": "79df2ec7-f0df-55f0-a60e-f62035ce066d",
+      "content_block_id": "97d8d855-a0e2-505d-a40c-4fcb55bc72d4",
+      "estimated_minutes": 24,
+      "source_sha256": "6c162b5dae9630bce7308db4b5f185e2292a76efa93b9bb30c89e45cbee5ec6e",
+      "source_bytes": 3356,
+      "words": 510,
+      "headings": 16,
+      "evidence_mentions": [],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M02-A05",
+      "key": "ie-m02-a05",
+      "module_no": 2,
+      "lesson_no": 5,
+      "title": "Laboratório, autocuidado e evidência E02",
+      "lesson_id": "68afb721-2bfa-5107-afe7-16f86eac34e0",
+      "lesson_version_id": "16703816-2b84-5f18-ad5d-1fac7ebf6d4f",
+      "content_block_id": "468b2748-5cf9-5750-a6f8-0de31df01627",
+      "estimated_minutes": 24,
+      "source_sha256": "4d5a6c3eb3d10c1bd6aeb5621af2b61785b8b2b305d4fbd10abbd45a2fa0f61b",
+      "source_bytes": 4397,
+      "words": 614,
+      "headings": 13,
+      "evidence_mentions": [
+        "E02"
+      ],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M03-A01",
+      "key": "ie-m03-a01",
+      "module_no": 3,
+      "lesson_no": 1,
+      "title": "O que são gatilhos e como o contexto modifica a reação",
+      "lesson_id": "19407ea5-1dfc-5573-a7b5-a73ffe693ea4",
+      "lesson_version_id": "0a72f0f7-94f4-5c5f-a845-475435e50f51",
+      "content_block_id": "692ae081-d80e-5fde-a039-326f662fb687",
+      "estimated_minutes": 24,
+      "source_sha256": "086756fabe3128fe9d9d2bfce6c29cc0c7ec1bc826faa0fec8bc5d2f36de5bda",
+      "source_bytes": 5280,
+      "words": 742,
+      "headings": 18,
+      "evidence_mentions": [],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M03-A02",
+      "key": "ie-m03-a02",
+      "module_no": 3,
+      "lesson_no": 2,
+      "title": "Estado interno, sono e expectativas",
+      "lesson_id": "f080aa03-e34c-53f9-a5c8-eec322e43ca7",
+      "lesson_version_id": "c6e9fdf0-f708-54af-ae98-645667196973",
+      "content_block_id": "a82704bf-37f1-599e-a190-3eb05e171a10",
+      "estimated_minutes": 24,
+      "source_sha256": "576629ed374efdb6db5738e5be81d119742e17731f206e18b48b99517bd9cbfd",
+      "source_bytes": 4603,
+      "words": 615,
+      "headings": 26,
+      "evidence_mentions": [],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M03-A03",
+      "key": "ie-m03-a03",
+      "module_no": 3,
+      "lesson_no": 3,
+      "title": "Reconhecer padrões sem transformar comportamento em identidade",
+      "lesson_id": "645d219b-cd17-5538-ab26-4abd6f4cda77",
+      "lesson_version_id": "ddb527b8-950c-536b-a2f3-5f102456c221",
+      "content_block_id": "5d93501c-992f-503d-a522-2c149c2da2ce",
+      "estimated_minutes": 24,
+      "source_sha256": "67c4f47294064c9a95a2fbd0bb5ebf712cf540d17b557dc0991373c87bc6cbd6",
+      "source_bytes": 5773,
+      "words": 770,
+      "headings": 33,
+      "evidence_mentions": [
+        "E02"
+      ],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M03-A04",
+      "key": "ie-m03-a04",
+      "module_no": 3,
+      "lesson_no": 4,
+      "title": "Analisar padrões e construir respostas antecipadas",
+      "lesson_id": "4ef4f5cd-ac3c-5528-af6b-e74a9936ae82",
+      "lesson_version_id": "bed412d4-bbd7-5e96-ac6f-dc11123d0536",
+      "content_block_id": "a907b145-09d5-5c4a-a99f-3b954a4a4e82",
+      "estimated_minutes": 24,
+      "source_sha256": "60ed467af64a17465545df716907d5934855e5e239e66c5af3eb829731a6e078",
+      "source_bytes": 6508,
+      "words": 880,
+      "headings": 30,
+      "evidence_mentions": [],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M03-A05",
+      "key": "ie-m03-a05",
+      "module_no": 3,
+      "lesson_no": 5,
+      "title": "Laboratório e Mapa de Padrões E03",
+      "lesson_id": "cc8adf82-a103-5bba-aa41-66b84f1f0dff",
+      "lesson_version_id": "ba4c084c-97af-5375-a65a-2fd7ed6e7e7d",
+      "content_block_id": "55872ad4-1c4a-50b8-a4c8-fbc8059c9b8a",
+      "estimated_minutes": 24,
+      "source_sha256": "bd5b5d63f3b4db71d05f788c7d84d22ef7c32a52c125d5287dbe42594c770ff6",
+      "source_bytes": 4079,
+      "words": 605,
+      "headings": 18,
+      "evidence_mentions": [
+        "E03"
+      ],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M04-A01",
+      "key": "ie-m04-a01",
+      "module_no": 4,
+      "lesson_no": 1,
+      "title": "PAUSA: recuperar autoria antes da resposta",
+      "lesson_id": "35fdd463-78f3-5f6b-a52c-86cc2ec0bb40",
+      "lesson_version_id": "8309f6dd-6827-5a5f-aa55-cd4c18929c8c",
+      "content_block_id": "f5594973-edf6-59a5-a7f1-49caaba62274",
+      "estimated_minutes": 24,
+      "source_sha256": "f98c9521e5f4ece00e08876404e6d67d18e7a065a3d480b5b692a032cf62b019",
+      "source_bytes": 4586,
+      "words": 635,
+      "headings": 22,
+      "evidence_mentions": [],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M04-A02",
+      "key": "ie-m04-a02",
+      "module_no": 4,
+      "lesson_no": 2,
+      "title": "Atenção, tempo e urgência: como pausar com responsabilidade",
+      "lesson_id": "c93e8ec9-6c49-50cf-a5e6-54a6d3a64332",
+      "lesson_version_id": "e975e86f-1c46-583a-a65b-f997d765e1f1",
+      "content_block_id": "38d6c167-4882-536e-aa4c-ae6a577a1217",
+      "estimated_minutes": 24,
+      "source_sha256": "e4b4cb1e36576b22ba99cf9d2aef2db9b056307ba2884a486cf31a967216a582",
+      "source_bytes": 4389,
+      "words": 618,
+      "headings": 28,
+      "evidence_mentions": [],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M04-A03",
+      "key": "ie-m04-a03",
+      "module_no": 4,
+      "lesson_no": 3,
+      "title": "Orientação atencional, seleção e técnica 3R",
+      "lesson_id": "c16f245c-7c27-5e57-a46a-d88f3a8fdcfa",
+      "lesson_version_id": "a2578995-cbf4-5d2f-ac16-5dae66fa2d91",
+      "content_block_id": "f22130e9-2ab5-5084-ae28-5d05a5e4dad4",
+      "estimated_minutes": 24,
+      "source_sha256": "50748f0bf52c138522e7b609c448326c2acfb38e76a978063eb8ad40e5155e60",
+      "source_bytes": 5247,
+      "words": 703,
+      "headings": 24,
+      "evidence_mentions": [],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M04-A04",
+      "key": "ie-m04-a04",
+      "module_no": 4,
+      "lesson_no": 4,
+      "title": "PAUSA aplicada: família, liderança, mensagens e decisões",
+      "lesson_id": "8a10c1cb-05f0-550b-a995-74731ab89047",
+      "lesson_version_id": "cb193a9a-9728-5188-a83d-76e453e27113",
+      "content_block_id": "7b1240f0-e02c-5622-a98f-7b7294c4a3f9",
+      "estimated_minutes": 24,
+      "source_sha256": "0019477770c645b4ca8db2a76fce4c5595de598af4ea6164f207e4024f8f270b",
+      "source_bytes": 6127,
+      "words": 894,
+      "headings": 49,
+      "evidence_mentions": [],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M04-A05",
+      "key": "ie-m04-a05",
+      "module_no": 4,
+      "lesson_no": 5,
+      "title": "Laboratório, evidência E04 e integração",
+      "lesson_id": "f65dcd2d-5513-52ec-a114-234ed120154f",
+      "lesson_version_id": "f51866f2-97fc-5f00-a4d5-23ba4c0a103b",
+      "content_block_id": "76f70b58-c3ce-5db4-a6a1-d34db5d678ed",
+      "estimated_minutes": 24,
+      "source_sha256": "94a76f655b060301f7fc64afba18c72a96bc4d879e1a316637426bdb27ce86b8",
+      "source_bytes": 4791,
+      "words": 702,
+      "headings": 26,
+      "evidence_mentions": [
+        "E04"
+      ],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M05-A01",
+      "key": "ie-m05-a01",
+      "module_no": 5,
+      "lesson_no": 1,
+      "title": "Fundamentos da regulação e as cinco portas",
+      "lesson_id": "13dabdae-b089-5697-acd8-bfa3eacf854e",
+      "lesson_version_id": "e108d58a-51ff-5761-a5ce-f3b2481a1188",
+      "content_block_id": "f42b6553-7e3c-5680-a1c6-49ae04fbae00",
+      "estimated_minutes": 24,
+      "source_sha256": "4efd14806c344b2dbf0f3f90107d5612d81dfdae90d4b27d89c5726404eb168d",
+      "source_bytes": 6900,
+      "words": 960,
+      "headings": 27,
+      "evidence_mentions": [],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M05-A02",
+      "key": "ie-m05-a02",
+      "module_no": 5,
+      "lesson_no": 2,
+      "title": "Ambiente, atenção e reavaliação REAL",
+      "lesson_id": "06a6f533-fdf9-5088-a0d5-588466edabe2",
+      "lesson_version_id": "23cee2a7-6f52-5795-a1f0-4084b8b84d5e",
+      "content_block_id": "884f54f6-326c-525c-aff6-b74fcaf261d3",
+      "estimated_minutes": 24,
+      "source_sha256": "772fd2e3f0bdb3e6590960a086962d54d5b3e6f53e1fb31eb47d037ee01eb615",
+      "source_bytes": 5761,
+      "words": 791,
+      "headings": 30,
+      "evidence_mentions": [],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M05-A03",
+      "key": "ie-m05-a03",
+      "module_no": 5,
+      "lesson_no": 3,
+      "title": "Resposta, aceitação e repertório de regulação",
+      "lesson_id": "623f6bd9-8d9d-594f-aa7d-dec69ad7131f",
+      "lesson_version_id": "2b87253e-aed5-5257-a5cf-cf581bcb977a",
+      "content_block_id": "edfc6451-aa4f-56e3-ac40-77680ed5097b",
+      "estimated_minutes": 24,
+      "source_sha256": "8502d4d631afc3b14a30c8e831c214979fede522f131a79b5eaab62c69b5952e",
+      "source_bytes": 5906,
+      "words": 755,
+      "headings": 24,
+      "evidence_mentions": [],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M05-A04",
+      "key": "ie-m05-a04",
+      "module_no": 5,
+      "lesson_no": 4,
+      "title": "Flexibilidade FLEX e aplicação em situações reais",
+      "lesson_id": "18edcfc4-cebf-5426-a44e-be912edba73f",
+      "lesson_version_id": "925e491f-ff13-589d-afae-ba37ce23f8f0",
+      "content_block_id": "e76ab941-69d7-592a-a17f-b08c20950e32",
+      "estimated_minutes": 24,
+      "source_sha256": "f7ab24005c23c3574664e327a0a3e25b074f3c792649a2120e770d1ae3191bb8",
+      "source_bytes": 6493,
+      "words": 873,
+      "headings": 31,
+      "evidence_mentions": [],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M05-A05",
+      "key": "ie-m05-a05",
+      "module_no": 5,
+      "lesson_no": 5,
+      "title": "Laboratório, repertório E05 e integração",
+      "lesson_id": "70d285ba-a843-583b-a421-a040f3b3e1dd",
+      "lesson_version_id": "49f12a8d-9c76-5a91-a3c1-46ad0777181e",
+      "content_block_id": "6751ab7d-7bf7-52b2-a279-e2a57b2193a5",
+      "estimated_minutes": 24,
+      "source_sha256": "2fc97729857d688112df04acf2dbea6bbe42ae4a01d2915a0bedf06762b6122e",
+      "source_bytes": 5291,
+      "words": 792,
+      "headings": 16,
+      "evidence_mentions": [
+        "E05"
+      ],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M06-A01",
+      "key": "ie-m06-a01",
+      "module_no": 6,
+      "lesson_no": 1,
+      "title": "Fatos, interpretações e o protocolo FIR",
+      "lesson_id": "fd60d970-cf28-5e66-a5d2-2b0e4e832380",
+      "lesson_version_id": "02324eaf-115c-56eb-a8c2-ef0ad373a10c",
+      "content_block_id": "0b08ad2f-b57f-5a96-ac54-d8b0bce02e4d",
+      "estimated_minutes": 24,
+      "source_sha256": "83f24b5bb7bf72d35508a514e022475f9a2fec9cd6a5f6edaff1b1596fcec145",
+      "source_bytes": 5361,
+      "words": 760,
+      "headings": 25,
+      "evidence_mentions": [],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M06-A02",
+      "key": "ie-m06-a02",
+      "module_no": 6,
+      "lesson_no": 2,
+      "title": "Certeza, incerteza e armadilhas de interpretação",
+      "lesson_id": "31b3d719-7a21-5bba-ae93-0920e01d5d19",
+      "lesson_version_id": "33d070e6-740d-5394-a214-38384d49296e",
+      "content_block_id": "8da478b3-7e84-52c0-acb3-43ffa3290f63",
+      "estimated_minutes": 24,
+      "source_sha256": "93ecbed7bb38fcb6506f5fbaf2fe65e647499748d8cdb48f8dfbe0b43cc648ed",
+      "source_bytes": 7150,
+      "words": 966,
+      "headings": 24,
+      "evidence_mentions": [],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M06-A03",
+      "key": "ie-m06-a03",
+      "module_no": 6,
+      "lesson_no": 3,
+      "title": "Hipóteses alternativas, limites e método REAL",
+      "lesson_id": "387ea7a8-f663-5141-af77-11da163eced6",
+      "lesson_version_id": "8694734b-d92c-5962-aa77-b5f361574045",
+      "content_block_id": "de972b51-633b-570d-a246-9227fe965cb7",
+      "estimated_minutes": 24,
+      "source_sha256": "09d8155dda793b1f46d290803d0f9ade7185b63c2a6847c36c29701a96dca9cd",
+      "source_bytes": 5971,
+      "words": 810,
+      "headings": 38,
+      "evidence_mentions": [],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M06-A04",
+      "key": "ie-m06-a04",
+      "module_no": 6,
+      "lesson_no": 4,
+      "title": "Decidir com evidências e praticar em casos reais",
+      "lesson_id": "b21433a4-5a63-5c32-a985-4196e672169d",
+      "lesson_version_id": "c12dbe15-738f-5992-a320-823e8dea5e17",
+      "content_block_id": "e672d991-cc75-502a-a581-ee7562c64a48",
+      "estimated_minutes": 24,
+      "source_sha256": "9770a62170dfefa3bd5d69bc35ce7e8b08f3ca50a22d737c09d9846f87a20efc",
+      "source_bytes": 6598,
+      "words": 888,
+      "headings": 39,
+      "evidence_mentions": [],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M06-A05",
+      "key": "ie-m06-a05",
+      "module_no": 6,
+      "lesson_no": 5,
+      "title": "Dossiê FIR–REAL e síntese do módulo",
+      "lesson_id": "a2c6218d-3614-5cb5-a684-f8aee2aa9439",
+      "lesson_version_id": "d8061ef6-b314-5123-af2d-bb338d3811c6",
+      "content_block_id": "51fc3c9b-ec5b-5f5a-a5bb-67e806d92798",
+      "estimated_minutes": 24,
+      "source_sha256": "df7d8f855efee50e8273fc066819ead41ff0afcf1538d6a56d60b7b1d7676fa9",
+      "source_bytes": 3458,
+      "words": 537,
+      "headings": 20,
+      "evidence_mentions": [
+        "E06"
+      ],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M07-A01",
+      "key": "ie-m07-a01",
+      "module_no": 7,
+      "lesson_no": 1,
+      "title": "Comunicação, intenção e a Ponte V&C",
+      "lesson_id": "d8c1c84b-0f6e-58b3-a983-529ebd821825",
+      "lesson_version_id": "b80ad6c4-3468-5772-a2cd-8a8d9b644373",
+      "content_block_id": "e2471589-a00a-5c2b-a7f3-0e6b6747a488",
+      "estimated_minutes": 24,
+      "source_sha256": "0fa4c92d93e0cde40c8072c7b5a6d714f37c781a3b1e84bd02198e15a9bd0aeb",
+      "source_bytes": 5957,
+      "words": 800,
+      "headings": 25,
+      "evidence_mentions": [],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M07-A02",
+      "key": "ie-m07-a02",
+      "module_no": 7,
+      "lesson_no": 2,
+      "title": "Conversa CLARO: clareza, limites e responsabilidade",
+      "lesson_id": "52c79aca-6492-5665-ace8-6d11d39a6e9a",
+      "lesson_version_id": "c97c566b-06a2-56b8-ab23-8d7d89aa60bd",
+      "content_block_id": "6ac033eb-8731-521b-ab01-4c1dad7ee2f3",
+      "estimated_minutes": 24,
+      "source_sha256": "f40a03ad4a7e1b4afe1ee5554e62eec93ddfda85065d9e161e1ebab1131322e9",
+      "source_bytes": 5853,
+      "words": 837,
+      "headings": 32,
+      "evidence_mentions": [],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M07-A03",
+      "key": "ie-m07-a03",
+      "module_no": 7,
+      "lesson_no": 3,
+      "title": "Escuta, empatia e conversas difíceis",
+      "lesson_id": "49bb7b74-131a-5984-ad39-8cca6815f88b",
+      "lesson_version_id": "10e6a9c0-081d-5e40-ab2a-e3cfdbf96201",
+      "content_block_id": "7b1de86d-e643-5faf-ac5f-6d7b5d7b919b",
+      "estimated_minutes": 24,
+      "source_sha256": "cdb71ee0c6d9ce90963495edb21c323974fa7d4b3bb4421ee4dffecf4366e3b3",
+      "source_bytes": 6302,
+      "words": 889,
+      "headings": 34,
+      "evidence_mentions": [],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M07-A04",
+      "key": "ie-m07-a04",
+      "module_no": 7,
+      "lesson_no": 4,
+      "title": "Feedback FARO, reparação e segurança",
+      "lesson_id": "784e9d11-9678-5ae6-abd5-be18a4c86d1c",
+      "lesson_version_id": "3de00ff0-f684-53e9-a473-9ddb9a4bd94e",
+      "content_block_id": "a6e8ee25-cbad-5f76-a4b0-a7e9c3c9c3e2",
+      "estimated_minutes": 24,
+      "source_sha256": "e9f6b906b824738127804c8101aef4fde5bee5b5c7abce8c3841ea9cc28e5704",
+      "source_bytes": 7392,
+      "words": 993,
+      "headings": 31,
+      "evidence_mentions": [],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M07-A05",
+      "key": "ie-m07-a05",
+      "module_no": 7,
+      "lesson_no": 5,
+      "title": "Laboratório, conversa CLARO e evidência E07",
+      "lesson_id": "51220676-c93e-5166-aa54-7c168ef7ed8e",
+      "lesson_version_id": "ccf4b53a-9efe-51ab-a174-48a61a829458",
+      "content_block_id": "6b4d46fd-8484-522b-a581-a9a49702bcb7",
+      "estimated_minutes": 24,
+      "source_sha256": "992328c9d73a9d5d5ec7ba5fb6c38f39d6b733673a11c83365354f71abbfad50",
+      "source_bytes": 6490,
+      "words": 972,
+      "headings": 42,
+      "evidence_mentions": [
+        "E07"
+      ],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M08-A01",
+      "key": "ie-m08-a01",
+      "module_no": 8,
+      "lesson_no": 1,
+      "title": "Relações, padrões e ELOS",
+      "lesson_id": "684a7163-58b1-599a-aeb6-dc882be2ea39",
+      "lesson_version_id": "19dc563c-30e1-5876-a67b-21d9a46b5293",
+      "content_block_id": "592176f9-5973-56db-a0dc-7321851237bd",
+      "estimated_minutes": 24,
+      "source_sha256": "76d26db4fa1c9e23b09a1cb09ed074480fd94ac645b432ba486a311e5a732434",
+      "source_bytes": 8144,
+      "words": 1167,
+      "headings": 37,
+      "evidence_mentions": [],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M08-A02",
+      "key": "ie-m08-a02",
+      "module_no": 8,
+      "lesson_no": 2,
+      "title": "Empatia, limites e reciprocidade",
+      "lesson_id": "aa7f42c1-25be-5c93-a7de-889c743dedce",
+      "lesson_version_id": "cf945ace-718e-5695-a11c-a68bf598df5a",
+      "content_block_id": "3d215b3c-d9ca-5f4d-ac2f-925956b98fd0",
+      "estimated_minutes": 24,
+      "source_sha256": "10300849775b4e0642b5e5bffaecf752ce383bc98f3d4d7e141258c664a570d4",
+      "source_bytes": 6747,
+      "words": 929,
+      "headings": 38,
+      "evidence_mentions": [],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M08-A03",
+      "key": "ie-m08-a03",
+      "module_no": 8,
+      "lesson_no": 3,
+      "title": "Confiança, CPTR e reparação",
+      "lesson_id": "408364e8-246d-5471-ad69-8cd990c61d9d",
+      "lesson_version_id": "8e8d3b76-754b-580d-a85e-30b1289b970e",
+      "content_block_id": "e6ba080f-3df9-5118-a0cd-1325b4420a57",
+      "estimated_minutes": 24,
+      "source_sha256": "91ea4ee0d3180086c470a9d5e351206a4ff2b80cefc911a81ecbc19945411fe0",
+      "source_bytes": 7822,
+      "words": 1037,
+      "headings": 41,
+      "evidence_mentions": [],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M08-A04",
+      "key": "ie-m08-a04",
+      "module_no": 8,
+      "lesson_no": 4,
+      "title": "Segurança e diferentes vínculos",
+      "lesson_id": "792fd9c5-fec8-54f5-a440-3d5bf413ffbb",
+      "lesson_version_id": "c6ad4ae8-bed5-59a0-a3a9-2a98c98e4ba9",
+      "content_block_id": "c3abda64-fc21-5c92-a06e-8c12949e3fbf",
+      "estimated_minutes": 24,
+      "source_sha256": "b09c1780b37b89dce7aed9d020a303e540bfba8e372856ca4ae964a08ca1f91a",
+      "source_bytes": 4814,
+      "words": 623,
+      "headings": 21,
+      "evidence_mentions": [],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M08-A05",
+      "key": "ie-m08-a05",
+      "module_no": 8,
+      "lesson_no": 5,
+      "title": "Laboratório e evidência E08",
+      "lesson_id": "03374670-d36c-571b-a95e-abf593275b10",
+      "lesson_version_id": "fa321806-2eaf-53fa-a293-5caf24654f81",
+      "content_block_id": "c9b0893e-6cd0-5fbb-a0cd-8f422ba26c8c",
+      "estimated_minutes": 24,
+      "source_sha256": "f823e48238568e4125416f3c084dc1ed5c5ba1684dcbca58c8d829d35710dfb6",
+      "source_bytes": 4217,
+      "words": 611,
+      "headings": 33,
+      "evidence_mentions": [
+        "E08"
+      ],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M09-A01",
+      "key": "ie-m09-a01",
+      "module_no": 9,
+      "lesson_no": 1,
+      "title": "Emoção, urgência e regra 3T",
+      "lesson_id": "f0906766-4149-568e-afcb-0c9ebf6d028c",
+      "lesson_version_id": "a26191db-6a07-5e5b-a1a8-58f1b8bd1549",
+      "content_block_id": "caad15ab-d5f5-5350-ae5a-86fdc86e388b",
+      "estimated_minutes": 24,
+      "source_sha256": "90c8e7eacf2b7a570374dd6daf702adaae29e7e0d8f9cb7e87da7b48c6b9ea3a",
+      "source_bytes": 9370,
+      "words": 1225,
+      "headings": 48,
+      "evidence_mentions": [],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M09-A02",
+      "key": "ie-m09-a02",
+      "module_no": 9,
+      "lesson_no": 2,
+      "title": "Método DECIDE e análise de alternativas",
+      "lesson_id": "cf29eebb-4ad1-5c07-a96f-f278ea62d30a",
+      "lesson_version_id": "0f2d71fd-f6ea-5901-a037-68c32cb7c3b4",
+      "content_block_id": "71cd00b8-ea5e-5194-ae7d-14eca771ced0",
+      "estimated_minutes": 24,
+      "source_sha256": "d3628fe210c333c90f3b2dacca0896c11cc4c498ecb647bca09dc589ed562a69",
+      "source_bytes": 6591,
+      "words": 926,
+      "headings": 45,
+      "evidence_mentions": [],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M09-A03",
+      "key": "ie-m09-a03",
+      "module_no": 9,
+      "lesson_no": 3,
+      "title": "Decidir, executar e revisar",
+      "lesson_id": "03625575-7415-50e5-afcf-8fea643383cc",
+      "lesson_version_id": "9d737353-4373-5da7-a198-6db93b472f6a",
+      "content_block_id": "8044df36-9859-58b9-ac39-603bbbcfcd03",
+      "estimated_minutes": 24,
+      "source_sha256": "645705374e5d1d41b69f4c1510516806db30d4c4977acca475a1d8b6071d3e78",
+      "source_bytes": 8035,
+      "words": 1107,
+      "headings": 41,
+      "evidence_mentions": [],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M09-A04",
+      "key": "ie-m09-a04",
+      "module_no": 9,
+      "lesson_no": 4,
+      "title": "Casos e laboratório de decisões",
+      "lesson_id": "b37a7139-d65a-5bbe-a5a2-5773c859eb52",
+      "lesson_version_id": "cc834b44-ed55-5ae1-abb1-f10b1cdb0fbe",
+      "content_block_id": "4beca9f0-16fe-5509-ab0a-e85d55d386f7",
+      "estimated_minutes": 24,
+      "source_sha256": "62511934b4f48bbec607b0bbb94b2e9a954cfbb3940dcc96121dbe9fee88d8aa",
+      "source_bytes": 4770,
+      "words": 633,
+      "headings": 25,
+      "evidence_mentions": [],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M09-A05",
+      "key": "ie-m09-a05",
+      "module_no": 9,
+      "lesson_no": 5,
+      "title": "Evidência E09 — decisão estruturada",
+      "lesson_id": "a3a02659-40c1-5300-ab5a-303e6c1f584d",
+      "lesson_version_id": "d0ae186e-d5d3-5bc8-aa32-2d1b280af90e",
+      "content_block_id": "a1040df3-1d88-5826-a3cb-6e1f3e045ee2",
+      "estimated_minutes": 24,
+      "source_sha256": "1738ba4f16f46f8b6554f36f4acaea0c8924f8d1693d8c7929b15983f3ca5cb8",
+      "source_bytes": 1928,
+      "words": 272,
+      "headings": 19,
+      "evidence_mentions": [
+        "E09"
+      ],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M10-A01",
+      "key": "ie-m10-a01",
+      "module_no": 10,
+      "lesson_no": 1,
+      "title": "Integração e método CALMA",
+      "lesson_id": "7b7a0930-a5e0-5bf0-a5b3-d40040edbd20",
+      "lesson_version_id": "42e52ab4-cfd1-5a8e-aafd-5dd255a1c39d",
+      "content_block_id": "ac59de84-74ca-5d16-aead-15235436fdd2",
+      "estimated_minutes": 24,
+      "source_sha256": "1a5f7a47c1eb7de6ca4f8921d0654bfc12f1b93fb862dee76e3ce8475c2f853c",
+      "source_bytes": 6566,
+      "words": 973,
+      "headings": 54,
+      "evidence_mentions": [
+        "E01",
+        "E02",
+        "E03",
+        "E04",
+        "E05",
+        "E06",
+        "E07",
+        "E08",
+        "E09"
+      ],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M10-A02",
+      "key": "ie-m10-a02",
+      "module_no": 10,
+      "lesson_no": 2,
+      "title": "Autoavaliação educacional e limites",
+      "lesson_id": "e0ee8f1a-3b29-526a-a574-973515a3ea84",
+      "lesson_version_id": "a133d57a-d6a7-5caa-a1c8-2e1ae76503d5",
+      "content_block_id": "f15a8541-7660-546a-abac-8ded013fdfe1",
+      "estimated_minutes": 24,
+      "source_sha256": "ec2c45ce9cff708bca19335a2b5c8c3891921042cffdbedc2f344e95363670b0",
+      "source_bytes": 5330,
+      "words": 706,
+      "headings": 25,
+      "evidence_mentions": [],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M10-A03",
+      "key": "ie-m10-a03",
+      "module_no": 10,
+      "lesson_no": 3,
+      "title": "Projeto IE30: comportamento e indicadores",
+      "lesson_id": "18577dc1-7924-56d4-a132-0ee6a841a4bb",
+      "lesson_version_id": "c1937e1f-96ac-5275-aa55-04db1ca6fa10",
+      "content_block_id": "5726216b-fbeb-54a8-a9fb-19f0fa962bf5",
+      "estimated_minutes": 24,
+      "source_sha256": "8e084b19e8d46463d9ac1f96e29cd73295b32a1b0fbb3c71ef5cb705d408b0f6",
+      "source_bytes": 9348,
+      "words": 1271,
+      "headings": 67,
+      "evidence_mentions": [],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M10-A04",
+      "key": "ie-m10-a04",
+      "module_no": 10,
+      "lesson_no": 4,
+      "title": "IE30: quatro semanas e consolidação",
+      "lesson_id": "9e8c3331-9611-5d9e-a03b-08965cf11721",
+      "lesson_version_id": "d51542e2-1185-5615-ab01-ded114a40cf6",
+      "content_block_id": "dd6dd1ed-faeb-5188-aa81-988ab03ee11c",
+      "estimated_minutes": 24,
+      "source_sha256": "9a05e3a3b91c3cae9fac4e3e98f651c311acbe74b2d1029d9cddcc2f2544fa0a",
+      "source_bytes": 5396,
+      "words": 742,
+      "headings": 47,
+      "evidence_mentions": [],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    },
+    {
+      "code": "IE-M10-A05",
+      "key": "ie-m10-a05",
+      "module_no": 10,
+      "lesson_no": 5,
+      "title": "Projeto integrador E10 e entrega",
+      "lesson_id": "67907d80-5265-5aa3-a215-757353b08e9a",
+      "lesson_version_id": "24121111-814c-5e4f-a7dd-be777371c67f",
+      "content_block_id": "7dba431c-528f-5f9a-ae2f-df966927ef24",
+      "estimated_minutes": 24,
+      "source_sha256": "bd493e0dbc170037d4a195850548f44a0528a8e4fbb60d7f3a98fe3174300c81",
+      "source_bytes": 1624,
+      "words": 227,
+      "headings": 11,
+      "evidence_mentions": [
+        "E10"
+      ],
+      "gaps": [
+        "Homologação acadêmica e bibliografia pendentes; importação técnica não aprova o material.",
+        "Distribuição de 24 minutos por aula é técnica e precisa de homologação."
+      ]
+    }
+  ],
+  "summary": {
+    "lessons": 50,
+    "modules": 10,
+    "words": 37732,
+    "references": 44,
+    "editorial_approval": false,
+    "question_candidates": 6
+  },
+  "references": [
+    {
+      "aula": "IE-M01-A01",
+      "url": "https://www.annualreviews.org/content/journals/10.1146/annurev.psych.50.1.191",
+      "dominio": "www.annualreviews.org",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "d353041a9c790e7a2baadc67ddde45b711d406e9b3214afb542f74a9181dc4d4"
+    },
+    {
+      "aula": "IE-M01-A01",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/26151184/",
+      "dominio": "pubmed.ncbi.nlm.nih.gov",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "54ac91cd42cf6f0ee9fab857aaac627ea08aea4fd10528dd9e67248f0e1b7ce4"
+    },
+    {
+      "aula": "IE-M01-A03",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/30110576/",
+      "dominio": "pubmed.ncbi.nlm.nih.gov",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "5de3d6a9eb84aa8ac7842ec709b3d4a6d82496b77e1a12c13bfc2a93bc8ccfaf"
+    },
+    {
+      "aula": "IE-M01-A04",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8377228/",
+      "dominio": "pmc.ncbi.nlm.nih.gov",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "49b3a63967087da9ff8b7c39d5c4a7367ad67ddb5113c51a78b9cf26cf35990d"
+    },
+    {
+      "aula": "IE-M02-A01",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7780233/",
+      "dominio": "pmc.ncbi.nlm.nih.gov",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "1fbad27361d2f718c7bb6733487589cc78bbcec486199a0bb060abee83cb2f2a"
+    },
+    {
+      "aula": "IE-M02-A02",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/40816203/",
+      "dominio": "pubmed.ncbi.nlm.nih.gov",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "1b14626520b47e3230316708189f910bb993b8ab22482f088e2970134b003016"
+    },
+    {
+      "aula": "IE-M02-A02",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13269579/",
+      "dominio": "pmc.ncbi.nlm.nih.gov",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "74b06ddf6868a2294ee85b1b09b4facec3859b8a0ea7c0469e45f4a91783516f"
+    },
+    {
+      "aula": "IE-M02-A05",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7615164/",
+      "dominio": "pmc.ncbi.nlm.nih.gov",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "5908144a804bbfe40aabb7d453da3d72a5081413be0be24cbe2a04df1ff5f898"
+    },
+    {
+      "aula": "IE-M03-A02",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/38127505/",
+      "dominio": "pubmed.ncbi.nlm.nih.gov",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "9f0f7bd260129ccab71572e74aafbd784c9577e4aabd6e56ca6584c9b14073de"
+    },
+    {
+      "aula": "IE-M03-A02",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/8193556/",
+      "dominio": "pmc.ncbi.nlm.nih.gov",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "2ad3d93f79320527d5662bda91dc089b6d9dd7d58b4dbb42849645968d4cfb7c"
+    },
+    {
+      "aula": "IE-M03-A02",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/40907885/",
+      "dominio": "pubmed.ncbi.nlm.nih.gov",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "bdb17e26dd3cb0d03bddcb6aa46038d4711bed22540276356d5190787dff584d"
+    },
+    {
+      "aula": "IE-M03-A04",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4500900/",
+      "dominio": "pmc.ncbi.nlm.nih.gov",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "3c172e0edc6237b976a51f4349a44ea05c28897e043b143b5eb4695265e33e7a"
+    },
+    {
+      "aula": "IE-M03-A04",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4370584/",
+      "dominio": "pmc.ncbi.nlm.nih.gov",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "7ac84db7835f0171c5d7d3a210588299dee08aec5478f38c273339132e857bc0"
+    },
+    {
+      "aula": "IE-M03-A04",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3499914/",
+      "dominio": "pmc.ncbi.nlm.nih.gov",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "dd904cd0419d67e7cbea31a74a1ab59c47a27f57b8e3c84760f20da8874c6c4c"
+    },
+    {
+      "aula": "IE-M04-A03",
+      "url": "https://tdr.who.int/home/our-work/global-engagement/9789240003927",
+      "dominio": "tdr.who.int",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "ea7f7fc35bffa6d2769e15b0eddd891b8559e4215a084c866127da0c8dcef426"
+    },
+    {
+      "aula": "IE-M04-A03",
+      "url": "https://iris.who.int/bitstream/handle/10665/331901/9789240011670-eng.pdf",
+      "dominio": "iris.who.int",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "4bbeba7a6c52a46f8ae04ef3ceabb5e551475473ffe29380a4b0cd6d9895658e"
+    },
+    {
+      "aula": "IE-M04-A03",
+      "url": "https://www.emro.who.int/mhps/dealing_with_stress.html",
+      "dominio": "www.emro.who.int",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "86906de82e8676b13dfc93e55f2b458626649a4834f79036b0b2cb746fbfa9d5"
+    },
+    {
+      "aula": "IE-M04-A04",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4500900/",
+      "dominio": "pmc.ncbi.nlm.nih.gov",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "3c172e0edc6237b976a51f4349a44ea05c28897e043b143b5eb4695265e33e7a"
+    },
+    {
+      "aula": "IE-M05-A01",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3887268/",
+      "dominio": "pmc.ncbi.nlm.nih.gov",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "740d68821d56936f1b4afd159128c296a150e7c010d467978af34713b345f829"
+    },
+    {
+      "aula": "IE-M05-A01",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6367256",
+      "dominio": "pmc.ncbi.nlm.nih.gov",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "1825958c6e3fe38991311c7210b0681e2da2b48f084e3ac3b7edb5b8dda9a30c"
+    },
+    {
+      "aula": "IE-M05-A01",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11486788/",
+      "dominio": "pmc.ncbi.nlm.nih.gov",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "8d9c016ef48e77df2b13a1dc872b16b16ac045e9c76985c5c56ad905ab3aa278"
+    },
+    {
+      "aula": "IE-M05-A01",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3887268/",
+      "dominio": "pmc.ncbi.nlm.nih.gov",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "740d68821d56936f1b4afd159128c296a150e7c010d467978af34713b345f829"
+    },
+    {
+      "aula": "IE-M05-A02",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3887268/",
+      "dominio": "pmc.ncbi.nlm.nih.gov",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "740d68821d56936f1b4afd159128c296a150e7c010d467978af34713b345f829"
+    },
+    {
+      "aula": "IE-M05-A03",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12312699/",
+      "dominio": "pmc.ncbi.nlm.nih.gov",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "aa3b118e82998568930013e0a278a8403b9bb66c0c77512a3aabe0f4ead5a834"
+    },
+    {
+      "aula": "IE-M05-A03",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12312699/",
+      "dominio": "pmc.ncbi.nlm.nih.gov",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "aa3b118e82998568930013e0a278a8403b9bb66c0c77512a3aabe0f4ead5a834"
+    },
+    {
+      "aula": "IE-M05-A04",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10247655/",
+      "dominio": "pmc.ncbi.nlm.nih.gov",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "33c3f7deb6d28df9ae4acbf09876f23e4ff30ff1e454e7be54d1109e3c8ae72f"
+    },
+    {
+      "aula": "IE-M06-A02",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4204511/",
+      "dominio": "pmc.ncbi.nlm.nih.gov",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "04fe35d7832c1992af35dd05e6be0af7292b3e75e55b5e33bd3dc889e1b3bec8"
+    },
+    {
+      "aula": "IE-M06-A02",
+      "url": "https://www.annualreviews.org/content/journals/10.1146/annurev.psych.49.1.259",
+      "dominio": "www.annualreviews.org",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "b154dc6ad78e19c9272358ecdaa8a5aaa3927ee466084dec366dd7740eaf30c2"
+    },
+    {
+      "aula": "IE-M07-A02",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13006558/",
+      "dominio": "pmc.ncbi.nlm.nih.gov",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "ae75ff1bae13eebeec94894a29a2a78f95680452af6f9c9163aabd52a2509ae1"
+    },
+    {
+      "aula": "IE-M07-A03",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13340324/",
+      "dominio": "pmc.ncbi.nlm.nih.gov",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "da05f2f69759ef50abe7365ece5b969206a003b96350f62cd9fc221399530bcc"
+    },
+    {
+      "aula": "IE-M07-A04",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7170595/",
+      "dominio": "pmc.ncbi.nlm.nih.gov",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "0df6a8dbee88093b78d4e6c6dec40baccf897ba94b43b45f358a5e2abb5d1967"
+    },
+    {
+      "aula": "IE-M07-A04",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7011517/",
+      "dominio": "pmc.ncbi.nlm.nih.gov",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "8e53b475fa648434d134840118c84d54e645a6d3bf0e0d091f5b06f316867229"
+    },
+    {
+      "aula": "IE-M07-A04",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7011517/",
+      "dominio": "pmc.ncbi.nlm.nih.gov",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "8e53b475fa648434d134840118c84d54e645a6d3bf0e0d091f5b06f316867229"
+    },
+    {
+      "aula": "IE-M08-A01",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3218801/",
+      "dominio": "pmc.ncbi.nlm.nih.gov",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "ed18959798f63f41bf435cebc0ae1a5fb800f79c8ec332853a42e837e4aa88f7"
+    },
+    {
+      "aula": "IE-M08-A01",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3014221/",
+      "dominio": "pmc.ncbi.nlm.nih.gov",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "ea909289ea742ca582e3abca7fb5b24f2373e102a38f9964f4db3fcd1f0301bc"
+    },
+    {
+      "aula": "IE-M08-A02",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2891543/",
+      "dominio": "pmc.ncbi.nlm.nih.gov",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "2db7f7d59b8edb4914f5aeb31c01c5d8dac652a226c4ddb85979244f95462bd4"
+    },
+    {
+      "aula": "IE-M08-A03",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4593729/",
+      "dominio": "pmc.ncbi.nlm.nih.gov",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "aa02d4e9cc45d53d651524516f20dbf9b7d758d30f825447efdfabc31affb68c"
+    },
+    {
+      "aula": "IE-M09-A01",
+      "url": "https://www.annualreviews.org/content/journals/10.1146/annurev-psych-010213-115043",
+      "dominio": "www.annualreviews.org",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "0c8440ed26226e1a7bdc5ff01a916b530f760df6c70f67c5716c86a6ff30da6a"
+    },
+    {
+      "aula": "IE-M09-A01",
+      "url": "https://www.annualreviews.org/content/journals/10.1146/annurev-psych-010213-115043",
+      "dominio": "www.annualreviews.org",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "0c8440ed26226e1a7bdc5ff01a916b530f760df6c70f67c5716c86a6ff30da6a"
+    },
+    {
+      "aula": "IE-M09-A02",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12189852/",
+      "dominio": "pmc.ncbi.nlm.nih.gov",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "2906c8dae512f76cf6d207784b99059ec71f95856d59519d0ae3a2a393ce8986"
+    },
+    {
+      "aula": "IE-M10-A03",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/26479070/",
+      "dominio": "pubmed.ncbi.nlm.nih.gov",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "bbd65f277842b41b62601f587cbb6b52613a886ac945c4542e6956efe8c961a9"
+    },
+    {
+      "aula": "IE-M10-A04",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8149892/",
+      "dominio": "pmc.ncbi.nlm.nih.gov",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "3ddfba303cd1f97416d6dafba2f1cbc1102b5c38b1892c8efdd9e5d459900936"
+    },
+    {
+      "aula": "IE-M10-A04",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4500900/",
+      "dominio": "pmc.ncbi.nlm.nih.gov",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "c55c808a5676115b0960c06d0177be7a42136aefdd4c527d3bd64a7a246d360f"
+    },
+    {
+      "aula": "IE-M10-A04",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/26479070/",
+      "dominio": "pubmed.ncbi.nlm.nih.gov",
+      "verificacao": "PENDENTE — conferir estudo e correspondência da afirmação",
+      "original_url_sha256": "bbd65f277842b41b62601f587cbb6b52613a886ac945c4542e6956efe8c961a9"
+    }
+  ],
+  "questions": [
+    {
+      "editorial_id": "IE-M01-Q03",
+      "question_id": "d93b6fd6-5b85-5262-a1c9-47c7d6bd43bb",
+      "question_version": 2,
+      "status": "draft",
+      "active": false,
+      "gap": "Proposta PR17 não homologada: validar competência, dificuldade, rubrica e feedback específico das quatro alternativas; bibliografia pendente."
+    },
+    {
+      "editorial_id": "IE-M02-Q05",
+      "question_id": "0d78387f-fd41-56ae-a6e6-891f1c42fd4c",
+      "question_version": 2,
+      "status": "draft",
+      "active": false,
+      "gap": "Proposta PR17 não homologada: validar competência, dificuldade, rubrica e feedback específico das quatro alternativas; bibliografia pendente."
+    },
+    {
+      "editorial_id": "IE-M04-Q05",
+      "question_id": "f5c9b269-d73d-5c07-a1f8-4edeca613201",
+      "question_version": 2,
+      "status": "draft",
+      "active": false,
+      "gap": "Proposta PR17 não homologada: validar competência, dificuldade, rubrica e feedback específico das quatro alternativas; bibliografia pendente."
+    },
+    {
+      "editorial_id": "IE-M07-Q03",
+      "question_id": "2a2b146b-1b5b-5326-a65a-0bdcd2cca441",
+      "question_version": 2,
+      "status": "draft",
+      "active": false,
+      "gap": "Proposta PR17 não homologada: validar competência, dificuldade, rubrica e feedback específico das quatro alternativas; bibliografia pendente."
+    },
+    {
+      "editorial_id": "IE-M08-Q04",
+      "question_id": "60d6e35c-19f6-5939-a933-21eda1267e38",
+      "question_version": 2,
+      "status": "draft",
+      "active": false,
+      "gap": "Proposta PR17 não homologada: validar competência, dificuldade, rubrica e feedback específico das quatro alternativas; bibliografia pendente."
+    },
+    {
+      "editorial_id": "IE-M10-Q01",
+      "question_id": "ae795ebc-d759-5029-acfd-8d3c10845c8a",
+      "question_version": 2,
+      "status": "draft",
+      "active": false,
+      "gap": "Proposta PR17 não homologada: validar competência, dificuldade, rubrica e feedback específico das quatro alternativas; bibliografia pendente."
+    }
+  ]
+}

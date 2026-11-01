@@ -16,6 +16,24 @@
   --vc-radius:18px;
 }
 
+/* Structured Markdown: restricted to canonical academic blocks. */
+.academic-lesson,.academic-markdown{min-width:0;overflow-wrap:anywhere}
+.academic-lesson{scroll-margin-top:6rem;margin-block:2rem}
+.academic-lesson-nav{padding:1rem;border:1px solid var(--vc-line);border-radius:.8rem;background:var(--vc-paper)}
+.academic-lesson-nav ol{display:grid;gap:.8rem;padding-left:1.3rem}
+.academic-lesson-nav a{display:inline-block;padding:.4rem;color:var(--vc-blue)}
+.academic-markdown{line-height:1.75}
+.academic-markdown p{white-space:pre-line}
+.academic-markdown h3,.academic-markdown h4,.academic-markdown h5,.academic-markdown h6{line-height:1.35;margin:1.6rem 0 .7rem;color:var(--vc-navy)}
+.academic-markdown blockquote{margin:1rem 0;padding:.2rem 1rem;border-left:3px solid var(--vc-gold);background:var(--vc-paper)}
+.academic-markdown a{color:var(--vc-blue);text-decoration:underline;overflow-wrap:anywhere}
+.academic-markdown a:focus-visible,.academic-lesson-nav a:focus-visible,.academic-table-scroll:focus-visible{outline:3px solid var(--vc-gold);outline-offset:3px}
+.academic-markdown pre{max-width:100%;overflow:auto;padding:1rem;background:var(--vc-paper)}
+.academic-markdown hr{border:0;border-top:1px solid var(--vc-line);margin:1.6rem 0}
+.academic-table-scroll{max-width:100%;overflow-x:auto;margin:1rem 0}
+.academic-markdown table{width:100%;border-collapse:collapse;font-size:.9rem}
+.academic-markdown th,.academic-markdown td{padding:.6rem;border:1px solid var(--vc-line);text-align:left;vertical-align:top;overflow-wrap:anywhere}
+
 [hidden]{display:none!important}
 
 /* Universidade pública */
