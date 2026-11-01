@@ -9,10 +9,10 @@ begin
  into n,bad from public.vc_university_lesson_versions l
  join public.vc_university_module_versions m using(module_version_id)
  join public.vc_university_content_blocks b using(lesson_version_id)
- where m.course_id='inteligencia-emocional-aplicada' and m.course_version='1.0';
+ where m.course_id='inteligencia-emocional-aplicada' and m.course_version='1.0' and l.revision=1;
  if n<>50 or bad<>0 then raise exception 'curriculum_draft_integrity_failed';end if;
  if exists(select 1 from public.vc_university_lesson_versions l join public.vc_university_module_versions m using(module_version_id)
-  where m.course_id='inteligencia-emocional-aplicada' group by m.module_no having count(*)<>5) then raise exception 'curriculum_distribution_failed';end if;
+  where m.course_id='inteligencia-emocional-aplicada' and l.revision=1 group by m.module_no having count(*)<>5) then raise exception 'curriculum_distribution_failed';end if;
  if exists(select 1 from public.vc_university_content_blocks b join public.vc_university_lesson_versions l using(lesson_version_id)
   join public.vc_university_module_versions m using(module_version_id)
   where m.course_id='inteligencia-emocional-aplicada' and not exists(select 1 from public.vc_university_editorial_reviews r where r.material_kind='block' and r.material_id=b.content_block_id::text and r.state='draft' and jsonb_array_length(r.gaps)>0)) then raise exception 'curriculum_review_gate_missing';end if;

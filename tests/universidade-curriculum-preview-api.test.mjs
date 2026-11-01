@@ -2,7 +2,7 @@ import test from 'node:test';import assert from 'node:assert/strict';
 let handler;globalThis.Deno={env:{get:k=>k==='SUPABASE_SERVICE_ROLE_KEY'?'fixture-only':undefined},serve:fn=>handler=fn};
 await import('../supabase/functions/vc-universidade-learner-v2/index.ts');
 const owner={id:'70aa4d75-bbb9-4839-aad8-670b7654664d',email:'vcmenteconvergente@gmail.com',email_confirmed_at:'2026-10-01'};
-let identity=owner,platform=true,calls=[];
+let identity=owner,platform=true,calls=[],revisedLessons=false;
 const bank=Array.from({length:5},(_,i)=>({question_id:'q'+i,editorial_id:'IE-M01-Q0'+(i+1),question_version:1,purpose:'checkpoint',module_no:1,prompt:'Fixture técnica',correct_option_id:'q'+i+'-a',correct_feedback:'Aplicação correta da fixture.',review_concept:'Fixture',status:'draft'}));
 const options=bank.flatMap(q=>['a','b','c','d'].map((k,i)=>({question_id:q.question_id,option_id:q.question_id+'-'+k,option_order:i,option_text:k,feedback:'Revise o princípio da fixture.'})));
 globalThis.fetch=async(input,settings={})=>{
@@ -12,7 +12,7 @@ globalThis.fetch=async(input,settings={})=>{
  const table=url.pathname.split('/').at(-1);
  if(table==='vc_university_course_versions')return Response.json([{course_id:'inteligencia-emocional-aplicada',version:'1.0',title_snapshot:'Fixture',content_model:'structured_blocks',status:'draft',hours_minutes:1200}]);
  if(table==='vc_university_module_versions')return Response.json([{module_version_id:'mv1',module_id:'m1',module_no:1,title:'Fixture'}]);
- if(table==='vc_university_lesson_versions')return Response.json([{lesson_version_id:'lv1',title:'Fixture',learning_objectives:[]}]);
+ if(table==='vc_university_lesson_versions')return Response.json(revisedLessons?[{lesson_id:'l1',lesson_version_id:'lv1',revision:1,title:'Fixture histórica',learning_objectives:[]},{lesson_id:'l1',lesson_version_id:'lv2',revision:2,title:'Fixture revisada',learning_objectives:[]}]:[{lesson_id:'l1',lesson_version_id:'lv1',revision:1,title:'Fixture',learning_objectives:[]}]);
  if(table==='vc_university_content_blocks')return Response.json([{block_type:'study',content:{text:'Leitura da fixture'}},{block_type:'rubric',content:{text:'TEACHER_ONLY_RUBRIC'}}]);
  if(table==='vc_university_questions')return Response.json(structuredClone(bank));
  if(table==='vc_university_question_options')return Response.json(structuredClone(options));
@@ -20,7 +20,8 @@ globalThis.fetch=async(input,settings={})=>{
 };
 const request=(body,perspective='student',authenticated=true)=>new Request('https://example.invalid/?course=inteligencia-emocional-aplicada&version=1.0&preview='+perspective,{method:body?'POST':'GET',headers:{origin:'https://vc-mente-convergente.vercel.app',...(authenticated?{authorization:'Bearer '+'x'.repeat(40)}:{}),'content-type':'application/json'},body:body?JSON.stringify(body):undefined});
 const input=score=>({action:'preview_assessment',purpose:'checkpoint',module:1,answers:bank.map((q,i)=>({question_id:q.question_id,selected_option_id:q.question_id+(i<score?'-a':'-b')}))});
-test.beforeEach(()=>{identity=owner;platform=true;calls=[];});
+test.beforeEach(()=>{identity=owner;platform=true;calls=[];revisedLessons=false;});
+test('preview HTTP entrega uma aula lógica na revisão mais recente sem duplicar histórico',async()=>{revisedLessons=true;const response=await handler(request());assert.equal(response.status,200);const data=await response.json();const lessons=data.course.modules[0].lessons;assert.equal(lessons.length,1);assert.equal(lessons[0].revision,2);assert.equal(lessons[0].lesson_version_id,'lv2');});
 test('prévia HTTP aluno remove gabaritos, feedback antecipado e blocos docentes',async()=>{const response=await handler(request());assert.equal(response.status,200);const data=await response.json();assert.doesNotMatch(JSON.stringify(data),/correct_option_id|correct_feedback|TEACHER_ONLY_RUBRIC/);assert.equal(data.assessments.length,5);assert.equal(calls.some(c=>(c.settings.method||'GET')!=='GET'),false);});
 test('prévia HTTP professor preserva o material docente autorizado',async()=>{const response=await handler(request(null,'teacher'));assert.equal(response.status,200);assert.match(JSON.stringify(await response.json()),/TEACHER_ONLY_RUBRIC/);});
 test('simulação HTTP corrige no servidor e não chama gravações nem cria matrícula',async()=>{const response=await handler(request(input(4)));assert.equal(response.status,200);const result=await response.json();assert.equal(result.passed,true);assert.equal(result.persisted,false);assert.equal(calls.some(c=>(c.settings.method||'GET')!=='GET'),false);assert.equal(calls.some(c=>/enrollment|attempt|session|certificate/.test(c.url.pathname)),false);});

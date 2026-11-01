@@ -1,5 +1,7 @@
 # PR #17 — Integração Draft do currículo IE — 31/10/2026
 
+> Registro histórico de 31/10. O saneamento prospectivo e as pendências atuais estão em [UNIVERSIDADE_SANEAMENTO_PR17.md](UNIVERSIDADE_SANEAMENTO_PR17.md).
+
 **Resultado:** 50 aulas e 50 blocos importados fielmente como Draft. Integração técnica concluída em homologação; aprovação acadêmica, publicação e homologação autenticada permanecem pendentes.
 
 Branch preservada: `feat/ie-course-official-curriculum`.

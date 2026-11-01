@@ -3,7 +3,7 @@ import {certificationEligibility} from "../_shared/governance-api.ts";
 import {assessmentBegin,assessmentSubmit,assessmentBank,assessmentPreviewBank,assessmentPreviewGrade} from "../_shared/assessment-api.ts";
 import {cycleDefinitions,cycleRead,cycleWrite} from "../_shared/cycle-api.ts";
 import {evidenceDefinitions, evidenceRead, evidenceWrite} from "../_shared/evidence-api.ts";
-import {checkpointSnapshot, gradeStableCheckpoint, resolveModuleStates} from "../_shared/academic-engine.ts";
+import {checkpointSnapshot, gradeStableCheckpoint, resolveModuleStates, latestLessonVersions} from "../_shared/academic-engine.ts";
 
 // Private academic API. Versioned lesson content is read server-side from restricted tables.
 // The static site must not contain answer keys or service credentials.
@@ -118,9 +118,10 @@ async function structuredCourse(courseId, version, metadata, preview = false) {
   "&status=" + editorialStatus + "&order=module_no.asc");
  const modules = [];
  for (const module of moduleVersions) {
-  const lessonVersions = await database("vc_university_lesson_versions",
+  const lessonRevisions = await database("vc_university_lesson_versions",
    "?select=lesson_version_id,lesson_id,revision,title,learning_objectives,estimated_minutes,status" +
-   "&module_version_id=eq." + module.module_version_id + "&status=" + editorialStatus + "&order=created_at.asc");
+   "&module_version_id=eq." + module.module_version_id + "&status=" + editorialStatus + "&order=created_at.asc&limit=1000");
+  const lessonVersions=latestLessonVersions(lessonRevisions);
   const lessons = [];
   for (const lesson of lessonVersions) {
    const blocks = await database("vc_university_content_blocks",
